@@ -8,6 +8,7 @@
   --first-color:  #FFFDD0;
   --second-color: #A0522D;
 }
+
 .navbar {
     font-family: var(--primary-font);
     font-size:20px;
@@ -20,6 +21,9 @@
     letter-spacing: 2px;
     
   }
+  nav{
+    border-bottom: 2px solid black;
+}
   .navbar-brand {
     width:60px;
   }

@@ -8,5 +8,5 @@ from django.contrib import messages
 
 
 def home(request):
-    template = 'index.html'
-    return render(request, template)
+    templates = 'index.html'
+    return render(request, templates)

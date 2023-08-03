@@ -1,0 +1,133 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --primary-font: "Quicksand", sans-serif;
+  --secondary-font: "Poppins", sans-serif;
+  --first-color: #fffdd0;
+  --second-color: #a0522d;
+}
+
+.navbar {
+  font-family: var(--primary-font);
+  font-size: 20px;
+  background-color: #ffffff;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  letter-spacing: 2px;
+}
+
+nav {
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+}
+
+.navbar-brand {
+  width: 60px;
+}
+
+.navbar a {
+  color: #000000;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.navbar a:hover {
+  color: var(--second-color);
+}
+
+.navbar-logo {
+  margin-right: auto;
+}
+
+li.nav-item a.nav-link {
+  margin-left: 20px;
+}
+
+.navbar-collapse ul li.nav-item a.nav-link {
+  margin-left: 20px;
+}
+
+.navbar-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.menu-btn {
+  display: none;
+}
+
+.navbar-toggler {
+  transition: margin-left 0.3s ease;
+}
+
+.navbar-items {
+  display: flex;
+  flex-direction: column;
+  /* Add any other initial styles here */
+}
+
+.d-flex button.btn {
+  border-radius: 50px;
+}
+
+.d-flex a.btn {
+  font-size: 20px;
+}
+
+.d-flex button.btn-sign-in {
+  border: 1px solid #000;
+  margin: 0 10px;
+  transition: 0.2s ease-in;
+}
+
+.d-flex button.btn-sign-in:hover {
+  background-color: rgb(226, 219, 219);
+}
+
+.d-flex button.btn-success {
+  background-color: var(--second-color);
+  border: 0;
+  margin: 0 10px;
+  padding: 0 15px;
+  transition: 0.2s ease;
+}
+
+.d-flex button.btn-success:hover {
+  background-color: rgb(194, 116, 47);
+  color: #ffffff;
+}
+
+.navbar-items.show {
+  margin-left: 0;
+  /* Set the desired margin for the expanded state */
+}
+
+@media screen and (max-width: 768px) {
+  .navbar-items {
+    display: none;
+    flex-direction: column;
+  }
+
+  /* Your other CSS styles */
+
+  .navbar-items.show {
+    display: flex;
+  }
+
+  .navbar-items a {
+    padding: 10px 20px;
+  }
+
+  .navbar-buttons {
+    display: none;
+  }
+
+  .menu-btn {
+    display: block;
+  }
+}
