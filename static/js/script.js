@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const menuBtn = document.querySelector(".menu-btn");
   const navbarItems = document.querySelector(".navbar-items");
@@ -8,4 +9,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// document.getElementById('test').innerHTML = "hi mony"
+

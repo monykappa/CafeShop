@@ -10,3 +10,7 @@ from django.contrib import messages
 def home(request):
     templates = 'index.html'
     return render(request, templates)
+
+def test(request):
+    templates = 'test.html'
+    return render(request, templates)

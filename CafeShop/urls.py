@@ -3,12 +3,9 @@ from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from home import views as home_view
-
-app_name = 'home'
 
 urlpatterns = [
-    re_path('^home/$', home_view.home, name='home'),
+    path('', include('home.urls')),
     path('admin/', admin.site.urls),
 ]
 

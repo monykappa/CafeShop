@@ -4,10 +4,11 @@ from django.conf.urls.static import static
 from django.views.generic import DetailView
 
 from home import views as home_view
-from . import home
+from . import views
 from home.views import *
 
 app_name = 'home'
 urlpatterns = [
-    re_path('^home/$', home_view.home, name='home')
+    re_path('^home/$', home_view.home, name='home'),
+    re_path('^test/$', home_view.test, name='test')
 ]

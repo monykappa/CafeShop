@@ -71,33 +71,34 @@ li.nav-item a.nav-link {
   /* Add any other initial styles here */
 }
 
-.d-flex button.btn {
+.d-flex a.btn {
   border-radius: 50px;
 }
 
 .d-flex a.btn {
-  font-size: 20px;
+  font-size: 15px;
 }
 
-.d-flex button.btn-sign-in {
+.d-flex a.btn-sign-in {
   border: 1px solid #000;
   margin: 0 10px;
   transition: 0.2s ease-in;
 }
 
-.d-flex button.btn-sign-in:hover {
-  background-color: rgb(226, 219, 219);
+.d-flex a.btn-sign-in:hover {
+  background-color: var(--first-color);
+  color:#000;
 }
 
-.d-flex button.btn-success {
+.d-flex a.btn-success {
   background-color: var(--second-color);
   border: 0;
   margin: 0 10px;
-  padding: 0 15px;
+  padding: 10px 15px;
   transition: 0.2s ease;
 }
 
-.d-flex button.btn-success:hover {
+.d-flex a.btn-success:hover {
   background-color: rgb(194, 116, 47);
   color: #ffffff;
 }
