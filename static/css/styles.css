@@ -25,8 +25,10 @@
 nav {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
 }
-
-.navbar-brand {
+h3{
+  color:rgb(242, 0, 0);
+}
+.navbar-brand{
   width: 60px;
 }
 
@@ -43,6 +45,7 @@ nav {
 .navbar-logo {
   margin-right: auto;
 }
+
 
 li.nav-item a.nav-link {
   margin-left: 20px;

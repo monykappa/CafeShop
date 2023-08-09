@@ -1,0 +1,200 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --primary-font: "Quicksand", sans-serif;
+    --secondary-font: "Poppins", sans-serif;
+    --first-color: #fffdd0;
+    --second-color: #a0522d;
+}
+
+.navbar {
+    font-family: var(--primary-font);
+    font-size: 20px;
+    background-color: #ffffff;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    letter-spacing: 2px;
+}
+
+nav {
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+}
+
+h3 {
+    color: red;
+}
+
+.navbar-brand {
+    width: 60px;
+}
+
+.navbar a {
+    color: #000000;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.navbar a:hover {
+    color: var(--second-color);
+}
+
+.navbar-logo {
+    margin-right: auto;
+}
+
+
+li.nav-item a.nav-link {
+    margin-left: 20px;
+}
+
+.navbar-collapse ul li.nav-item a.nav-link {
+    margin-left: 20px;
+}
+
+.navbar-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.menu-btn {
+    display: none;
+}
+
+.navbar-toggler {
+    transition: margin-left 0.3s ease;
+}
+
+.navbar-items {
+    display: flex;
+    flex-direction: column;
+    /* Add any other initial styles here */
+}
+
+.d-flex a.btn {
+    border-radius: 50px;
+}
+
+.d-flex a.btn {
+    font-size: 15px;
+}
+
+.d-flex a.btn-sign-in {
+    border: 1px solid #000;
+    margin: 0 10px;
+    transition: 0.2s ease-in;
+}
+
+.d-flex a.btn-sign-in:hover {
+    background-color: var(--first-color);
+    color: #000;
+}
+
+.d-flex a.btn-success {
+    background-color: var(--second-color);
+    border: 0;
+    margin: 0 10px;
+    padding: 10px 15px;
+    transition: 0.2s ease;
+}
+
+.d-flex a.btn-success:hover {
+    background-color: rgb(194, 116, 47);
+    color: #ffffff;
+}
+
+.navbar-items.show {
+    margin-left: 0;
+    /* Set the desired margin for the expanded state */
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-items {
+        display: none;
+        flex-direction: column;
+    }
+
+    /* Your other CSS styles */
+
+    .navbar-items.show {
+        display: flex;
+    }
+
+    .navbar-items a {
+        padding: 10px 20px;
+    }
+
+    .navbar-buttons {
+        display: none;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+}
+
+footer {
+    background-color: #f5f5f5;
+    padding: 20px;
+    font-family: var(--primary-font);
+}
+
+.ctn {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+.col-md-4 h3{
+    text-align: left;
+    margin:0 3.5vh;
+
+}
+
+.col-md-4 {
+    text-align: left;
+    color:grey;
+    width: 33.33%;
+    float: left;
+    border: 2px solid;
+}
+.col-md-4 ul{
+    list-style-type: none;
+    text-align: left;
+    font-family: var(--secondary-font);
+}
+.col-md-4 a{
+    text-decoration: none;
+    color:grey;
+}
+.col-md-4 li{
+
+    text-decoration: none;
+    width:180px;
+    text-align: left;
+    margin-top: 2vh;
+}
+
+@media (max-width: 960px) {
+    .ctn {
+        width: 100%;
+    }
+
+    .row {
+        flex-wrap: wrap;
+
+    }
+
+    .col-md-4 {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
