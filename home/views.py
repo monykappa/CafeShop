@@ -14,3 +14,4 @@ def home(request):
 def test(request):
     templates = 'test.html'
     return render(request, templates)
+
