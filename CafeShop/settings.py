@@ -31,7 +31,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = ['*']
 
-
+LOGIN_URL = '/userprofile/signin/'
+LOGIN_REDIRECT_URL = '/userprofile'
+LOGOUT_REDIRECT_URL = '/userprofile/signin'
 
 # Application definition
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'userprofile',
     
 ]
 

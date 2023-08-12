@@ -95,16 +95,15 @@ li.nav-item a.nav-link {
   color: #000;
 }
 
-.d-flex a.btn-success {
+.d-flex a.btn-sign-up {
   background-color: var(--second-color);
-  border: 0;
   margin: 0 10px;
   padding: 10px 15px;
   transition: 0.2s ease;
   color: #ffffff;
 }
 
-.d-flex a.btn-success:hover {
+.d-flex a.btn-sign-up:hover {
   background-color: rgb(194, 116, 47);
   color: #ffffff;
 }

@@ -1,2 +1,2 @@
-document.getElementById('test').innerHTML = "jojo  world";
+document.getElementById('test').innerHTML = "koi  world";
 
