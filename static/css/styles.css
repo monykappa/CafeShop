@@ -9,7 +9,6 @@
   --first-color: #fffdd0;
   --second-color: #a0522d;
 }
-
 .navbar {
   font-family: var(--primary-font);
   font-size: 20px;
@@ -26,9 +25,144 @@ nav {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
 }
 
-h3 {
-  color: red;
+#body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 50%;
+  margin: auto;
+  flex-direction: column;
+  padding: 5% 0;
 }
+#body #row1{
+  display: flex;
+  width: 100%;
+  padding-bottom: 4%;
+}
+#body #row1 #divimg{
+  width: 50%;
+}
+#body #row1 #divimg img{
+  width: 100%;
+  background-color: #a0522d;
+}
+#body #row1 #divinfo{
+  width: 50%;
+  text-align: center;
+  background-color: #FEDF00;
+  padding: 10% 2%;
+}
+#body #row1 #divinfo h1{
+  color: #a0522d;
+
+
+}
+#body #row1 #divinfo input{
+  padding: 1% 5%;
+  border-radius: 20px;
+  border: 2px solid #a0522d;
+  background-color: #FEDF00;
+  
+}
+
+
+#body #row2{
+  display: flex;
+  width: 100%;
+  padding-bottom: 4%;
+}
+#body #row2 #divimg2{
+  width: 50%;
+  order: 2;
+}
+#body #row2 #divimg2 img{
+  width: 100%;
+  background-color: #a0522d;
+}
+#body #row2 #divinfo2{
+  color: white;
+  width: 50%;
+  text-align: center;
+  background-color:#a0522d;
+  padding: 10% 2%;
+  order: 1;
+}
+#body #row2 #divinfo2 input{
+  padding: 1% 5%;
+  border-radius: 20px;
+  border: 2px solid white;
+  background-color: #a0522d;
+  color: #ffffff;
+}
+
+
+
+
+#body #row3{
+  display: flex;
+  width: 100%;
+  padding-bottom: 4%;
+}
+#body #row3 #divimg3{
+  width: 50%;
+}
+#body #row3 #divimg3 img{
+  width: 100%;
+  background-color: #a0522d;
+}
+#body #row3 #divinfo3{
+  width: 50%;
+  text-align: center;
+  background-color: #FEDF00;
+  padding: 10% 2%;
+}
+#body #row3 #divinfo3 h1{
+  color: #a0522d;
+
+}
+#body #row3 #divinfo3 input{
+  padding: 1% 5%;
+  border-radius: 20px;
+  border: 2px solid #a0522d;
+  background-color: #FEDF00;
+}
+
+
+
+#body #row4{
+  display: flex;
+  width: 100%;
+  padding-bottom: 4%;
+}
+#body #row4 #divimg4{
+  width: 50%;
+}
+#body #row4 #divimg4 img{
+  width: 100%;
+  background-color: #a0522d;
+}
+#body #row4 #divinfo4{
+  color: white;
+  width: 50%;
+  text-align: center;
+  background-color:#a0522d;
+  padding: 10% 2%;
+}
+#body #row4 #divinfo4 input{
+  padding: 1% 5%;
+  border-radius: 20px;
+  border: 2px solid white;
+  background-color: #a0522d;
+  color: #ffffff;
+}
+
+
+
+
+
+
+
+
 
 .navbar-brand {
   width: 60px;
@@ -113,12 +247,60 @@ li.nav-item a.nav-link {
   /* Set the desired margin for the expanded state */
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1747px) {
+  #row1{
+    display: flex;
+    flex-direction: column;
+  }
   .navbar-items {
       display: none;
       flex-direction: column;
   }
+  #body #row1 #divimg{
+    width: 100%;
+  }
+  #body #row1 #divinfo{
+    width: 100%;
+  }
 
+  #row2{
+    display: flex;
+    flex-direction: column;
+  }
+  #body #row2 #divimg2{
+    width: 100%;
+    order: 1;
+  }
+  #body #row2 #divinfo2{
+    width: 100%;
+    order: 2;
+  }
+
+
+  #row3{
+    display: flex;
+    flex-direction: column;
+  }
+  #body #row3 #divimg3{
+    width: 100%;
+  }
+  #body #row3 #divinfo3{
+    width: 100%;
+  }
+
+
+  #row4{
+    display: flex;
+    flex-direction: column;
+  }
+  #body #row4 #divimg4{
+    width: 100%;
+    order: 1;
+  }
+  #body #row4 #divinfo4{
+    width: 100%;
+    order: 2;
+  }
 
 
   .navbar-items.show {
