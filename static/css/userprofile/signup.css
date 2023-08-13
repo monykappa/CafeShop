@@ -58,6 +58,10 @@ form {
     display: block;
     width: 95%;
 }
+.personal-info input[type="email"] {
+    display: block;
+    width: 95%;
+}
 .term-of-use .ctn {
     padding: 10px 0;
     display: flex;

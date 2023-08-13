@@ -1,11 +1,11 @@
-{% extends 'index.html' %}
 
-{% block title %} Sign Up {% endblock title %}
+
 {% load static %}
+{% block title %} Sign Up {% endblock title %}
 
+<link rel="stylesheet" href="{% static 'css/userprofile/signup.css' %}" />  
 
 {% block main_body %}
-<link rel="stylesheet" href="{% static 'css/userprofile/signup.css' %}" />  
     <h1 class="create-acc">Create an account</h1>
     <div class="container">
         <form method="post" action="{% url 'userprofile:signup' %}">
