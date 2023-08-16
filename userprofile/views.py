@@ -6,6 +6,11 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.views import View
+from userprofile.models import SignUp
+from django.contrib.auth import get_user_model
+
 
 
 from django.utils.decorators import method_decorator
@@ -43,18 +48,24 @@ class SignupView(View):
     def post(self, request, *args, **kwargs):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        sex = request.POST.get('sex')
+        dob = request.POST.get('dob')
+        contact = request.POST.get('contact')
         
-        # Assuming you're using Django's built-in User model
-        user = User.objects.create_user(
-            username=email,
+        user = SignUp.objects.create_user(
+            username=username,  
             first_name=first_name,
             last_name=last_name,
             email=email,
-            password=password
+            password=password,
+            sex=sex,
+            dob=dob,
+            contact=contact
         )
         
-        # Perform any additional registration logic here if needed
         
-        return redirect('userprofile:signin')
+        
+        return redirect('home:home')
