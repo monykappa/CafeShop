@@ -15,3 +15,8 @@ def test(request):
     templates = 'test.html'
     return render(request, templates)
 
+def aboutus(request):
+    templates = 'aboutus.html'
+    return render(request, templates)
+
+

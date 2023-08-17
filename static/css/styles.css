@@ -36,7 +36,11 @@ nav {
   padding: 5% 0;
 }
 
+<<<<<<< HEAD
+#body #row1{
+=======
 #body #row1 {
+>>>>>>> 2c55c9cf65b61e9f0b8538cefd1b34453219afb9
   display: flex;
   width: 100%;
   padding-bottom: 4%;
@@ -404,8 +408,6 @@ footer {
 .col-md-4 a:hover {
   color: #000;
 }
-
-
 
 @media (max-width: 960px) {
   .ctn {
