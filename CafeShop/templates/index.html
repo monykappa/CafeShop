@@ -19,7 +19,7 @@
     {% endblock content %}
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a href="{% url 'home:home' %}">
+            <a href="{% url 'home:index' %}">
                 <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
                     class="navbar-brand" alt="Logo" />
             </a>
@@ -30,7 +30,7 @@
             <div class="collapse navbar-collapse" id="navbarItems">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:home' %}">Home</a>
+                        <a class="nav-link" href="{% url 'home:index' %}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Menu</a>

@@ -10,6 +10,8 @@ from django.shortcuts import render, redirect
 from django.views import View
 from userprofile.models import SignUp
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, logout
+from userprofile.models import SignUp
 
 
 
@@ -17,27 +19,29 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 
-class DashboardView(View): 
-    template_name = 'dashboard/student/index.html'
-    @method_decorator(login_required(''))
-    def get(self, request): 
-        return render(request, self.template_name)
 
 class SigninView(View):
-    template_name = 'dashboard/userprofile/signup.html'
+    template_name = 'dashboard/userprofile/signin.html'
+    
     def get(self, request):
         return render(request, self.template_name)
-
+    
     def post(self, request, *args, **kwargs):
-        username = request.POST['username']
-        password = request.POST['pwd']
-        
+        print("SigninView post method called")
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print("Username:", username)
+        print("Password:", password)
+    
         user = authenticate(request, username=username, password=password)
+        print("User object after authentication:", user)
         if user is not None:
             login(request, user)
-            return redirect('userprofile:dashboard')  # Correct URL name here
+            return redirect('home:home')
         else:
-            return render(request, self.template_name)
+            context = {'login_failed': True}
+            return render(request, self.template_name, context)
+
         
 class SignupView(View):
     template_name = 'dashboard/userprofile/signup.html'
@@ -66,6 +70,10 @@ class SignupView(View):
             contact=contact
         )
         
-        
-        
         return redirect('home:home')
+    
+
+class LogoutView(View):
+    def get(self, request): 
+        logout(request)
+        return redirect('home:index')

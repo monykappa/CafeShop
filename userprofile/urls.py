@@ -10,9 +10,9 @@ from userprofile.views import *
 app_name = 'userprofile'
 urlpatterns = [
     # url('^home/$', staff_view.home_page, name='home'),
-    re_path('^dashboard/$', DashboardView.as_view(), name='dashboard'),
     re_path('^signin/$', SigninView.as_view(), name='signin'),
     re_path('signup/', SignupView.as_view(), name='signup'),
+    re_path('^logout/$', LogoutView.as_view(), name='logout'),
 
 ]
 if settings.DEBUG:
