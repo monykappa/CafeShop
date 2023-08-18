@@ -44,7 +44,7 @@ class SignUp(AbstractBaseUser):
     dob = models.DateField(null=True, blank=True)
     email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
     contact = models.CharField(max_length=20, null=True, blank=True)
-    username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, null=True, unique=True)
     password = models.CharField(max_length=128)
 
     objects = SignUpManager()  # Use the custom manager

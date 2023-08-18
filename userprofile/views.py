@@ -12,6 +12,8 @@ from userprofile.models import SignUp
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 from userprofile.models import SignUp
+from django.urls import reverse
+
 
 
 
@@ -27,15 +29,12 @@ class SigninView(View):
         return render(request, self.template_name)
     
     def post(self, request, *args, **kwargs):
-        print("SigninView post method called")
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print("Username:", username)
-        print("Password:", password)
-    
+
         user = authenticate(request, username=username, password=password)
-        print("User object after authentication:", user)
         if user is not None:
+            print("User authenticated:", user.username)
             login(request, user)
             return redirect('home:home')
         else:
@@ -60,17 +59,23 @@ class SignupView(View):
         contact = request.POST.get('contact')
         
         user = SignUp.objects.create_user(
-            username=username,  
+            email=email, 
+            username=username,
             first_name=first_name,
             last_name=last_name,
-            email=email,
             password=password,
             sex=sex,
             dob=dob,
             contact=contact
         )
         
-        return redirect('home:home')
+        # Authenticate and login the user after signup
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+        
+        return redirect('userprofile:signin')  # Redirect to the sign-in page
+
     
 
 class LogoutView(View):

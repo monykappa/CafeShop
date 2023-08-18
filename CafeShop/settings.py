@@ -136,6 +136,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -145,6 +148,7 @@ STATIC_URL = 'static/'
 LOGIN_URL = '/userprofile/signin/'
 LOGIN_REDIRECT_URL = '/userprofile'
 LOGOUT_REDIRECT_URL = '/userprofile/signin'
+
 
 
 # Default primary key field type

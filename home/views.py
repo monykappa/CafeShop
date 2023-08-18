@@ -19,17 +19,10 @@ def test(request):
 
 @login_required
 def home(request):
-    if request.user.is_authenticated:
-        user = request.user
-        try:
-            signup_user = SignUp.objects.get(email=user.email)
-            username = signup_user.username
-        except SignUp.DoesNotExist:
-            username = None
-    else:
-        username = None
+    return render(request, 'home.html')
 
-    context = {'username': username}
+
+    context = {'username': context_username}
     return render(request, 'home.html', context)
 
 def aboutus(request):
