@@ -9,35 +9,25 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from ckeditor.fields import RichTextField
 import uuid
+from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, Group, Permission
+
 
 # Create your models here.
+
+
+
+
 
 Sex = (
     ('Male', 'Male'),
     ('Female', 'Female'),
 )
 
-class SignUpManager(BaseUserManager):
-    def create_user(self, email, username, first_name, last_name, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        
-        email = self.normalize_email(email)
-        user = self.model(
-            email=email,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-    def __str__(self):
-        return self.username
 
-class SignUp(AbstractBaseUser):
+
+class SignUp(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     sex = models.CharField(max_length=7, choices=Sex, null=True, blank=True)
@@ -47,10 +37,6 @@ class SignUp(AbstractBaseUser):
     username = models.CharField(max_length=100, null=True, unique=True)
     password = models.CharField(max_length=128)
 
-    objects = SignUpManager()  # Use the custom manager
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
+    
     def __str__(self):
         return self.username

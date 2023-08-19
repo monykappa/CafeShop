@@ -38,12 +38,12 @@
                 </ul>
             </div>
             <div class="d-flex">
-                {% if username %}
-                    <p class="welcome-message">Welcome, {{ username }}</p>
+                {% if user.is_authenticated %}
+                    <p class="welcome-message">Welcome, {{ user.username }}</p>
+                    <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
                 {% else %}
                     <p class="welcome-message">Welcome, Guest</p>
                 {% endif %}
-                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
                 <a href="#" class="btn">Find us</a>
             </div>
             

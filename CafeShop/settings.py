@@ -129,6 +129,8 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media directory
 
@@ -137,6 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 
 
 AUTHENTICATION_BACKENDS = [
+    'userprofile.custom_auth_backend.CustomAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -148,6 +151,8 @@ STATIC_URL = 'static/'
 LOGIN_URL = '/userprofile/signin/'
 LOGIN_REDIRECT_URL = '/userprofile'
 LOGOUT_REDIRECT_URL = '/userprofile/signin'
+
+
 
 
 

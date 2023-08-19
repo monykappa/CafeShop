@@ -19,10 +19,7 @@ def test(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
-
-
-    context = {'username': context_username}
+    context = {'username': request.user.username}
     return render(request, 'home.html', context)
 
 def aboutus(request):
