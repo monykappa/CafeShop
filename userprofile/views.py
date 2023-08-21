@@ -73,7 +73,6 @@ class SignupView(View):
             dob=dob,
             contact=contact
 )
-
         # Save the customer to the database
         customer.save()
 
