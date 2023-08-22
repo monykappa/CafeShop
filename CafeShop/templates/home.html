@@ -1,3 +1,4 @@
+{% extends 'menufolder/menu4.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,9 +15,10 @@
 <style>
 </style>
 <body>
+
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a href="{% url 'home:index' %}">
+            <a href="{% url 'home:home' %}">
                 <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
                     class="navbar-brand" alt="Logo" />
             </a>
@@ -26,14 +28,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarItems">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <!-- If the user is logged in, take them to 'home:home' -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home:home' %}">Home</a>
+                        </li>
+                    {% else %}
+                        <!-- If the user is not logged in, take them to 'home:index' -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home:index' %}">Home</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="#">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About us</a>
+                        <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
                     </li>
                 </ul>
             </div>
@@ -44,13 +54,11 @@
                 {% else %}
                     <p class="welcome-message">Welcome, Guest</p>
                 {% endif %}
-                <a href="#" class="btn">Find us</a>
+                <a href="{% url 'home:findus' %}" class="btn">Find us</a>
             </div>
             
     </nav>
-
         <!-- /main body -->
-
     <script src="{% static 'js/scripts.js' %}"></script>
     {% block content %}{% endblock content %}
 </body>

@@ -26,4 +26,8 @@ def aboutus(request):
     templates = 'aboutus.html'
     return render(request, templates)
 
+def FindUs(request):
+    templates = 'location/find_us.html'
+    return render(request, templates)
+
 
