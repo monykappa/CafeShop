@@ -139,9 +139,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 
 
 AUTHENTICATION_BACKENDS = [
-    'userprofile.custom_auth_backend.CustomAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
