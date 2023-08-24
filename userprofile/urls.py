@@ -12,17 +12,10 @@ from userprofile.views import *
 app_name = 'userprofile'    
 urlpatterns = [
     # url('^home/$', staff_view.home_page, name='home'),
-<<<<<<< HEAD
-    re_path(r'^signin/$', SigninView.as_view(), name='signin'), 
-    re_path(r'^signup/$', SignupView.as_view(), name='signup'),
-    re_path(r'^logout/$', LogoutView.as_view(), name='logout'),  
-
-=======
     re_path('^signin/$', SigninView.as_view(), name='signin'),
     re_path('signup/', SignupView.as_view(), name='signup'),
     re_path('^logout/$', LogoutView.as_view(), name='logout'),
     # re_path('^feature/$',)
->>>>>>> 54ebf4d60dd3fdc687eb012bc9da195d103be176
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
