@@ -87,7 +87,10 @@ class SignupView(View):
         user = User.objects.create_user(
             username=username,
             email=email,
-            password=password
+            password=password,
+            sex=sex,
+            dob=dob,
+            contact=contact
         )
 
         # Create a new SignUp instance linked to the User
