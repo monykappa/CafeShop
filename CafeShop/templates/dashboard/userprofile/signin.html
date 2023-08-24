@@ -1,2 +1,104 @@
-{% extends 'index.html' %}
+{% extends 'menufolder/menu3.html' %}
 {% load static %}
+{% block title %} Sign In {% endblock title %}
+
+
+
+{% block content %}
+<style>
+    body{
+        font-family: var(--secondary-font);
+    }
+
+    input.input-form{
+    padding: 15px 10px;
+    width: 95%;
+    border:2px solid var(--second-color);
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: black;
+    background-color: transparent;
+    }
+
+    .sign-in-title {
+        font-family: var(--primary-font);
+        margin: 10vh 0 5vh 0;
+        text-align: center;
+    }
+
+    .sign-in-ctn {
+        width: 30%;
+        margin: 0 auto;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    @media screen and (max-width: 1747px) {
+        .sign-in-ctn {
+            width: 70%;
+            margin: 0 auto;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input-form {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    .btn-create-acc {
+        margin-top: 15px;
+        transition: 0.2s ease;
+    }
+    .btn-create-acc:hover{
+        text-decoration: underline;
+        color:var(--second-color);
+
+    }
+
+    .btn-sign-in {
+        background-color: var(--second-color);
+        border-radius: 20px;
+        border:none;
+        color:white;
+        box-shadow: 1px 2px 1px solid grey;
+        margin-top: 15px;
+        float: right; 
+        transition: 0.3s ease;
+    }
+    .btn-sign-in:hover {
+        background-color: #9F8170;
+    }
+</style>
+<h1 class="sign-in-title">Sign In</h1>
+<div class="container sign-in-ctn">
+    <form method="post" action="{% url 'userprofile:signin' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="input-form" id="username" name="username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="input-form" id="password" name="password" placeholder="Enter your password">
+        </div>
+        <a href="{% url 'userprofile:signup' %}" class="btn btn-create-acc">Create an account</a>
+        <button class="btn btn-primary btn-sign-in" type="submit">Sign In</button>
+    </form>
+</div>
+{% endblock content %}
+
+

@@ -5,7 +5,9 @@
 
 <link rel="stylesheet" href="{% static 'css/userprofile/signup.css' %}" />  
 
+
 {% block main_body %}
+
     <h1 class="create-acc">Create an account</h1>
     <div class="container">
         <form method="post" action="{% url 'userprofile:signup' %}">
@@ -17,6 +19,13 @@
                         <h3>Personal Information</h3>
                         <input type="text" class="form-control" placeholder="* First name" name="first_name">
                         <input type="text" class="form-control" placeholder="* Last name" name="last_name">
+                        <input type="text" class="form-control" placeholder="* Username" name="username">
+                        <select class="form-control custom-select" name="sex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <input type="date" class="form-control" placeholder="* Date of Birth" name="dob">
+                        <input type="text" class="form-control" placeholder="Contact" name="contact">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -39,8 +48,20 @@
                     <p>I agree to the Starbucks® Rewards Terms opens in new window and the Starbucks Card Terms opens in new window and have read the Starbucks Privacy Statement opens in new window.</p>
                 </div>
             </div>
-            <button class="btn btn-primary" type="submit">Create an account</button>
+            <button class="btn btn-primary" type="submit" id="submitButton" disabled>Create an account</button>
         </form>
     </div>
-   
+    <script>
+        // Get references to the checkbox and submit button
+        const checkbox = document.getElementById('myCheckbox');
+        const submitButton = document.getElementById('submitButton');
+        
+        // Add an event listener to the checkbox
+        checkbox.addEventListener('change', function() {
+            // Enable or disable the submit button based on checkbox state
+            submitButton.disabled = !checkbox.checked;
+        });
+    </script>
 {% endblock main_body %}
+
+
