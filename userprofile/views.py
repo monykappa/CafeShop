@@ -9,21 +9,12 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
-<<<<<<< HEAD
-from django.shortcuts import render, redirect
-from django.views import View
-from userprofile.models import SignUp
-from django.contrib.auth import get_user_model
-
-
-=======
 from userprofile.models import SignUp
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from .models import UserProfile  
->>>>>>> 36944d2e61aa2a88a99fd06b62ddbe23e3d752d1
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -84,43 +75,23 @@ class SignupView(View):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-<<<<<<< HEAD
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-=======
         # Retrieve data from the form
->>>>>>> 36944d2e61aa2a88a99fd06b62ddbe23e3d752d1
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         sex = request.POST.get('sex')
         dob = request.POST.get('dob')
         contact = request.POST.get('contact')
-<<<<<<< HEAD
-        
-        # Use your custom SignUp model to create a user
-        user = SignUp.objects.create_user(
-            username=username,  # Use email as the username
-            first_name=first_name,
-            last_name=last_name,
-=======
 
         # Create a new User instance
         user = User.objects.create_user(
             username=username,
->>>>>>> 36944d2e61aa2a88a99fd06b62ddbe23e3d752d1
             email=email,
             password=password,
             sex=sex,
             dob=dob,
             contact=contact
         )
-<<<<<<< HEAD
-        
-        # Perform any additional registration logic here if needed
-        
-        return redirect('home:home')
-=======
 
         # Create a new SignUp instance linked to the User
         signup = SignUp(
@@ -149,4 +120,3 @@ class LogoutView(View):
     def get(self, request): 
         logout(request)
         return redirect('home:index')
->>>>>>> 36944d2e61aa2a88a99fd06b62ddbe23e3d752d1
