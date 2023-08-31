@@ -16,27 +16,28 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 
-
-
-
-
 Sex = (
     ('Male', 'Male'),
     ('Female', 'Female'),
 )
-
-
-
-class SignUp(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     sex = models.CharField(max_length=7, choices=Sex, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
     contact = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+class SignUp(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
     username = models.CharField(max_length=100, null=True, unique=True)
     password = models.CharField(max_length=128)
+    dob = models.DateField(null=True, blank=True)
+    contact = models.CharField(max_length=20, null=True, blank=True)
+    sex = models.CharField(max_length=7, choices=Sex, null=True, blank=True)
 
-    
     def __str__(self):
-        return self.username
+        return self.user.username
+

@@ -17,6 +17,10 @@ def test(request):
     templates = 'test.html'
     return render(request, templates)
 
+def drinks(request):
+    return render(request,'Orderfolder/orderpage.html')
+def hottea(request):
+    return render(request,'Orderfolder/hottea.html')
 @login_required
 def home(request):
     context = {'username': request.user.username}
@@ -24,6 +28,10 @@ def home(request):
 
 def aboutus(request):
     templates = 'aboutus.html'
+    return render(request, templates)
+
+def FindUs(request):
+    templates = 'location/find_us.html'
     return render(request, templates)
 
 

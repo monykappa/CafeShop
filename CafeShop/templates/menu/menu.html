@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Menu</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add your custom CSS styles here */
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-list-item {
+            flex: 1;
+            margin: 1rem;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 1rem;
+        }
+
+        .product-list-item img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Product Menu</h1>
+        <ul class="product-list">
+            {% for product in products %}
+                <li class="product-list-item">
+                    <h2><a href="{% url 'menu:select_size' product.id %}">{{ product.product_name }}</a></h2>
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}">
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery (if needed) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
