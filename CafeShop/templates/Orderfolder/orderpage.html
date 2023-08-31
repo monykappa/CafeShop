@@ -1,0 +1,45 @@
+{% extends 'Orderfolder/ordermenu.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/ordercss/drinks.css' %}" />
+
+<h1>
+    Menu
+</h1>
+<h2 style="margin-bottom: 8%;">Drinks</h2>
+<hr style="margin-bottom: 3%;">
+<div class="orderpl">
+    <div class="block1">
+        <div class="b1p1">
+            <a href="">
+            <img src="{% static 'image/order/Screenshot 2023-08-25 151854.png' %}">
+            <h3>Iced Caffee</h3>
+            </a>  
+        </div>
+        <div class="b1p2">
+            <a href="{% url 'home:hotcoffee' %}"> 
+            <img src="{% static 'image/order/Screenshot 2023-08-25 151854.png' %}">
+            <h3>Hot Coffee</h3></a>
+           
+        </div>
+
+    </div>
+
+
+    <div class="block2">
+        <div class="b2p1">
+            <a href="">   <img src="{% static 'image/order/Screenshot 2023-08-25 151854.png' %}">
+            <h3>Frapped</h3></a>
+         
+        </div>
+
+
+    </div>
+
+
+
+
+</div>
+
+{% endblock content %}
