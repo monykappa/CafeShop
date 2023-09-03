@@ -5,9 +5,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('menu/', include('menu.urls', namespace='menu')),
     path('', include('home.urls')),
     path('userprofile/', include('userprofile.urls')),
-    path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:

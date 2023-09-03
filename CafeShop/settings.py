@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'userprofile',
+    'menu',
     
 ]
 
@@ -88,7 +89,7 @@ WSGI_APPLICATION = 'CafeShop.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "db_CafeShop",
+        "NAME": "db_cafeshop",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",
@@ -129,6 +130,8 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media directory
 
@@ -136,11 +139,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media direct
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = 'static/'
+
+LOGIN_URL = '/userprofile/signin/'
+LOGIN_REDIRECT_URL = '/userprofile'
+LOGOUT_REDIRECT_URL = '/userprofile/signin'
+
 
 
 

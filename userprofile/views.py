@@ -5,56 +5,91 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.views import View
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
+from userprofile.models import CustomerUser
+from django.urls import reverse
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 
+from .models import Customer  
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 
-class DashboardView(View): 
-    template_name = 'dashboard/student/index.html'
-    @method_decorator(login_required(''))
-    def get(self, request): 
-        return render(request, self.template_name)
-
 class SigninView(View):
-    template_name = 'dashboard/userprofile/signup.html'
     def get(self, request):
-        return render(request, self.template_name)
+        template_name = 'dashboard/userprofile/signin.html'
+        return render(request, template_name)
 
-    def post(self, request, *args, **kwargs):
-        username = request.POST['username']
-        password = request.POST['pwd']
-        
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Authenticate the user (you should customize this logic)
         user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('userprofile:dashboard')  # Correct URL name here
-        else:
-            return render(request, self.template_name)
         
-class SignupView(View):
+        
+
+        if user is not None:
+            # Authentication successful, log in the user
+            login(request, user)
+            return redirect('home:home')
+        else:
+            # Authentication failed, display an error message
+            context = {'login_failed': True}
+            template_name = 'dashboard/userprofile/signin.html'
+            return render(request, template_name, context)
+
+class SignUpView(View):
     template_name = 'dashboard/userprofile/signup.html'
-    
+
     def get(self, request):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        # Retrieve data from the form
+        username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        
-        # Assuming you're using Django's built-in User model
+        sex = request.POST.get('sex')
+        dob = request.POST.get('dob')
+        contact = request.POST.get('contact')
+
+        # Create a new User instance
         user = User.objects.create_user(
-            username=email,
-            first_name=first_name,
-            last_name=last_name,
+            username=username,
             email=email,
             password=password
         )
-        
-        # Perform any additional registration logic here if needed
-        
+
+        # Create a new SignUp instance linked to the User
+        signup = CustomerUser(
+            user=user,
+            email=email,
+            username=username,
+            password=password,
+            sex=sex,
+            dob=dob,
+            contact=contact
+        )
+
+        # Save the SignUp instance
+        signup.save()
+
+        # Authenticate the user and log them in
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+
         return redirect('userprofile:signin')
+
+
+
+class LogoutView(View):
+    def get(self, request): 
+        logout(request)
+        return redirect('home:index')
