@@ -1,19 +1,17 @@
 from django.contrib import admin
-from .models import Size, Product, ProductPrice, OrderDetail
+from .models import Size, AddProduct, OrderDetail
 
 admin.site.register(Size)
-admin.site.register(Product)
+admin.site.register(AddProduct)
 admin.site.register(OrderDetail)
 
 class ProductPriceAdmin(admin.ModelAdmin):
-    list_display = ('product', 'size', 'formatted_price')  # Include 'formatted_price' for display
+    list_display = ('product', 'size', 'formatted_price')
     list_filter = ('product', 'size')
-    search_fields = ('product__product_name', 'size__size_name')
+    search_fields = ('product__product_name', 'size__size_name')  # Add the fields you want to search
 
-    # Define a custom method to format the price
     def formatted_price(self, obj):
         return f"${obj.price:.2f}"
 
-    formatted_price.short_description = 'Price'  # Set the column header in the admin
+    formatted_price.short_description = 'Price'
 
-admin.site.register(ProductPrice, ProductPriceAdmin)

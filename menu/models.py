@@ -11,10 +11,10 @@ from ckeditor.fields import RichTextField
 import uuid
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission  
 
 def validate_file_extension(value): 
-    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filenamecd
     valid_extensions = ['.png', '.jpg', '.jpeg', '.webp']
     if not ext.lower() in valid_extensions:
         raise ValidationError(u'Unsupported file extension.')
@@ -35,34 +35,48 @@ category = (
     ('Soda', 'Soda'),
     ('Milk', 'Milk'),
 )
-
 class Size(models.Model):
-    size_name = models.CharField(max_length=50, null=True, blank=True)
+    SMALL = 'SM'
+    MEDIUM = 'MD'
+    LARGE = 'LG'
 
+    SIZE_CHOICES = [
+        (SMALL, 'Small'),
+        (MEDIUM, 'Medium'), 
+        (LARGE, 'Large'),
+    ]
+
+    size = models.CharField(max_length=50, choices=SIZE_CHOICES, null=True, blank=True)
     def __str__(self):
-        return self.size_name
-
-class Product(models.Model):
+        return self.get_size_display()
+    
+class AddProduct(models.Model):
     product_name = models.CharField(max_length=100, null=True, blank=True)
-    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])  # Wrap in a list
+    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])
     category = models.CharField(max_length=100, choices=category, null=True, blank=True)
-
-    def __str__(self):
-        return self.product_name
-
-
-class ProductPrice(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="prices")
-    size = models.ForeignKey(Size, on_delete=models.CASCADE)
+    sizes = models.ManyToManyField(Size, blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
 
     def __str__(self):
-        return f"{self.product.product_name} - {self.size.size_name} - ${self.price:.2f}"
+        sizes_str = ", ".join(str(size) for size in self.sizes.all())
+        return f"{self.product_name} - Sizes: {sizes_str} - Price: ${self.price:.2f}"
 
 class OrderDetail(models.Model):
-    product_price = models.ForeignKey(ProductPrice, on_delete=models.CASCADE)
+    product = models.ForeignKey(AddProduct, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
+    def calculate_total_price(self):
+        if self.product is not None:
+            price_per_unit = self.product.price # Assuming 'price' is a field in the AddProduct model
+            self.total_price = price_per_unit * self.quantity
+        else:
+            self.total_price = 0.0
+
+    def save(self, *args, **kwargs):
+        self.calculate_total_price()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"OrderDetailID: {self.pk} - {self.product_price.product.product_name} - Total Price: ${self.total_price}"
+        return f"OrderDetailID: {self.pk} - {self.product.product_name} - Total Price: ${self.total_price:.2f}"
+    

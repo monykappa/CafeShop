@@ -13,7 +13,7 @@ app_name = 'userprofile'
 urlpatterns = [
     # url('^home/$', staff_view.home_page, name='home'),
     re_path(r'^signin/$', SigninView.as_view(), name='signin'), 
-    re_path(r'^signup/$', SignupView.as_view(), name='signup'),
+    re_path(r'^signup/$', SignUpView.as_view(), name='signup'),
     re_path(r'^logout/$', LogoutView.as_view(), name='logout'),  
 
 ]

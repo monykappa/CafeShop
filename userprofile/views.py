@@ -9,12 +9,12 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
-from userprofile.models import SignUp
+from userprofile.models import CustomerUser
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
-from .models import UserProfile  
+
+from .models import Customer  
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -44,31 +44,7 @@ class SigninView(View):
             template_name = 'dashboard/userprofile/signin.html'
             return render(request, template_name, context)
 
-    # def get(self, request):
-    #     return render(request, self.template_name)
-
-    # def post(self, request, *args, **kwargs):
-    #     username = request.POST.get('username')
-    #     password = request.POST.get('password')
-
-    #     print(f"Received username: {username}")
-    #     print(f"Received password: {password}")
-
-    #     # Authenticate the user
-    #     user = authenticate(request, username=username, password=password)
-
-    #     if user is not None:
-    #         # If authentication is successful, log in the user
-    #         login(request, user)
-    #         print(f"User authenticated: {user.username}")
-    #         return redirect('home:home')
-    #     else:
-    #         # If authentication fails, display an error message
-    #         print(f"Authentication failed for username: {username}")
-    #         context = {'login_failed': True}
-    #         return render(request, self.template_name, context)
-
-class SignupView(View):
+class SignUpView(View):
     template_name = 'dashboard/userprofile/signup.html'
 
     def get(self, request):
@@ -91,7 +67,7 @@ class SignupView(View):
         )
 
         # Create a new SignUp instance linked to the User
-        signup = SignUp(
+        signup = CustomerUser(
             user=user,
             email=email,
             username=username,
