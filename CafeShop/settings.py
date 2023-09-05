@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'CafeShop.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "db_CafeShop",
+        "NAME": "db_cafeshop",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",
