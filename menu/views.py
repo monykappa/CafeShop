@@ -26,9 +26,11 @@ logger = logging.getLogger(__name__)
 def menu(request):
     # Retrieve a list of products from the database
     products = AddProduct.objects.all()
+    print(products)  # Debugging: Print the retrieved products
 
     # Render the menu.html template with the product data
-    return render(request, 'menu/menu.html', {'products': products})
+    return render(request, 'Orderfolder/orderpage.html', {'products': products})
+
 
 def select_size_view(request, product_id):
     product = get_object_or_404(AddProduct, pk=product_id)
