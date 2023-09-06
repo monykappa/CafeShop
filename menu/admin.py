@@ -16,15 +16,23 @@ class ProductPriceAdmin(admin.ModelAdmin):
     formatted_price.short_description = 'Price'
 
 class AddProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'display_image', 'category', 'display_sizes', 'price')
+    list_display = ('product_name', 'display_image', 'category', 'display_sizes', 'display_price')
     list_filter = ('category',)
     search_fields = ('product_name', 'category__name')
     
     def display_image(self, obj):
-        return format_html('<img src="{}" width="80px" height="70px" style="border-radius: 5px;" />', obj.image.url)
+        return format_html(
+            '<img src="{}" style="border-radius: 5px; width: 100px; height: 100px; object-fit: cover;" />',
+            obj.image.url
+        )
 
     def display_sizes(self, obj):
         return ', '.join([size.size for size in obj.sizes.all()])
+
+    def display_price(self, obj):
+        return f"${obj.price}"
+    display_price.short_description = 'Price'
+
 
 
 
