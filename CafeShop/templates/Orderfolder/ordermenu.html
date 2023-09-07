@@ -539,6 +539,10 @@
     display: flex;
     flex-direction: column;
   }
+  span.navbar-text{
+    margin-right: 10px;
+    color:var(--second-color);
+  }
 </style>
 
 <body>
@@ -556,17 +560,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarItems">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {% if user.is_authenticated %}
-                <!-- If the user is logged in, take them to 'home:home' -->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home:home' %}">Home</a>
                 </li>
-                {% else %}
-                <!-- If the user is not logged in, take them to 'home:index' -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-                </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
                 </li>
@@ -576,11 +572,19 @@
             </ul>
         </div>
         <div class="d-flex">
-            <a href="{% url 'home:findus' %}" class="btn">Find us</a>
-            <a href="{% url 'userprofile:signin' %}" class="btn btn-sign-in">Sign In</a>
-            <a href="{% url 'userprofile:signup' %}" class="btn btn-sign-up">Sign Up</a>
+            {% if user.is_authenticated %}
+                <span class="navbar-text">{{ user.username }}</span>
+                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+                <a href="{% url 'home:findus' %}" class="btn">Find us</a>
+            {% else %}
+                <a href="{% url 'home:findus' %}" class="btn">Find us</a>
+                <a href="{% url 'userprofile:signin' %}" class="btn btn-sign-in">Sign In</a>
+                <a href="{% url 'userprofile:signup' %}" class="btn btn-sign-up">Sign Up</a>
+            {% endif %}
         </div>
+    </div>
 </nav>
+
   <ul id="nav-bottom-bar">
     <li><a style="text-decoration: underline;" href="#">All Products</a></li>
     <li><a href="#">Featured</a></li>
