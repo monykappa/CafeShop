@@ -24,28 +24,24 @@ from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
 def drink_details(request, product_id):
-    product = get_object_or_404(AddProduct, pk=product_id)
-    
+    product = get_object_or_404(AddProduct, id=product_id)
     return render(request, 'Orderfolder/drink_details.html', {'product': product})
 
 
 def menu(request):
-    # Fetch distinct product names
-    distinct_product_names = AddProduct.objects.values('product_name').distinct()
+    products = AddProduct.objects.all()
+    grouped_products = {}
 
-    # Create a dictionary to hold product information
-    product_info = {}
+    # Group products by name
+    for product in products:
+        if product.product_name not in grouped_products:
+            grouped_products[product.product_name] = {
+                'id': product.id,
+                'sizes': [],
+            }
+        grouped_products[product.product_name]['sizes'].append(product)
 
-    for product_name in distinct_product_names:
-        # Get the first product with this name
-        product = AddProduct.objects.filter(product_name=product_name['product_name']).first()
-
-        if product and product.id:
-            # Add the product to the dictionary using its name as the key
-            product_info[product_name['product_name']] = product
-
-    # Render the menu.html template with the product data
-    return render(request, 'Orderfolder/orderpage.html', {'product_info': product_info})
+    return render(request, 'Orderfolder/orderpage.html', {'grouped_products': grouped_products})
 
 
 

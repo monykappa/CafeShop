@@ -65,12 +65,12 @@
     <hr>
 
     <div class="orderpl">
-        {% for product_name, product in product_info.items %}
-            <a href="{% url 'menu:drink_details' product_id=product.id %}" class="a-block">
+        {% for product_name, product_group in grouped_products.items %}
+            <a href="{% url 'menu:drink_details' product_id=product_group.id %}" class="a-block">
                 <div class="block1">
                     <div class="b1p1">
-                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}">
-                        <h3>{{ product.product_name }}</h3>
+                        <img src="{{ product_group.sizes.0.images.first.image.url }}" alt="{{ product_name }}">
+                        <h3>{{ product_name }}</h3>
                     </div>
                 </div>
             </a>
