@@ -65,25 +65,20 @@
     <hr>
 
     <div class="orderpl">
-        {% with "" as displayed_product_names %}
-        {% for product in products %}
-            {% if product.product_name not in displayed_product_names %}
-                {% with product.image.url as image_url %}
-                <a href="" class="a-block">
-                    <div class="block1">
-                        <div class="b1p1">
-                            <img src="{{ image_url }}" alt="{{ product.product_name }}">
-                            <h3>{{ product.product_name }}</h3>
-                        </div>
-                    </div>
-                </a>
-                {% endwith %}
-                {% with displayed_product_names|add:product.product_name as displayed_product_names %}
-                {% endwith %}
-            {% endif %}
+        {% for product_name, product in product_info.items %}
+        <a href="{% url 'menu:drink_details' product_id=product.id %}" class="a-block">
+            <div class="block1">
+                <div class="b1p1">
+                    <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}">
+                    <h3>{{ product.product_name }}</h3>
+                </div>
+            </div>
+        </a>
         {% endfor %}
-        {% endwith %}
     </div>
+    
+    
+    
 
 
 

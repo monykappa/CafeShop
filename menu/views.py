@@ -23,13 +23,32 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
+def drink_details(request, product_id):
+    # Retrieve the product based on the product_id
+    product = get_object_or_404(AddProduct, pk=product_id)
+    
+    # Add your logic here to render the drink details page
+    # You can pass the 'product' to the template
+    
+    return render(request, 'Orderfolder/drink_details.html', {'product': product})
+
 def menu(request):
-    # Retrieve a list of products from the database
-    products = AddProduct.objects.all()
-    print(products)  # Debugging: Print the retrieved products
+    # Fetch distinct product names
+    distinct_product_names = AddProduct.objects.values('product_name').distinct()
+
+    # Create a dictionary to hold product information
+    product_info = {}
+
+    for product_name in distinct_product_names:
+        # Get the first product with this name
+        product = AddProduct.objects.filter(product_name=product_name['product_name']).first()
+
+        if product:
+            # Add the product to the dictionary using its name as the key
+            product_info[product_name['product_name']] = product
 
     # Render the menu.html template with the product data
-    return render(request, 'Orderfolder/orderpage.html', {'products': products})
+    return render(request, 'Orderfolder/orderpage.html', {'product_info': product_info})
 
 
 def select_size_view(request, product_id):

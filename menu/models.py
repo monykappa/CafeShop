@@ -52,7 +52,6 @@ class Size(models.Model):
     
 class AddProduct(models.Model):
     product_name = models.CharField(max_length=100, null=True, blank=True)
-    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])
     category = models.CharField(max_length=100, choices=category, null=True, blank=True)
     sizes = models.ManyToManyField(Size, blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
@@ -60,6 +59,10 @@ class AddProduct(models.Model):
     def __str__(self):
         sizes_str = ", ".join(str(size) for size in self.sizes.all())
         return f"{self.product_name} - Sizes: {sizes_str} - Price: ${self.price:.2f}"
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(AddProduct, related_name='images', on_delete=models.CASCADE)
+    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])
 
 class OrderDetail(models.Model):
     product = models.ForeignKey(AddProduct, on_delete=models.CASCADE, null=True, blank=True)

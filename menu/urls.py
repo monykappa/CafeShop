@@ -14,7 +14,7 @@ from menu.views import *
 app_name = 'menu'
 urlpatterns = [
     re_path('menu/', views.menu, name='menu'),
-    path('select_size/<int:product_id>/', views.select_size_view, name='select_size'),
+    path('drink/<int:product_id>/', views.drink_details, name='drink_details'),
     path('order-details/', views.order_detail_list, name='order_detail_list'),
     path('order-details/<int:order_detail_id>/', views.order_detail_detail, name='order_detail_detail'),
 

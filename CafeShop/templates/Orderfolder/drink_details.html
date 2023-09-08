@@ -1,0 +1,23 @@
+{% extends 'menufolder/menu5.html' %}
+{% load static %}
+
+{% block content %}
+<div class="drink-details">
+    <h1>{{ product.product_name }}</h1>
+    
+    <h2>Select a Size:</h2>
+    <form method="post">
+        {% csrf_token %}
+        <select name="size">
+            {% for size in product.sizes.all %}
+                <option value="{{ size.size }}">{{ size.get_size_display }}</option>
+            {% endfor %}
+        </select>
+        
+        <h2>Price:</h2>
+        <p>${{ product.price }}</p>
+        
+        <input type="submit" value="Add to Cart">
+    </form>
+</div>
+{% endblock %}

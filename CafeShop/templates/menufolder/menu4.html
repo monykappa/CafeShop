@@ -76,6 +76,9 @@ footer p{
     margin-top: 4%;
     margin-left: 25px;
 }
+p.welcome-message{
+    color:var(--second-color);
+}
 </style>
 
 <body>
@@ -92,34 +95,42 @@ footer p{
             <div class="collapse navbar-collapse" id="navbarItems">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if user.is_authenticated %}
-                    <!-- If the user is logged in, take them to 'home:home' -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:home' %}">Home</a>
-                    </li>
+                        <!-- If the user is logged in, take them to 'home:home' -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home:home' %}">Home</a>
+                        </li>
                     {% else %}
-                    <!-- If the user is not logged in, take them to 'home:index' -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-                    </li>
+                        <!-- If the user is not logged in, take them to 'home:index' -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home:index' %}">Home</a>
+                        </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:aboutus'%}">About us</a>
+                        <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
                     </li>
+                    {% if user.is_superuser %}
+                        <!-- Show the Dashboard link only for superusers -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="d-flex">
-                {% if username %}
-                <p class="welcome-message"><span class="username">{{ username }}</span></p>
+                {% if user.is_authenticated %}
+                    <p class="welcome-message">{{ user.username }}</p>
+                    <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
                 {% else %}
-                <p class="welcome-message">Guest</p>
+                    <p class="welcome-message">Welcome, Guest</p>
                 {% endif %}
-                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
                 <a href="{% url 'home:findus' %}" class="btn">Find us</a>
             </div>
+        </div>
     </nav>
+    
 
     <!-- /main body -->
 
