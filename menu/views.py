@@ -27,7 +27,6 @@ def drink_details(request, product_id):
     product = get_object_or_404(AddProduct, id=product_id)
     return render(request, 'Orderfolder/drink_details.html', {'product': product})
 
-
 def menu(request):
     products = AddProduct.objects.all()
     grouped_products = {}
@@ -37,11 +36,14 @@ def menu(request):
         if product.product_name not in grouped_products:
             grouped_products[product.product_name] = {
                 'id': product.id,
+                'product_name': product.product_name,  # Add this line to store the product name
                 'sizes': [],
             }
         grouped_products[product.product_name]['sizes'].append(product)
 
     return render(request, 'Orderfolder/orderpage.html', {'grouped_products': grouped_products})
+
+
 
 
 

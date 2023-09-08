@@ -1,5 +1,6 @@
 {% block content %}
 
+<!-- Orderfolder/drink_details.html -->
 <div class="drink-details">
     <h1>{{ product.product_name }}</h1>
 
@@ -8,14 +9,18 @@
         {% csrf_token %}
         <select name="size">
             {% for size in product.sizes.all %}
-                <option value="{{ size.size }}">{{ size.get_size_display }}</option>
+                <option value="{{ size.id }}">
+                    {{ size.get_size_display }} - ${{ size.get_price }}
+                </option>
             {% endfor %}
         </select>
 
         <h2>Price:</h2>
+        <!-- You can display the default price here if needed -->
         <p>${{ product.price }}</p>
 
         <input type="submit" value="Add to Cart">
     </form>
 </div>
+
 {% endblock %}
