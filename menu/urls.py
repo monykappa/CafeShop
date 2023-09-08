@@ -14,12 +14,12 @@ from menu.views import *
 app_name = 'menu'
 urlpatterns = [
     re_path('menu/', views.menu, name='menu'),
-    path('drink/<int:product_id>/', views.drink_details, name='drink_details'),
+    path('menu/drink/<int:product_id>/', views.drink_details, name='drink_details'),
     path('order-details/', views.order_detail_list, name='order_detail_list'),
     path('order-details/<int:order_detail_id>/', views.order_detail_detail, name='order_detail_detail'),
-
-
 ]
+
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

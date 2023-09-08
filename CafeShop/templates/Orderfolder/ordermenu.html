@@ -320,6 +320,7 @@
 
   a.btn-signup {
     color: white;
+    margin: 0 15px;
   }
 
   /* footer */
@@ -594,7 +595,8 @@
                 <p class="welcome-message">{{ user.username }}</p>
                 <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
             {% else %}
-                <p class="welcome-message">Welcome, Guest</p>
+            <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
+            <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
             {% endif %}
             <a href="{% url 'home:findus' %}" class="btn">Find us</a>
         </div>

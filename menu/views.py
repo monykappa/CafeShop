@@ -24,13 +24,10 @@ from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
 def drink_details(request, product_id):
-    # Retrieve the product based on the product_id
     product = get_object_or_404(AddProduct, pk=product_id)
     
-    # Add your logic here to render the drink details page
-    # You can pass the 'product' to the template
-    
     return render(request, 'Orderfolder/drink_details.html', {'product': product})
+
 
 def menu(request):
     # Fetch distinct product names
@@ -43,12 +40,14 @@ def menu(request):
         # Get the first product with this name
         product = AddProduct.objects.filter(product_name=product_name['product_name']).first()
 
-        if product:
+        if product and product.id:
             # Add the product to the dictionary using its name as the key
             product_info[product_name['product_name']] = product
 
     # Render the menu.html template with the product data
     return render(request, 'Orderfolder/orderpage.html', {'product_info': product_info})
+
+
 
 
 def select_size_view(request, product_id):
