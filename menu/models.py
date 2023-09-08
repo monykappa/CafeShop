@@ -13,28 +13,17 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission  
 
-def validate_file_extension(value): 
-    ext = os.path.splitext(value.name)[1]  # [0] returns path+filenamecd
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]
     valid_extensions = ['.png', '.jpg', '.jpeg', '.webp']
     if not ext.lower() in valid_extensions:
-        raise ValidationError(u'Unsupported file extension.')
-
+        raise ValidationError('Unsupported file extension.')
 
 def menu_directory_path(instance, filename):
-    # Generate a unique identifier for the directory
     unique_id = str(uuid.uuid4())
-    # Construct the directory path
     directory_path = f'content/{unique_id}/'
-    
-    # Return the complete file path
     return os.path.join(directory_path, filename)
 
-category = (
-    ('Coffee', 'Coffee'),
-    ('Tea', 'Tea'),
-    ('Soda', 'Soda'),
-    ('Milk', 'Milk'),
-)
 class Size(models.Model):
     SMALL = 'SM'
     MEDIUM = 'MD'
@@ -42,20 +31,33 @@ class Size(models.Model):
 
     SIZE_CHOICES = [
         (SMALL, 'Small'),
-        (MEDIUM, 'Medium'), 
+        (MEDIUM, 'Medium'),
         (LARGE, 'Large'),
     ]
 
     size = models.CharField(max_length=50, choices=SIZE_CHOICES, null=True, blank=True)
+
     def __str__(self):
         return self.get_size_display()
-    
+
+class Image(models.Model):
+    image = models.FileField(upload_to=menu_directory_path, validators=[validate_file_extension])
+
+    def __str__(self):
+        return f"ImageID: {self.pk}"
+
 class AddProduct(models.Model):
+    CATEGORY_CHOICES = [
+        ('Coffee', 'Coffee'),
+        ('Tea', 'Tea'),
+        ('Soda', 'Soda'),
+        ('Milk', 'Milk'),
+    ]
     product_name = models.CharField(max_length=100, null=True, blank=True)
-    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])
-    category = models.CharField(max_length=100, choices=category, null=True, blank=True)
+    images = models.ManyToManyField(Image, blank=True)
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, null=True, blank=True)
     sizes = models.ManyToManyField(Size, blank=True)
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
 
     def __str__(self):
         sizes_str = ", ".join(str(size) for size in self.sizes.all())
@@ -68,15 +70,20 @@ class OrderDetail(models.Model):
 
     def calculate_total_price(self):
         if self.product is not None:
-            price_per_unit = self.product.price # Assuming 'price' is a field in the AddProduct model
+            price_per_unit = self.product.price
             self.total_price = price_per_unit * self.quantity
         else:
             self.total_price = 0.0
 
     def save(self, *args, **kwargs):
         self.calculate_total_price()
-        super().save(*args, **kwargs)
+        super(OrderDetail, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"OrderDetailID: {self.pk} - {self.product.product_name} - Total Price: ${self.total_price:.2f}"
+
+    def get_product_images(self):
+        if self.product is not None:
+            return self.product.images.all()
+        return None
     
