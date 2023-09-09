@@ -1,4 +1,4 @@
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from django.conf import settings 
 from django.conf.urls.static import static
 from django.views.generic import DetailView
@@ -11,6 +11,10 @@ from dashboard.views import *
 app_name = 'dashboard'
 urlpatterns = [
     re_path('^dashboard/$', dashboard_view.dashboard, name='dashboard'),
+    path('products/edit/<int:product_id>/', views.edit_product, name='edit_product'),
+    path('admin/delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
+
+
     
 ]
 

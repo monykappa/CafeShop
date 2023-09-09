@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Product</title>
+    <!-- Include Bootstrap CSS (You should have Bootstrap installed and configured) -->
+    <link rel="stylesheet" href="path-to-bootstrap-css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for responsiveness and styling */
+        body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Adjust styles as needed */
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-4">Edit Product: Hot Latte</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ product.product_name }}">
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" class="form-control">
+                    {% for category_id, category_name in categories %}
+                    <option value="{{ category_id }}" {% if category_id == product.category %}selected{% endif %}>
+                        {{ category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+
+            {% for size in product.sizes.all %}
+            <div class="form-group">
+                <label for="size_{{ size.id }}">{{ size.size.get_size_display }}:</label>
+                $
+                <input type="text" id="size_{{ size.id }}" name="size_{{ size.id }}" class="form-control"
+                    value="{{ size.price }}">
+            </div>
+            {% endfor %}
+
+
+
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label for="image">New Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery (You should have Bootstrap installed and configured) -->
+    <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
+    <script src="path-to-jquery/jquery.min.js"></script>
+</body>
+
+</html>
