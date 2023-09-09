@@ -69,34 +69,12 @@
             <a href="{% url 'menu:drink_details' product_id=product_group.id %}" class="a-block">
                 <div class="block1">
                     <div class="b1p1">
-                        <img src="{{ product_group.sizes.0.images.first.image.url }}" alt="{{ product_group.product_name }}">
+                        <img src="{{ product_group.sizes.0.images.url }}" alt="{{ product_group.product_name }}">
                         <h3>{{ product_group.product_name }}</h3>
-                        <p>Available Sizes and Prices:</p>
-                        <ul>
-                            {% for size in product_group.sizes %}
-                                <li>
-                                    {{ size.size}} - ${{ size.price }}
-                                </li>
-                            {% endfor %}
-                        </ul>
                     </div>
                 </div>
             </a>
         {% endfor %}
     </div>
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-
-
 
 {% endblock content %}

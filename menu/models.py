@@ -53,16 +53,24 @@ class Size(models.Model):
 class AddProduct(models.Model):
     product_name = models.CharField(max_length=100, null=True, blank=True)
     category = models.CharField(max_length=100, choices=category, null=True, blank=True)
-    sizes = models.ManyToManyField(Size, blank=True)
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
 
     def __str__(self):
-        sizes_str = ", ".join(str(size) for size in self.sizes.all())
-        return f"{self.product_name} - Sizes: {sizes_str} - Price: ${self.price:.2f}"
+        return self.product_name
 
-class ProductImage(models.Model):
-    product = models.ForeignKey(AddProduct, related_name='images', on_delete=models.CASCADE)
-    image = models.FileField(blank=True, upload_to=menu_directory_path, validators=[validate_file_extension])
+class ProductSize(models.Model):
+    product = models.ForeignKey(AddProduct, related_name='sizes', on_delete=models.CASCADE, null=True, blank=True)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE,null=True, blank=True)
+    price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, null=True, blank=True)
+    images = models.FileField(upload_to=menu_directory_path, validators=[validate_file_extension], blank=True)
+
+    def __str__(self):
+        return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
+
+
+    def __str__(self):
+        return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
+
+
 
 class OrderDetail(models.Model):
     product = models.ForeignKey(AddProduct, on_delete=models.CASCADE, null=True, blank=True)

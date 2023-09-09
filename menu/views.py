@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from .models import OrderDetail
 import logging
-from .models import AddProduct, Size
+from .models import AddProduct, Size, ProductSize
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -36,10 +36,10 @@ def menu(request):
         if product.product_name not in grouped_products:
             grouped_products[product.product_name] = {
                 'id': product.id,
-                'product_name': product.product_name,  # Add this line to store the product name
+                'product_name': product.product_name,
                 'sizes': [],
             }
-        grouped_products[product.product_name]['sizes'].append(product)
+        grouped_products[product.product_name]['sizes'].append(product.sizes.first())
 
     return render(request, 'Orderfolder/orderpage.html', {'grouped_products': grouped_products})
 

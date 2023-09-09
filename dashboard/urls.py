@@ -11,6 +11,7 @@ from dashboard.views import *
 app_name = 'dashboard'
 urlpatterns = [
     re_path('^dashboard/$', dashboard_view.dashboard, name='dashboard'),
+    
 ]
 
 if settings.DEBUG:

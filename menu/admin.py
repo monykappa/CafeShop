@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Size, AddProduct, OrderDetail, ProductImage  
+from .models import Size, AddProduct, OrderDetail, ProductSize  # Import ProductSize, not ProductImage
 
 admin.site.register(Size)
 admin.site.register(OrderDetail)
@@ -14,10 +14,6 @@ class ProductPriceAdmin(admin.ModelAdmin):
         return f"${obj.price:.2f}"
 
     formatted_price.short_description = 'Price'
-
-class ProductImageInline(admin.TabularInline):
-    model = ProductImage
-    extra = 1
 
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('display_image', 'product_name', 'image_name', 'product_category')
@@ -46,6 +42,9 @@ class ProductImageAdmin(admin.ModelAdmin):
     image_name.short_description = 'Image Name'
     product_category.short_description = 'Product Category'
 
+class ProductImageInline(admin.TabularInline):
+    model = ProductSize  # Use ProductImage for the inline
+
 class AddProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'category', 'display_sizes', 'display_price', 'display_image')
     list_filter = ('category',)
@@ -54,21 +53,22 @@ class AddProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]  # Add the inline for ProductImage
 
     def display_sizes(self, obj):
-        return ', '.join([size.size for size in obj.sizes.all()])
+        return ', '.join([size.size.get_size_display() for size in obj.sizes.all()])
 
     def display_price(self, obj):
-        return f"${obj.price}"
-    display_price.short_description = 'Price'
+        return f"${obj.sizes.first().price:.2f}" if obj.sizes.exists() else "N/A"
 
     def display_image(self, obj):
         # Retrieve the first image associated with the product
-        product_images = obj.images.all()
-        if product_images:
-            first_image = product_images[0]
-            return format_html(
-                '<img src="{}" style="border-radius: 5px; width: 100px; height: 100px; object-fit: cover;" />',
-                first_image.image.url
-            )
+        product_sizes = obj.sizes.all()
+        if product_sizes:
+            first_product_size = product_sizes[0]
+            if first_product_size.images:
+                first_image = first_product_size.images.url
+                return format_html(
+                    '<img src="{}" style="border-radius: 5px; width: 100px; height: 100px; object-fit: cover;" />',
+                    first_image
+                )
         return "No Image"
 
     display_image.allow_tags = True
@@ -77,4 +77,4 @@ class AddProductAdmin(admin.ModelAdmin):
     display_sizes.short_description = 'Sizes'
 
 admin.site.register(AddProduct, AddProductAdmin)
-admin.site.register(ProductImage, ProductImageAdmin)
+admin.site.register(ProductSize, ProductPriceAdmin)  # Register ProductSize with ProductPriceAdmin
