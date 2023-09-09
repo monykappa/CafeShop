@@ -103,28 +103,45 @@ def hot_drinks(request):
     return render(request, 'Orderfolder/hot_drinks.html', {'hot_products_page': hot_products_page})
 
 def frappe_drinks(request):
-    # Get all products with 'frappe' in the product name
+    # Get all products with 'milkshake' or 'frappe' in the product name
+    milkshake_products = AddProduct.objects.filter(product_name__icontains='milkshake')
     frappe_products = AddProduct.objects.filter(product_name__icontains='frappe')
-    
-    grouped_frappe_products = {}
 
-    # Group frappe products by name
-    for product in frappe_products:
-        if product.product_name not in grouped_frappe_products:
-            grouped_frappe_products[product.product_name] = {
+    grouped_drinks = {}
+
+    # Group milkshake products by name
+    for product in milkshake_products:
+        if product.product_name not in grouped_drinks:
+            grouped_drinks[product.product_name] = {
                 'id': product.id,
                 'product_name': product.product_name,
                 'sizes': [],
             }
-        grouped_frappe_products[product.product_name]['sizes'].append(product.sizes.first())
+        grouped_drinks[product.product_name]['sizes'].append(product.sizes.first())
+
+    # Group frappe products by name
+    for product in frappe_products:
+        if product.product_name not in grouped_drinks:
+            grouped_drinks[product.product_name] = {
+                'id': product.id,
+                'product_name': product.product_name,
+                'sizes': [],
+            }
+        grouped_drinks[product.product_name]['sizes'].append(product.sizes.first())
+
+    drinks = list(grouped_drinks.values())
+
+    # Check if there are any drinks available
+    if not drinks:
+        return render(request, 'Orderfolder/no_drinks.html')
 
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_frappe_products.values()), 5)  # Show 5 products per page
+    paginator = Paginator(drinks, 5)  # Show 5 products per page
 
     page = request.GET.get('page')
-    frappe_products_page = paginator.get_page(page)
+    drinks_page = paginator.get_page(page)
 
-    return render(request, 'Orderfolder/frappe_drinks.html', {'frappe_products_page': frappe_products_page})
+    return render(request, 'Orderfolder/frappe_drinks.html', {'drinks_page': drinks_page})
 
 
 # def select_size_view(request, product_id):

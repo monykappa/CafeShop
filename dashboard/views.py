@@ -5,13 +5,14 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from menu.models import AddProduct
+from menu.models import AddProduct, ProductSize, Size
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 import json
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Q 
 
 @login_required
 def dashboard(request):
@@ -19,11 +20,11 @@ def dashboard(request):
     products = AddProduct.objects.all()
     hot_drinks_count = AddProduct.objects.filter(product_name__icontains='Hot').count()
     iced_drinks_count = AddProduct.objects.filter(product_name__icontains='Iced').count()
-    frappe_drinks_count = AddProduct.objects.filter(product_name__icontains='Frappe').count()
-
+    frappe_drinks_count = AddProduct.objects.filter(
+        Q(product_name__icontains='Frappe') | Q(product_name__icontains='Milkshake')
+    ).count()
 
     total_drinks_count = products.count()  # Total count of all drinks
-
 
     context = {
         'products': products,
@@ -53,6 +54,7 @@ def dashboard(request):
     context['products'] = products
 
     return render(request, 'dashboard/admin/dashboard.html', context)
+
 
 
 
@@ -102,4 +104,34 @@ def delete_product(request, product_id):
     except Exception as e:
         return JsonResponse({'error': f'Error deleting product: {str(e)}'})
 
+def add_new_product_view(request):
+    sizes = Size.objects.all()  # Retrieve all size choices from the database
+    # Retrieve category choices from the model
+    category_choices = [(choice, choice) for choice, _ in AddProduct._meta.get_field('category').choices]
 
+    if request.method == 'POST':
+        product_name = request.POST.get('product_name')
+        category = request.POST.get('category')
+
+        # Create a new product using the data
+        new_product = AddProduct(product_name=product_name, category=category)
+        new_product.save()
+
+        # Handle multiple sizes, prices, and images
+        for size in sizes:
+            size_id = request.POST.get(f'size_{size.id}')
+            price = request.POST.get(f'price_{size.id}')
+            image = request.FILES.get(f'image_{size.id}')
+
+            if size_id and price:
+                # Retrieve the Size instance based on the size_id
+                size_instance = Size.objects.get(id=size_id)
+
+                # Create the ProductSize instance with the Size instance
+                product_size = ProductSize(product=new_product, size=size_instance, price=price, images=image)
+                product_size.save()
+
+        return redirect('dashboard:dashboard')  # Redirect to the dashboard home page
+
+    context = {'sizes': sizes, 'category_choices': category_choices}
+    return render(request, 'dashboard/admin/addproduct.html', context)
