@@ -18,6 +18,9 @@ from django.shortcuts import render, get_object_or_404
 from .models import OrderDetail
 import logging
 from .models import AddProduct, Size, ProductSize
+from django.core.paginator import Paginator
+
+
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -41,20 +44,94 @@ def menu(request):
             }
         grouped_products[product.product_name]['sizes'].append(product.sizes.first())
 
-    return render(request, 'Orderfolder/orderpage.html', {'grouped_products': grouped_products})
+    # Create a Paginator instance
+    paginator = Paginator(list(grouped_products.values()), 6)  # Show 5 products per page
+
+    page = request.GET.get('page')
+    grouped_products_page = paginator.get_page(page)
+
+    return render(request, 'Orderfolder/orderpage.html', {'grouped_products_page': grouped_products_page})
+
+def iced_drinks(request):
+    # Get all products with 'iced' in the product name
+    iced_products = AddProduct.objects.filter(product_name__icontains='iced')
+    
+    grouped_iced_products = {}
+
+    # Group iced products by name
+    for product in iced_products:
+        if product.product_name not in grouped_iced_products:
+            grouped_iced_products[product.product_name] = {
+                'id': product.id,
+                'product_name': product.product_name,
+                'sizes': [],
+            }
+        grouped_iced_products[product.product_name]['sizes'].append(product.sizes.first())
+
+    # Create a Paginator instance
+    paginator = Paginator(list(grouped_iced_products.values()), 5)  # Show 5 products per page
+
+    page = request.GET.get('page')
+    iced_products_page = paginator.get_page(page)
+
+    return render(request, 'Orderfolder/iced_drinks.html', {'iced_products_page': iced_products_page})
+
+def hot_drinks(request):
+    # Get all products with 'hot' in the product name
+    hot_products = AddProduct.objects.filter(product_name__icontains='hot')
+    
+    grouped_hot_products = {}
+
+    # Group hot products by name
+    for product in hot_products:
+        if product.product_name not in grouped_hot_products:
+            grouped_hot_products[product.product_name] = {
+                'id': product.id,
+                'product_name': product.product_name,
+                'sizes': [],
+            }
+        grouped_hot_products[product.product_name]['sizes'].append(product.sizes.first())
+
+    # Create a Paginator instance
+    paginator = Paginator(list(grouped_hot_products.values()), 5)  # Show 5 products per page
+
+    page = request.GET.get('page')
+    hot_products_page = paginator.get_page(page)
+
+    return render(request, 'Orderfolder/hot_drinks.html', {'hot_products_page': hot_products_page})
+
+def frappe_drinks(request):
+    # Get all products with 'frappe' in the product name
+    frappe_products = AddProduct.objects.filter(product_name__icontains='frappe')
+    
+    grouped_frappe_products = {}
+
+    # Group frappe products by name
+    for product in frappe_products:
+        if product.product_name not in grouped_frappe_products:
+            grouped_frappe_products[product.product_name] = {
+                'id': product.id,
+                'product_name': product.product_name,
+                'sizes': [],
+            }
+        grouped_frappe_products[product.product_name]['sizes'].append(product.sizes.first())
+
+    # Create a Paginator instance
+    paginator = Paginator(list(grouped_frappe_products.values()), 5)  # Show 5 products per page
+
+    page = request.GET.get('page')
+    frappe_products_page = paginator.get_page(page)
+
+    return render(request, 'Orderfolder/frappe_drinks.html', {'frappe_products_page': frappe_products_page})
 
 
+# def select_size_view(request, product_id):
+#     product = get_object_or_404(AddProduct, pk=product_id)
 
+#     # You can retrieve the available sizes and prices for this product here
+#     # and pass them to the template
 
-
-
-def select_size_view(request, product_id):
-    product = get_object_or_404(AddProduct, pk=product_id)
-
-    # You can retrieve the available sizes and prices for this product here
-    # and pass them to the template
-
-    return render(request, 'menu/select_size.html', {'product': product})
+#     return render(request, 'menu/select_size.html', {'product': product})
 
 def order_detail_list(request):
     if request.method == 'POST':

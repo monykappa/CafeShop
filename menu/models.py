@@ -67,9 +67,6 @@ class ProductSize(models.Model):
         return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
 
 
-    def __str__(self):
-        return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
-
 
 
 class OrderDetail(models.Model):

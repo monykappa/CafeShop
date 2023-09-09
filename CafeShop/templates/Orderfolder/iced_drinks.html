@@ -91,7 +91,7 @@
 <hr>
 
 <div class="orderpl">
-    {% for product_group in grouped_products_page %}
+    {% for product_group in iced_products_page %}
     <a href="{% url 'menu:drink_details' product_id=product_group.id %}" class="a-block">
         <div class="block1">
             <div class="b1p1">
@@ -103,6 +103,7 @@
     </a>
     {% endfor %}
 </div>
+
 
 <!-- Pagination links -->
 <div class="pagination">

@@ -12,7 +12,7 @@ app_name = 'dashboard'
 urlpatterns = [
     re_path('^dashboard/$', dashboard_view.dashboard, name='dashboard'),
     path('products/edit/<int:product_id>/', views.edit_product, name='edit_product'),
-    path('admin/delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
 
 
     

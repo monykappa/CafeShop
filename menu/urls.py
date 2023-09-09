@@ -17,6 +17,10 @@ urlpatterns = [
     path('drink_details/<int:product_id>/', views.drink_details, name='drink_details'),
     path('order-details/', views.order_detail_list, name='order_detail_list'),
     path('order-details/<int:order_detail_id>/', views.order_detail_detail, name='order_detail_detail'),
+    path('iced-drinks/', views.iced_drinks, name='IcedDrink'),
+    path('hot-drinks/', views.hot_drinks, name='HotDrink'),
+    path('frappe-drinks/', views.frappe_drinks, name='FrappeDrink'),
+
 ]
 
 

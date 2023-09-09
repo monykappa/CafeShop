@@ -22,8 +22,9 @@
 <body>
     <div class="container">
         <h1 class="mt-4">Edit Product: Hot Latte</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+        <form method="post" enctype="multipart/form-data"
+        action="{% url 'dashboard:edit_product' product.id %}">
+        {% csrf_token %}
 
             <!-- Product Name -->
             <div class="form-group">
@@ -62,13 +63,26 @@
                 <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
             </div>
 
-            <button type="submit" class="btn btn-primary">Save</button>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ products.number }}">
+                <!-- Add other form fields for editing product details -->
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+            
         </form>
     </div>
 
     <!-- Include Bootstrap JS and jQuery (You should have Bootstrap installed and configured) -->
-    <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
     <script src="path-to-jquery/jquery.min.js"></script>
+    <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
+    
+    <script>
+        function goBack() {
+            // Use window.history to navigate back to the previous page
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>

@@ -131,16 +131,27 @@
                 </div>
             </nav>
 
+            
             <!-- Main Content Area -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <!-- Display all products -->
                 <h1>Welcome to the Dashboard</h1>
                 <h2>All Products</h2>
+                <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                        <!-- Display total drink counts -->
+                        <h5>Total Drinks</h5>
+                        <ul>
+                            <li>Hot Drinks: {{ hot_drinks_count }}</li>
+                            <li>Iced Drinks: {{ iced_drinks_count }}</li>
+                            <li>Frappe Drinks: {{ frappe_drinks_count }}</li>
+                        </ul>
+                    </div>
+                </aside>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Product Name</th>
+                                <th>Drinks Name</th>
                                 <th>Category</th>
                                 <th>Size</th>
                                 <th>Price</th>
@@ -168,9 +179,10 @@
                                 <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
                                     <!-- Edit button -->
                                     <div>
-                                        <a href="{% url 'dashboard:edit_product' product.id %}"
+                                        <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
                                             class="btn btn-primary btn-sm btn-edit">Edit</a>
                                     </div>
+
                 </div>
                 <!-- Delete button with confirmation -->
                 <div>
@@ -192,6 +204,7 @@
                 </tbody>
                 </table>
         </div>
+        
 
 
         <!-- Pagination -->
@@ -211,6 +224,7 @@
             </span>
         </div>
         </main>
+        
     </div>
     </div>
 
@@ -219,23 +233,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        var csrfToken = "{{ csrf_token }}";
-    </script>
-    <script>
         function confirmDelete(productName, productId) {
-            var csrfToken = $('#csrf-token').val(); // Get the CSRF token value from the hidden input field
+            var csrfToken = "{{ csrf_token }}"; // Get the CSRF token value from the template
             if (confirm(`Are you sure you want to delete ${productName}?`)) {
-                // User confirmed, send an AJAX request to delete the product
                 $.ajax({
-                    url: `/admin/delete_product/${productId}/`, // Include the productId in the URL
+                    url: `/menu/delete_product/${productId}/`,
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: csrfToken,
                     },
-                    success: function () {
-                        // Optionally, you can update the UI here (e.g., remove the deleted product row)
-                        alert(`${productName} has been deleted.`);
-                        location.reload(); // Reload the page to reflect the changes
+                    success: function (data) {
+                        if (data.message) {
+                            alert(data.message);
+                            location.reload(); // Reload the page to reflect the changes
+                        } else if (data.error) {
+                            alert(data.error);
+                        }
                     },
                     error: function () {
                         alert('An error occurred while deleting the product.');
@@ -243,8 +256,8 @@
                 });
             }
         }
-
     </script>
+    
 
 
 

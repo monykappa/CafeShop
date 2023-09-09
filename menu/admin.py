@@ -46,17 +46,15 @@ class ProductImageInline(admin.TabularInline):
     model = ProductSize  # Use ProductImage for the inline
 
 class AddProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'category', 'display_sizes', 'display_price', 'display_image')
+    list_display = ('product_name', 'category', 'display_price', 'display_image')
     list_filter = ('category',)
     search_fields = ('product_name', 'category__name')
     
     inlines = [ProductImageInline]  # Add the inline for ProductImage
 
-    def display_sizes(self, obj):
-        return ', '.join([size.size.get_size_display() for size in obj.sizes.all()])
-
     def display_price(self, obj):
-        return f"${obj.sizes.first().price:.2f}" if obj.sizes.exists() else "N/A"
+        sizes_and_prices = [f"{size.size.get_size_display()}: ${size.price:.2f}" for size in obj.sizes.all()]
+        return ', '.join(sizes_and_prices) if sizes_and_prices else "N/A"
 
     def display_image(self, obj):
         # Retrieve the first image associated with the product
@@ -74,7 +72,6 @@ class AddProductAdmin(admin.ModelAdmin):
     display_image.allow_tags = True
     display_image.short_description = 'Image'
 
-    display_sizes.short_description = 'Sizes'
 
 admin.site.register(AddProduct, AddProductAdmin)
 admin.site.register(ProductSize, ProductPriceAdmin)  # Register ProductSize with ProductPriceAdmin
