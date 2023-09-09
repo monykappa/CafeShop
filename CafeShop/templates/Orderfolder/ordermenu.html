@@ -557,6 +557,13 @@
     color:var(--second-color);
     margin:7px 10px 0 0;
   }
+  li a.category-drinks{
+    transition: 0.5s ease;
+  }
+  li a.category-drinks:hover{
+    color:var(--second-color);
+    text-decoration: underline;
+  }
 </style>
 
 <body>
@@ -626,9 +633,9 @@
       <li><a href="{% url 'menu:menu' %}">
           <h1>Drinks</h1>
         </a></li>
-        <li><a href="{% url 'menu:IcedDrink' %}">Iced Drinks</a></li>
-        <li><a href="{% url 'menu:HotDrink' %}">Hot Drinks</a></li>
-        <li><a href="{% url 'menu:FrappeDrink' %}">Frappe Drinks</a></li>
+        <li><a href="{% url 'menu:IcedDrink' %}" class="category-drinks">Iced Drinks</a></li>
+        <li><a href="{% url 'menu:HotDrink' %}" class="category-drinks">Hot Drinks</a></li>
+        <li><a href="{% url 'menu:FrappeDrink' %}"class="category-drinks">Frappe Drinks</a></li>
         
 
     </ul>

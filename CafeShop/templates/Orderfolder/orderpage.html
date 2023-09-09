@@ -83,12 +83,39 @@
         background-color: lightskyblue;
         color: black;
     }
+    .col-md-4{
+        border:0px solid grey;
+        padding:10px;
+    }
+    label{
+        color:var(--second-color);
+        font-family: var(--primary-font);
+        margin:0 0 10px 18px;
+    }
+    input#drinkSearch{
+        font-family: var(--secondary-font);
+        font-size: 12px;
+        border:1px solid var(--second-color);
+        border-radius: 15px;
+    }
+    h3.drinks-name{
+        font-family: var(--primary-font);
+        font-size: 22px;
+    }
 
 </style>
 
 <h1>Menu</h1>
 <h2>Drinks</h2>
+<div class="col-md-4 col-lg-3">
+    <div class="form-group">
+        <label for="drinkSearch">Search for Drinks:</label>
+        <input type="text" class="form-control" id="drinkSearch" name="drinkSearch" placeholder="Enter drink name">
+    </div>
+</div>
 <hr>
+
+
 
 <div class="orderpl">
     {% for product_group in grouped_products_page %}
@@ -97,7 +124,7 @@
             <div class="b1p1">
                 <img src="{{ product_group.sizes.0.images.url }}" alt="{{ product_group.product_name }}"
                     class="drink-image">
-                <h3>{{ product_group.product_name }}</h3>
+                <h3 class="drinks-name">{{ product_group.product_name }}</h3>
             </div>
         </div>
     </a>
@@ -120,6 +147,34 @@
         {% endif %}
     </span>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#drinkSearch").on("keyup", function() {
+            performSearch();
+        });
+
+        function performSearch() {
+            var searchText = $("#drinkSearch").val().toLowerCase();
+            $(".b1p1").each(function() {
+                var productName = $(this).find("h3").text().toLowerCase();
+                if (productName.includes(searchText)) {
+                    $(this).parent().parent().show();
+                } else {
+                    $(this).parent().parent().hide();
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+
+
+
 
 
 {% endblock content %}

@@ -21,6 +21,7 @@ urlpatterns = [
     path('hot-drinks/', views.hot_drinks, name='HotDrink'),
     path('frappe-drinks/', views.frappe_drinks, name='FrappeDrink'),
 
+
 ]
 
 

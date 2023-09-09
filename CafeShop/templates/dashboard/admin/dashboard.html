@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>
+    
     a.go-back-btn {
         margin: 10vh 0 0 2vh;
         background-color: blue;
@@ -77,6 +78,14 @@
         background-color: lightcoral;
         color: black;
     }
+
+    aside {
+        border: 1px solid grey;
+        border-radius: 15px;
+        padding:10px;
+        width: 50%;
+        margin:10px 0 15px 20px;
+    }
 </style>
 
 <body>
@@ -131,105 +140,115 @@
                 </div>
             </nav>
 
-            
+
             <!-- Main Content Area -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <!-- Display all products -->
                 <h1>Welcome to the Dashboard</h1>
-                <h2>All Products</h2>
-                <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-                        <!-- Display total drink counts -->
-                        <h5>Total Drinks</h5>
+
+                <div class="row">
+                    <!-- Display total drink counts -->
+                    <aside class="col-md-4 col-lg-3 d-md-block bg-light sidebar">
+                        <h5>Total Drinks: {{ total_drinks_count }}</h5>
                         <ul>
                             <li>Hot Drinks: {{ hot_drinks_count }}</li>
                             <li>Iced Drinks: {{ iced_drinks_count }}</li>
                             <li>Frappe Drinks: {{ frappe_drinks_count }}</li>
                         </ul>
+                    </aside>
+
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="drinkSearch">Search for Drinks:</label>
+                            <input type="text" class="form-control" id="drinkSearch" name="drinkSearch" placeholder="Enter drink name">
+                        </div>
                     </div>
-                </aside>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Drinks Name</th>
-                                <th>Category</th>
-                                <th>Size</th>
-                                <th>Price</th>
-                                <th>Image</th>
-                                <th>Action</th> <!-- New "Action" column -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for product in products %}
-                            {% for size in product.sizes.all %}
-                            <tr>
-                                {% if forloop.first %}
-                                <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}
-                                </td>
-                                <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
-                                <td>{{ size.size.get_size_display }}</td>
-                                <td>${{ size.price }}</td>
-                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                    {% if size.images %}
-                                    <img src="{{ size.images.url }}"
-                                        alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
-                                        style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
-                                    {% endif %}
-                                </td>
-                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                    <!-- Edit button -->
-                                    <div>
-                                        <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
-                                            class="btn btn-primary btn-sm btn-edit">Edit</a>
-                                    </div>
+                    
+                    
 
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="product-table">
+                            <h2>All Products</h2>
+                            <thead>
+                                <tr>
+                                    <th>Drinks Name</th>
+                                    <th>Category</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                    <th>Image</th>
+                                    <th>Action</th> <!-- New "Action" column -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    {% for size in product.sizes.all %}
+                                            <tr data-name="{{ product.product_name }}">
+                                            {% if forloop.first %}
+                                                <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
+                                                <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
+                                                <td>{{ size.size.get_size_display }}</td>
+                                                <td>${{ size.price }}</td>
+                                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                                    {% if size.images %}
+                                                        <img src="{{ size.images.url }}"
+                                                            alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
+                                                            style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
+                                                    {% endif %}
+                                                </td>
+                                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                                    <!-- Edit button -->
+                                                    <div>
+                                                        <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
+                                                            class="btn btn-primary btn-sm btn-edit">Edit</a>
+                                                    </div>
+                                                    <!-- Delete button with confirmation -->
+                                                    <div>
+                                                        <button class="btn btn-danger btn-sm btn-delete"
+                                                            onclick="confirmDelete('{{ product.product_name }}', {{ product.id }})">Delete</button>
+                                                    </div>
+                                                </td>
+                                            {% else %}
+                                                <td>{{ size.size.get_size_display }}</td>
+                                                <td>${{ size.price }}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">No products available.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                <!-- Pagination -->
+                <div class="pagination justify-content-center">
+                    <span class="step-links">
+                        {% if products.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ products.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current-page">{{ products.number }}</span>
+
+                        {% if products.has_next %}
+                        <a href="?page={{ products.next_page_number }}">next</a>
+                        <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
                 </div>
-                <!-- Delete button with confirmation -->
-                <div>
-                    <button class="btn btn-danger btn-sm btn-delete"
-                        onclick="confirmDelete('{{ product.product_name }}', {{ product.id }})">Delete</button>
-                </div>
-                </td>
-                {% else %}
-                <td>{{ size.size.get_size_display }}</td>
-                <td>${{ size.price }}</td>
-                {% endif %}
-                </tr>
-                {% endfor %}
-                {% empty %}
-                <tr>
-                    <td colspan="6">No products available.</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-                </table>
+            </main>
+
         </div>
-        
-
-
-        <!-- Pagination -->
-        <div class="pagination justify-content-center">
-            <span class="step-links">
-                {% if products.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ products.previous_page_number }}">previous</a>
-                {% endif %}
-
-                <span class="current-page">{{ products.number }}</span>
-
-                {% if products.has_next %}
-                <a href="?page={{ products.next_page_number }}">next</a>
-                <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-        </main>
-        
-    </div>
     </div>
 
     <!-- Add Bootstrap JS and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
@@ -257,6 +276,32 @@
             }
         }
     </script>
+    <script>
+        $(document).ready(function() {
+            $("#drinkSearch").on("keyup", function() {
+                var searchText = $(this).val().toLowerCase();
+                $("#product-table tbody tr").each(function() {
+                    var productName = $(this).data("name").toLowerCase();
+                    if (productName.indexOf(searchText) === -1) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+            });
+        });
+        </script>
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
     
 
 

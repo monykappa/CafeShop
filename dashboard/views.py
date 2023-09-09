@@ -17,22 +17,21 @@ from django.urls import reverse
 def dashboard(request):
     # Retrieve all products from the database
     products = AddProduct.objects.all()
+    hot_drinks_count = AddProduct.objects.filter(product_name__icontains='Hot').count()
+    iced_drinks_count = AddProduct.objects.filter(product_name__icontains='Iced').count()
+    frappe_drinks_count = AddProduct.objects.filter(product_name__icontains='Frappe').count()
 
-    # Count the number of drinks in each category based on product names
-    hot_drinks_count = sum(1 for product in products if 'hot' in product.product_name.lower())
-    iced_drinks_count = sum(1 for product in products if 'iced' in product.product_name.lower())
-    frappe_drinks_count = sum(1 for product in products if 'frappe' in product.product_name.lower())
 
-    # Calculate the total drink count
-    total_drinks_count = len(products)
+    total_drinks_count = products.count()  # Total count of all drinks
 
 
     context = {
-    'products': products,
-    'hot_drinks_count': hot_drinks_count,
-    'iced_drinks_count': iced_drinks_count,
-    'frappe_drinks_count': frappe_drinks_count,
-}
+        'products': products,
+        'hot_drinks_count': hot_drinks_count,
+        'iced_drinks_count': iced_drinks_count,
+        'frappe_drinks_count': frappe_drinks_count,
+        'total_drinks_count': total_drinks_count,  # Add total drinks count to context
+    }
 
     # Create a Paginator instance
     paginator = Paginator(products, 5)  # Show 5 products per page
@@ -41,19 +40,20 @@ def dashboard(request):
     try:
         products = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver the first page.
+        # If page is not an integer, deliver first page.
         products = paginator.page(1)
     except EmptyPage:
-        # If page is out of range, deliver the last page of results.
+        # If page is out of range, deliver last page of results.
         products = paginator.page(paginator.num_pages)
 
     # Store the current page number in the session
     request.session['dashboard_current_page'] = products.number
 
-    # Pass the paginated products to the template context
+    # Pass the paginated products and the context to the template
     context['products'] = products
 
     return render(request, 'dashboard/admin/dashboard.html', context)
+
 
 
 
@@ -101,4 +101,5 @@ def delete_product(request, product_id):
         return JsonResponse({'message': 'Product deleted successfully'})
     except Exception as e:
         return JsonResponse({'error': f'Error deleting product: {str(e)}'})
+
 

@@ -19,6 +19,8 @@ from .models import OrderDetail
 import logging
 from .models import AddProduct, Size, ProductSize
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.db.models import Q
 
 
 
@@ -45,7 +47,7 @@ def menu(request):
         grouped_products[product.product_name]['sizes'].append(product.sizes.first())
 
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_products.values()), 6)  # Show 5 products per page
+    paginator = Paginator(list(grouped_products.values()), 20)  # Show 5 products per page
 
     page = request.GET.get('page')
     grouped_products_page = paginator.get_page(page)
