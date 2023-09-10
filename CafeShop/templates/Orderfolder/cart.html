@@ -5,7 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -15,6 +17,10 @@
     * {
         margin: 0;
         padding: 0;
+    }
+    body{
+        font-family: var(--primary-font);
+        font-weight: bold;
     }
 
     :root {
@@ -155,11 +161,10 @@
 
     .blockbodyahti2 .cofebox {
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 18px;
-        padding: 2% 0% 2% 2%;
         justify-content: space-around;
         max-height: 80vh;
         overflow-y: auto;
+    
     }
 
     /* Add media query for smaller screens */
@@ -182,21 +187,19 @@
         flex-wrap: wrap;
         background-color: white;
         justify-content: center;
-        /* Center horizontally */
-        gap: 30px;
+        gap: 35px;
 
     }
 
 
     .product-container {
-
-
         width: 25%;
-        /* Set width to 45% to display two items per row */
         margin-bottom: 2vh;
+
     }
     .cofebox{
         height: 500px;
+        border-radius: 20px;
 
     }
     .cofebox img {
@@ -214,10 +217,75 @@
 
     h1.product-name {
         color:var(--second-color);
-        margin-top: 1vh;
+        margin-top: 2vh;
+        text-align: center;
         font-family: var(--primary-font);
         font-size: 23px;
     }
+    i.fa-solid{
+        font-size: 10px;
+    }
+    p.product{
+        text-align: center;
+        padding:10px 0;
+    }
+    p.total-price{
+        color:var(--second-color);
+    }
+
+
+button.continue-button {
+    background-color: var(--second-color);
+    font-family: var(--second-font);
+    border-radius: 25px;
+    border: 1px solid black;
+    font-size: 20px;
+    color: black; /* Set the initial text color to black */
+    margin: 5vh 2vh 0 1vh;
+    padding: 10px 15px 25px 15px;
+    height: 50px;
+    float: right;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease; /* Added color transition */
+}
+
+button.continue-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: black; /* Change this color to match your design */
+    transition: left 0.5s ease;
+}
+
+button.continue-button:hover {
+    background-color: white; /* Change background color to white on hover */
+    color: white; /* Change text color to white on hover */
+}
+
+button.continue-button:hover::before {
+    left: 0;
+    background-color: white; /* Change background color of the swipe to black */
+    color:black;
+}
+
+
+
+    a.go-back-btn{
+        padding: 15px;
+        border-radius: 15px;
+        transition: 0.5s ease-in;
+    }
+    a.go-back-btn:hover{
+        background-color: black;
+    }
+    
+    
+    
 </style>
 
 <body>
@@ -228,9 +296,10 @@
                     <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
                         alt="Logo" />
                 </a>
-                <h1><a href="{% url 'menu:menu' %}">&lt; Back to menu</a></h1>
+                <h1><a href="#" onclick="history.go(-1); return false;" class="go-back-btn">&lt; Back to previous page</a></h1>
+
             </div>
-            <div class="tagbody">
+            <div class="tagbody"> 
                 <h1>Review Order ({{ order_details.count }})</h1><br>
                 <h2>For item availability</h2>
                 <h2><a href="{% url 'home:findus' %}">Choose a store &gt;</a></h2>
@@ -246,16 +315,10 @@
                             alt="{{ order_detail.product_size.product.product_name }}">
                         <div class="cofeinfo">
                             <h1 class="product-name">{{ order_detail.product_size.product.product_name }}</h1><br><br>
-                            <p style="font-size: 20px;">{{ order_detail.product_size.size }}</p>
-                            <p style="font-size: 20px;">Quantity: {{ order_detail.quantity }}</p>
-                            <p style="font-size: 25px;">${{ order_detail.total_price|floatformat:2 }}</p><br><br>
-                            <div class="boxicon">
-                                <i class="fa-solid fa-pencil"></i>
-                                <div class="addicon">
-                                    <i class="fa-solid fa-circle-minus"></i>
-                                    <i class="fa-solid fa-circle-plus"></i>
-                                </div>
-                            </div>
+                            <p style="font-size: 20px;" class="product product-size">{{ order_detail.product_size.size }}</p>
+                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{ order_detail.quantity }}</p>
+                            
+                            <p style="font-size: 25px;" class="product total-price">${{ order_detail.total_price|floatformat:2 }}</p><br><br>
                         </div>
                     </div>
                 </div>
@@ -267,8 +330,9 @@
             </div>
             {% endif %}
         </div>
-
+        <button class="continue-button">Continue</button>
     </div>
+    
 
     <footer>
         <div class="col">
