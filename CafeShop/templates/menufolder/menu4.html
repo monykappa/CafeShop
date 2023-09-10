@@ -20,65 +20,132 @@
     span.username {
         color: var(--second-color);
     }
-    footer{
-    width: 100vw;
 
-    padding: 4% 0% 6% 3%;
-}
-footer .col{
-    width: 100%;
-    border-top:1px solid #9B8888 ;
-    border-bottom:1px solid #9B8888 ;
-    display: flex;
-    padding: 4% 0% 6% 3%;
-    margin-bottom: 5px;
-}
-footer .col .col2{
-    margin-left: 5%;
-}
-footer .col .col3{
-    margin-left: 5%;
-}
-footer .col .col4{
-    margin-left: 5%;
-}
-footer .col .col5{
-    margin-left: 5%;
-}
+    footer {
+        width: 100vw;
 
-footer .col h2{
-    color: #A0522D;
-}
-footer .footericon {
-    display: flex;
-    margin-top: 2%;
-}
-footer .footericon img{
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+        padding: 4% 0% 6% 3%;
+    }
 
-    margin-left: 25px;
-}
-footer .footerlink ul{
-    list-style: none;
-    display: flex;
-    width: 100%;
-    margin-top: 4%;
-}
-footer .footerlink ul li a{
-    color:  black;
-    text-decoration: none;
-    margin-right: 25px;
-}
-footer p{
-    color: #A0522D;
-    margin-top: 4%;
-    margin-left: 25px;
-}
-p.welcome-message{
-    color:var(--second-color);
-}
+    footer .col {
+        width: 100%;
+        border-top: 1px solid #9B8888;
+        border-bottom: 1px solid #9B8888;
+        display: flex;
+        padding: 4% 0% 6% 3%;
+        margin-bottom: 5px;
+    }
+
+    footer .col .col2 {
+        margin-left: 5%;
+    }
+
+    footer .col .col3 {
+        margin-left: 5%;
+    }
+
+    footer .col .col4 {
+        margin-left: 5%;
+    }
+
+    footer .col .col5 {
+        margin-left: 5%;
+    }
+
+    footer .col h2 {
+        color: #A0522D;
+    }
+
+    footer .footericon {
+        display: flex;
+        margin-top: 2%;
+    }
+
+    footer .footericon img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+
+        margin-left: 25px;
+    }
+
+    footer .footerlink ul {
+        list-style: none;
+        display: flex;
+        width: 100%;
+        margin-top: 4%;
+    }
+
+    footer .footerlink ul li a {
+        color: black;
+        text-decoration: none;
+        margin-right: 25px;
+    }
+
+    footer p {
+        color: #A0522D;
+        margin-top: 4%;
+        margin-left: 25px;
+    }
+
+    p.welcome-message {
+        color: var(--second-color);
+    }
+
+    .cart-icon {
+        position: relative;
+    }
+
+    .cart-dot {
+        position: absolute;
+        top: 5px;
+        /* Adjust the top position as needed */
+        right: 5px;
+        /* Adjust the right position as needed */
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    a.cart-icon {
+        border-radius: 20px;
+        width: 110px;
+        transition: 0.5s ease;
+
+    }
+
+    a.cart-icon:hover {
+        background-color: var(--second-color);
+
+    }
+
+    span.cart-count {
+        transition: 0.5s ease;
+        color: white;
+        background-color: red;
+        border-radius: 50%;
+    }
+
+    span.cart-count:hover {
+        color: white;
+    }
+
+    a.cart-icon img.cart-image-hover {
+        display: none;
+
+    }
+
+    a.cart-icon:hover img.cart-image {
+        display: none;
+
+    }
+
+    a.cart-icon:hover img.cart-image-hover {
+        display: inline;
+
+    }
 </style>
 
 <body>
@@ -95,15 +162,15 @@ p.welcome-message{
             <div class="collapse navbar-collapse" id="navbarItems">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if user.is_authenticated %}
-                        <!-- If the user is logged in, take them to 'home:home' -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home:home' %}">Home</a>
-                        </li>
+                    <!-- If the user is logged in, take them to 'home:home' -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home:home' %}">Home</a>
+                    </li>
                     {% else %}
-                        <!-- If the user is not logged in, take them to 'home:index' -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-                        </li>
+                    <!-- If the user is not logged in, take them to 'home:index' -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home:index' %}">Home</a>
+                    </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
@@ -112,26 +179,36 @@ p.welcome-message{
                         <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
                     </li>
                     {% if user.is_superuser %}
-                        <!-- Show the Dashboard link only for superusers -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
-                        </li>
+                    <!-- Show the Dashboard link only for superusers -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
             <div class="d-flex">
                 {% if user.is_authenticated %}
-                    <p class="welcome-message">{{ user.username }}</p>
-                    <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+                <p class="welcome-message">{{ user.username }}</p>
+                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
                 {% else %}
-                    <a href="{% url 'userprofile:signin' %}" class="btn btn-primary btn-signin">Sign In</a>
-                    <a href="{% url 'userprofile:signup' %}" class="btn btn-success btn-signup">Sign Up</a>  
+                <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
+                <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
                 {% endif %}
                 <a href="{% url 'home:findus' %}" class="btn">Find us</a>
             </div>
+            <a href="{% url 'menu:cart' %}" class="cart-icon">
+                <span class="cart-icon-svg">
+                    <img src="{% static 'image/logo/icons8-cart-48 brown.png' %}" alt="Cart Icon" class="cart-image">
+                    <img src="{% static 'image/logo/icons8-cart-48 white.png' %}" alt="Cart Icon"
+                        class="cart-image-hover">
+                </span>
+                {% if cart_count > 0 %}
+                <span class="badge badge-pill badge-danger cart-count">{{ cart_count }}</span>
+                {% endif %}
+            </a>
         </div>
     </nav>
-    
+
 
     <!-- /main body -->
 
@@ -267,6 +344,18 @@ p.welcome-message{
     <script src="{% static 'js/scripts.js' %}"></script>
 
     <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const redDot = document.getElementById('red-dot');
+
+            // Check if there are products in the order
+            const cartCount = parseInt("{{ cart_count }}");
+            if (cartCount === 0) {
+                redDot.style.display = 'none';
+            }
+        });
+    </script>
     {% block content %}{% endblock content %}
 </body>
 

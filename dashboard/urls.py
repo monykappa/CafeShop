@@ -11,9 +11,11 @@ from dashboard.views import *
 app_name = 'dashboard'
 urlpatterns = [
     re_path('^dashboard/$', dashboard_view.dashboard, name='dashboard'),
-    path('products/edit/<int:product_id>/', views.edit_product, name='edit_product'),
+    path('edit_product/<int:product_id>/', views.edit_product, name='edit_product'),
     path('delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
     path('add_new_product/', views.add_new_product_view, name='add-new-product'),
+    path('order-detail/', views.order_detail_view, name='order_detail'),
+
 
 
 

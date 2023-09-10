@@ -22,15 +22,28 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib import messages
+from django.utils import timezone
+
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
+
 def cart(request):
     # Retrieve the user's order details and pass them to the template
     order_details = OrderDetail.objects.all()  # You may need to filter based on the user
     return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+
+def cart_view(request):
+    if request.user.is_authenticated:
+        # Retrieve order details associated with the user
+        order_details = OrderDetail.objects.filter(user=request.user)
+
+        return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+    else:
+        # Handle the case where the user is not authenticated
+        return HttpResponse("You must be signed in to view your cart.", status=401)
 
 
 def add_to_order(request):
@@ -55,8 +68,12 @@ def add_to_order(request):
                 # Save the order detail
                 order_detail.save()
 
-                # Redirect the user to a success page or another appropriate page
-                return redirect('menu:menu')  # You can change the redirect URL as needed
+                # Update the timestamp for the order detail after saving
+                order_detail.order_time = timezone.now()
+                order_detail.save()
+
+                # Redirect the user to the 'menu' page
+                return redirect('menu:menu')  # Redirect to the 'menu' page
 
             except ProductSize.DoesNotExist:
                 # Handle the case where the selected product size does not exist
@@ -66,9 +83,10 @@ def add_to_order(request):
             # Handle the case where the user is not authenticated
             return HttpResponse("You must be signed in to add to your order.", status=401)
 
-
     # Handle GET requests or other cases
     return HttpResponse("Invalid request.", status=400)
+
+
 
 def drink_details(request, product_id):
     product = get_object_or_404(AddProduct, id=product_id)
@@ -86,14 +104,12 @@ def drink_details(request, product_id):
 
 
 def menu_view(request):
-    # Calculate cart count (assuming user is authenticated)
-    cart_count = OrderDetail.objects.filter(user=request.user).count()
-    print("Cart Count:", cart_count)  # Add this line for debugging
-    
-    # Your other view logic here
-    
-    return render(request, 'menu/menu.html', {'cart_count': cart_count})
+    if request.user.is_authenticated:
+        cart_count = OrderDetail.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0
 
+    return render(request, 'Orderfolder/orderpage.html', {'cart_count': cart_count})
 
 def menu(request):
     products = AddProduct.objects.all()
@@ -109,14 +125,19 @@ def menu(request):
             }
         grouped_products[product.product_name]['sizes'].append(product.sizes.first())
 
+    # Calculate cart count for the current user
+    if request.user.is_authenticated:
+        cart_count = OrderDetail.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0  # User is not authenticated, cart count is 0
+
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_products.values()), 20)  # Show 5 products per page
+    paginator = Paginator(list(grouped_products.values()), 20)  # Show 20 products per page
 
     page = request.GET.get('page')
     grouped_products_page = paginator.get_page(page)
 
-    return render(request, 'Orderfolder/orderpage.html', {'grouped_products_page': grouped_products_page})
-
+    return render(request, 'Orderfolder/orderpage.html', {'grouped_products_page': grouped_products_page, 'cart_count': cart_count})
 def iced_drinks(request):
     # Get all products with 'iced' in the product name
     iced_products = AddProduct.objects.filter(product_name__icontains='iced')

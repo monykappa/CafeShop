@@ -72,6 +72,7 @@ class OrderDetail(models.Model):
     product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    order_time = models.DateTimeField(default=timezone.now)
 
     def calculate_total_price(self):
         if self.product_size is not None:

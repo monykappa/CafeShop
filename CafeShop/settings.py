@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'home',
     'userprofile',
     'menu',
@@ -76,10 +77,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'menu.context_processors.cart_count',
+
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'CafeShop.wsgi.application'
 
@@ -124,7 +128,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+
+
+USE_TZ = True
+
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 

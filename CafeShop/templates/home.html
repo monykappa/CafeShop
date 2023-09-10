@@ -57,6 +57,16 @@
                     <p class="welcome-message">Welcome, Guest</p>
                 {% endif %}
                 <a href="{% url 'home:findus' %}" class="btn">Find us</a>
+                <a href="{% url 'menu:cart' %}" class="cart-icon">
+                    <span class="cart-icon-svg">
+                        <img src="{% static 'image/logo/icons8-cart-48 brown.png' %}" alt="Cart Icon" class="cart-image">
+                        <img src="{% static 'image/logo/icons8-cart-48 white.png' %}" alt="Cart Icon"
+                            class="cart-image-hover">
+                    </span>
+                    {% if cart_count > 0 %}
+                    <span class="badge badge-pill badge-danger cart-count">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
             </div>
             
     </nav>

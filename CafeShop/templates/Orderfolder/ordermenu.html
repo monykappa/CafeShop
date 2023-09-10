@@ -570,8 +570,54 @@
     color: var(--second-color);
     text-decoration: underline;
   }
-</style>
+  .cart-icon {
+    position: relative;
+}
 
+.cart-dot {
+    position: absolute;
+    top: 5px; /* Adjust the top position as needed */
+    right: 5px; /* Adjust the right position as needed */
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+}
+a.cart-icon{
+  border-radius: 20px;
+  width:110px;
+  transition: 0.5s ease;
+
+}
+a.cart-icon:hover{
+  background-color: var(--second-color);
+
+}
+span.cart-count{
+  transition: 0.5s ease;
+  color: white;
+  background-color: red;
+  border-radius: 50%;
+}
+span.cart-count:hover{
+  color:white;
+}
+a.cart-icon img.cart-image-hover {
+        display: none;
+        
+    }
+
+    a.cart-icon:hover img.cart-image {
+        display: none;
+        
+    }
+
+    a.cart-icon:hover img.cart-image-hover {
+        display: inline;
+        
+    }
+</style>
 <body>
 
   <!-- menu -->
@@ -623,12 +669,14 @@
         <a href="{% url 'home:findus' %}" class="btn">Find us</a>
       </div>
       <a href="{% url 'menu:cart' %}" class="cart-icon">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="badge badge-pill badge-danger" style="color:red;">{{ cart_count }}</span>
-
+        <span class="cart-icon-svg">
+            <img src="{% static 'image/logo/icons8-cart-48 brown.png' %}" alt="Cart Icon" class="cart-image">
+            <img src="{% static 'image/logo/icons8-cart-48 white.png' %}" alt="Cart Icon" class="cart-image-hover">
+        </span>
+        {% if cart_count > 0 %}
+            <span class="badge badge-pill badge-danger cart-count">{{ cart_count }}</span>
+        {% endif %}
     </a>
-
-
     </div>
   </nav>
 
@@ -730,6 +778,18 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const redDot = document.getElementById('red-dot');
+
+        // Check if there are products in the order
+        const cartCount = parseInt("{{ cart_count }}");
+        if (cartCount === 0) {
+            redDot.style.display = 'none';
+        }
+    });
+</script>
+
 </body>
 
 </html>

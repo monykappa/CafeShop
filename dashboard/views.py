@@ -5,14 +5,16 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from menu.models import AddProduct, ProductSize, Size
+from menu.models import AddProduct, ProductSize, Size, OrderDetail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 import json
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse 
+from django.utils import timezone
 from django.db.models import Q 
+from django import forms
 
 @login_required
 def dashboard(request):
@@ -59,38 +61,23 @@ def dashboard(request):
 
 
 
+
+
 def edit_product(request, product_id):
-    # Get the product object based on the product_id
-    product = get_object_or_404(AddProduct, pk=product_id)
-
-    # Get the choices for the 'category' field directly from the model
-    categories = AddProduct._meta.get_field('category').choices
-
-    # Get the current page number from the session or default to 1
-    current_page = request.GET.get('page', request.session.get('dashboard_current_page', 1))
+    # Get the product based on the provided product_id
+    product = get_object_or_404(AddProduct, id=product_id)
 
     if request.method == 'POST':
-        # Update the product name, category, and size prices based on the form data
-        new_product_name = request.POST.get('name')
-        new_category = request.POST.get('category')
+        # Handle form submissions here if necessary
+        # ...
 
-        product.product_name = new_product_name
-        product.category = new_category
+        # After processing, you might want to redirect the user to a different page
+        # For example, after updating the product, you can redirect to the product list page
+        return redirect('dashboard:product_list')  # Replace 'product_list' with the name of your product list view
 
-        # Update the price for each size based on the form data
-        for size in product.sizes.all():
-            new_price = request.POST.get(f'size_{size.id}')
-            size.price = new_price
-            size.save()  # Save the updated size
+    # If it's a GET request, render the edit_product.html template with the product
+    return render(request, 'dashboard/admin/edit_product.html', {'product': product})
 
-        # Save the updated product name, category, and size prices
-        product.save()
-
-        # Redirect back to the dashboard with the stored page number
-        return HttpResponseRedirect(reverse('dashboard:dashboard') + f'?page={current_page}')
-
-    # Render the edit product page for GET requests, passing the categories to the template
-    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'categories': categories})
 
 
 def delete_product(request, product_id):
@@ -135,3 +122,18 @@ def add_new_product_view(request):
 
     context = {'sizes': sizes, 'category_choices': category_choices}
     return render(request, 'dashboard/admin/addproduct.html', context)
+
+def order_detail_view(request):
+    # Retrieve the order details and create a Paginator instance
+    current_time = timezone.localtime(timezone.now())
+    order_details = OrderDetail.objects.all()
+    paginator = Paginator(order_details, 10)  # Show 10 items per page
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page')
+
+    # Get the Page object for the current page
+    page = paginator.get_page(page_number)
+
+    return render(request, 'dashboard/admin/order_detail.html', {'order_details': page, 'current_time': current_time})
+

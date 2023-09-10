@@ -21,7 +21,7 @@ urlpatterns = [
     path('hot-drinks/', views.hot_drinks, name='HotDrink'),
     path('frappe-drinks/', views.frappe_drinks, name='FrappeDrink'),
     path('add_to_order/', views.add_to_order, name='add_to_order'),
-    path('cart/', views.cart, name='cart'),
+    path('cart/', views.cart_view, name='cart'),
 
 
 ]
