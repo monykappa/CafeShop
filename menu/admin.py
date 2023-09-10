@@ -77,6 +77,9 @@ class ProductImageInline(admin.TabularInline):
     model = ProductSize
 
 
+
+
+
 class AddProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'category', 'display_price', 'display_image')
     list_filter = ('category',)

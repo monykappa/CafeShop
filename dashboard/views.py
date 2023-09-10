@@ -64,20 +64,25 @@ def dashboard(request):
 
 
 def edit_product(request, product_id):
-    # Get the product based on the provided product_id
     product = get_object_or_404(AddProduct, id=product_id)
 
     if request.method == 'POST':
-        # Handle form submissions here if necessary
-        # ...
+        # Retrieve the new category value from the POST data
+        new_category = request.POST.get('category')
 
-        # After processing, you might want to redirect the user to a different page
-        # For example, after updating the product, you can redirect to the product list page
-        return redirect('dashboard:product_list')  # Replace 'product_list' with the name of your product list view
+        # Update the product's category
+        product.category = new_category
 
-    # If it's a GET request, render the edit_product.html template with the product
-    return render(request, 'dashboard/admin/edit_product.html', {'product': product})
+        # Save the updated product to the database
+        product.save()
 
+        # Redirect to the product list page or another appropriate page
+        return redirect('dashboard:dashboard')  # Replace with your URL pattern name
+
+    # Retrieve all possible category choices from your model
+    all_categories = [choice[1] for choice in AddProduct.category.field.choices]
+
+    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'all_categories': all_categories})
 
 
 def delete_product(request, product_id):

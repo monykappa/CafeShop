@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from .models import OrderDetail
 import logging
-from .models import AddProduct, Size, ProductSize
+from .models import AddProduct, Size, ProductSize, OrderDetail
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
@@ -31,10 +31,18 @@ logger = logging.getLogger(__name__)
 
 
 def cart(request):
-    # Retrieve the user's order details and pass them to the template
-    order_details = OrderDetail.objects.all()  # You may need to filter based on the user
-    return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+    if request.user.is_authenticated:
+        # Retrieve order details associated with the user's orders
+        user_orders = Order.objects.filter(user=request.user)
+        order_details = OrderDetail.objects.filter(order__in=user_orders)
 
+        return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+    else:
+        # Handle the case where the user is not authenticated
+        return HttpResponse("You must be signed in to view your cart.", status=401)
+
+
+@login_required 
 def cart_view(request):
     if request.user.is_authenticated:
         # Retrieve order details associated with the user

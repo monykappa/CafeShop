@@ -38,7 +38,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Dashboard</a>
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -66,31 +66,37 @@
         <h1 class="mt-4">Edit Product: {{ product.product_name }}</h1>
         <form method="post" enctype="multipart/form-data" action="{% url 'dashboard:edit_product' product.id %}">
             {% csrf_token %}
-
+    
+            <!-- Product Image -->
+            <div class="form-group">
+                <label for="current_image"></label>
+                {% if product.sizes.first.images %}
+                    <img src="{{ product.sizes.first.images.url }}" alt="{{ product.product_name }} Image"
+                        style="max-width: 200px; max-height: 200px; border-radius: 5px;">
+                {% else %}
+                    <p>No Image</p>
+                {% endif %}
+            </div>
+    
             <!-- Product Name -->
             <div class="form-group">
                 <label for="name">Product Name:</label>
                 <input type="text" id="name" name="name" class="form-control" value="{{ product.product_name }}">
             </div>
-
+    
             <!-- Category Selection -->
             <div class="form-group">
                 <label for="id_category">Category:</label>
                 <select name="category" id="id_category" class="form-control">
                     <option value="">Select a category</option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% for category in all_categories %}
+                        <option value="{{ category }}" {% if category == product.category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
-            
-            
-
-
-
-
-
-
+    
             {% for size in product.sizes.all %}
             <div class="form-group">
                 <label for="size_{{ size.id }}">{{ size.size.get_size_display }}:</label>
@@ -99,24 +105,15 @@
                     value="{{ size.price }}">
             </div>
             {% endfor %}
+    
 
-
-
-            <!-- Image Upload -->
-            <div class="form-group">
-                <label for="image">New Image:</label>
-                <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
-            </div>
-
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ products.number }}">
-                <!-- Add other form fields for editing product details -->
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-
+    
+            <input type="hidden" name="next" value="{{ products.number }}">
+            <!-- Add other form fields for editing product details -->
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
+    
 
     <!-- Include Bootstrap JS and jQuery (You should have Bootstrap installed and configured) -->
     <script src="path-to-jquery/jquery.min.js"></script>
