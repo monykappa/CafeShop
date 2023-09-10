@@ -59,6 +59,7 @@ class AddProduct(models.Model):
 
 class ProductSize(models.Model):
     product = models.ForeignKey(AddProduct, related_name='sizes', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE,null=True, blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, null=True, blank=True)
     images = models.FileField(upload_to=menu_directory_path, validators=[validate_file_extension], blank=True)
@@ -66,17 +67,15 @@ class ProductSize(models.Model):
     def __str__(self):
         return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
 
-
-
-
 class OrderDetail(models.Model):
-    product = models.ForeignKey(AddProduct, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def calculate_total_price(self):
-        if self.product is not None:
-            price_per_unit = self.product.price # Assuming 'price' is a field in the AddProduct model
+        if self.product_size is not None:
+            price_per_unit = self.product_size.price
             self.total_price = price_per_unit * self.quantity
         else:
             self.total_price = 0.0
@@ -86,5 +85,5 @@ class OrderDetail(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"OrderDetailID: {self.pk} - {self.product.product_name} - Total Price: ${self.total_price:.2f}"
+        return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
     

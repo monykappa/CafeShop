@@ -21,16 +21,79 @@ from .models import AddProduct, Size, ProductSize
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
-
-
+from django.contrib import messages
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
+def cart(request):
+    # Retrieve the user's order details and pass them to the template
+    order_details = OrderDetail.objects.all()  # You may need to filter based on the user
+    return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+
+
+def add_to_order(request):
+    if request.method == 'POST':
+        # Get the selected size and quantity from the form
+        selected_size_id = request.POST.get('selected_size')
+        quantity = int(request.POST.get('quantity'))
+
+        # Check if the user is authenticated
+        if request.user.is_authenticated:
+            try:
+                # Retrieve the selected product size
+                selected_size = ProductSize.objects.get(pk=selected_size_id)
+
+                # Create an order detail instance and associate it with the user
+                order_detail = OrderDetail(
+                    user=request.user,
+                    product_size=selected_size,
+                    quantity=quantity,
+                )
+
+                # Save the order detail
+                order_detail.save()
+
+                # Redirect the user to a success page or another appropriate page
+                return redirect('menu:menu')  # You can change the redirect URL as needed
+
+            except ProductSize.DoesNotExist:
+                # Handle the case where the selected product size does not exist
+                return HttpResponse("Selected product size does not exist.", status=400)
+
+        else:
+            # Handle the case where the user is not authenticated
+            return HttpResponse("You must be signed in to add to your order.", status=401)
+
+
+    # Handle GET requests or other cases
+    return HttpResponse("Invalid request.", status=400)
+
 def drink_details(request, product_id):
     product = get_object_or_404(AddProduct, id=product_id)
+    product_sizes = product.sizes.all()  # Get all sizes related to the product
+
+    # Assuming you want to use the image URL of the first size
+    if product_sizes:
+        product_image_url = product_sizes[0].images.url
+    else:
+        product_image_url = None
+
+    print("Product Image URL:", product_image_url)  # Debugging line
+
     return render(request, 'Orderfolder/drink_details.html', {'product': product})
+
+
+def menu_view(request):
+    # Calculate cart count (assuming user is authenticated)
+    cart_count = OrderDetail.objects.filter(user=request.user).count()
+    print("Cart Count:", cart_count)  # Add this line for debugging
+    
+    # Your other view logic here
+    
+    return render(request, 'menu/menu.html', {'cart_count': cart_count})
+
 
 def menu(request):
     products = AddProduct.objects.all()

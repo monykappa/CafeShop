@@ -1,9 +1,26 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Size, AddProduct, OrderDetail, ProductSize  # Import ProductSize, not ProductImage
+from .models import Size, AddProduct, OrderDetail, ProductSize
 
 admin.site.register(Size)
-admin.site.register(OrderDetail)
+
+
+class OrderDetailAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product_name', 'quantity', 'formatted_total_price')
+    list_filter = ('product_size__product',)  # Add any additional filters if needed
+
+    def product_name(self, obj):
+        return obj.product_size.product.product_name
+
+    def formatted_total_price(self, obj):
+        return f"${obj.total_price:.2f}"
+
+    product_name.short_description = 'Product Name'
+    formatted_total_price.short_description = 'Total Price'
+
+
+admin.site.register(OrderDetail, OrderDetailAdmin)
+
 
 class ProductPriceAdmin(admin.ModelAdmin):
     list_display = ('product', 'size', 'formatted_price')
@@ -14,6 +31,10 @@ class ProductPriceAdmin(admin.ModelAdmin):
         return f"${obj.price:.2f}"
 
     formatted_price.short_description = 'Price'
+
+
+admin.site.register(ProductSize, ProductPriceAdmin)
+
 
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('display_image', 'product_name', 'image_name', 'product_category')
@@ -42,22 +63,23 @@ class ProductImageAdmin(admin.ModelAdmin):
     image_name.short_description = 'Image Name'
     product_category.short_description = 'Product Category'
 
+
 class ProductImageInline(admin.TabularInline):
-    model = ProductSize  # Use ProductImage for the inline
+    model = ProductSize
+
 
 class AddProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'category', 'display_price', 'display_image')
     list_filter = ('category',)
     search_fields = ('product_name', 'category__name')
-    
-    inlines = [ProductImageInline]  # Add the inline for ProductImage
+
+    inlines = [ProductImageInline]
 
     def display_price(self, obj):
         sizes_and_prices = [f"{size.size.get_size_display()}: ${size.price:.2f}" for size in obj.sizes.all()]
         return ', '.join(sizes_and_prices) if sizes_and_prices else "N/A"
 
     def display_image(self, obj):
-        # Retrieve the first image associated with the product
         product_sizes = obj.sizes.all()
         if product_sizes:
             first_product_size = product_sizes[0]
@@ -74,4 +96,3 @@ class AddProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AddProduct, AddProductAdmin)
-admin.site.register(ProductSize, ProductPriceAdmin)  # Register ProductSize with ProductPriceAdmin

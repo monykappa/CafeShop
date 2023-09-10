@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% block title %}
-  <title>Drinks</title>
+<title>Drinks</title>
 {% endblock title %}
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
@@ -319,17 +319,19 @@
     background-color: var(--second-color);
     border: 1px solid white;
   }
-  .btn-signup:hover{
+
+  .btn-signup:hover {
     background-color: #b15e37;
-    border:1px solid black;
+    border: 1px solid black;
   }
 
   a.btn-signup {
     color: white;
     margin: 0 15px;
   }
-  a.btn-signup:hover{
-    color:white;
+
+  a.btn-signup:hover {
+    color: white;
   }
 
   /* footer */
@@ -549,19 +551,23 @@
     display: flex;
     flex-direction: column;
   }
-  span.navbar-text{
+
+  span.navbar-text {
     margin-right: 10px;
-    color:var(--second-color);
+    color: var(--second-color);
   }
-  p.welcome-message{
-    color:var(--second-color);
-    margin:7px 10px 0 0;
+
+  p.welcome-message {
+    color: var(--second-color);
+    margin: 7px 10px 0 0;
   }
-  li a.category-drinks{
+
+  li a.category-drinks {
     transition: 0.5s ease;
   }
-  li a.category-drinks:hover{
-    color:var(--second-color);
+
+  li a.category-drinks:hover {
+    color: var(--second-color);
     text-decoration: underline;
   }
 </style>
@@ -571,53 +577,60 @@
   <!-- menu -->
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a href="{% url 'home:home' %}">
-            <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
-                class="navbar-brand" alt="Logo" />
-        </a>
-        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarItems"
-            aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarItems">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {% if user.is_authenticated %}
-                    <!-- If the user is logged in, take them to 'home:home' -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:home' %}">Home</a>
-                    </li>
-                {% else %}
-                    <!-- If the user is not logged in, take them to 'home:index' -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-                    </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
-                </li>
-                {% if user.is_superuser %}
-                    <!-- Show the Dashboard link only for superusers -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-        <div class="d-flex">
-            {% if user.is_authenticated %}
-                <p class="welcome-message">{{ user.username }}</p>
-                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
-            {% else %}
-            <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
-            <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
-            {% endif %}
-            <a href="{% url 'home:findus' %}" class="btn">Find us</a>
-        </div>
+      <a href="{% url 'home:home' %}">
+        <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
+          class="navbar-brand" alt="Logo" />
+      </a>
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarItems"
+        aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarItems">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if user.is_authenticated %}
+          <!-- If the user is logged in, take them to 'home:home' -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:home' %}">Home</a>
+          </li>
+          {% else %}
+          <!-- If the user is not logged in, take them to 'home:index' -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:index' %}">Home</a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
+          </li>
+          {% if user.is_superuser %}
+          <!-- Show the Dashboard link only for superusers -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="d-flex">
+        {% if user.is_authenticated %}
+        <p class="welcome-message">{{ user.username }}</p>
+        <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+        {% else %}
+        <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
+        <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
+        {% endif %}
+        <a href="{% url 'home:findus' %}" class="btn">Find us</a>
+      </div>
+      <a href="{% url 'menu:cart' %}" class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge badge-pill badge-danger" style="color:red;">{{ cart_count }}</span>
+
+    </a>
+
+
     </div>
-</nav>
+  </nav>
 
   <ul id="nav-bottom-bar">
     <li><a style="text-decoration: underline;" href="#">All Products</a></li>
@@ -633,10 +646,10 @@
       <li><a href="{% url 'menu:menu' %}">
           <h1>Drinks</h1>
         </a></li>
-        <li><a href="{% url 'menu:IcedDrink' %}" class="category-drinks">Iced Drinks</a></li>
-        <li><a href="{% url 'menu:HotDrink' %}" class="category-drinks">Hot Drinks</a></li>
-        <li><a href="{% url 'menu:FrappeDrink' %}"class="category-drinks">Frappe Drinks</a></li>
-        
+      <li><a href="{% url 'menu:IcedDrink' %}" class="category-drinks">Iced Drinks</a></li>
+      <li><a href="{% url 'menu:HotDrink' %}" class="category-drinks">Hot Drinks</a></li>
+      <li><a href="{% url 'menu:FrappeDrink' %}" class="category-drinks">Frappe Drinks</a></li>
+
 
     </ul>
     <div class="drinkbody">
