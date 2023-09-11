@@ -1,0 +1,20 @@
+<!-- checkout.html -->
+<h1>Checkout</h1>
+
+<h2>Location:</h2>
+<p>{{ location }}</p>
+
+<h2>Contact:</h2>
+<p>{{ contact }}</p>
+
+<h2>Order Details:</h2>
+<ul>
+    {% for order_detail in order_details %}
+    <li>
+        Product: {{ order_detail.product_size.product.product_name }}<br>
+        Size: {{ order_detail.product_size.size }}<br>
+        Quantity: {{ order_detail.quantity }}<br>
+        Total Price: ${{ order_detail.total_price }}
+    </li>
+    {% endfor %}
+</ul>

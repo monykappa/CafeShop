@@ -15,7 +15,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
-from .models import OrderDetail
+from userprofile.models import *
 import logging
 from .models import AddProduct, Size, ProductSize, OrderDetail
 from django.core.paginator import Paginator
@@ -23,7 +23,9 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib import messages
 from django.utils import timezone
-from .forms import UserDetailForm
+from django.contrib.auth.decorators import login_required
+
+
 
 
 
@@ -35,35 +37,52 @@ logger = logging.getLogger(__name__)
 
 def user_detail(request):
     if request.method == 'POST':
-        form = UserDetailForm(request.POST)
-        if form.is_valid():
-            # Process the form data (save to the database, etc.)
-            # You can access the user's location and contact as form.cleaned_data['location'] and form.cleaned_data['contact']
-            
-            # After processing, create a context with the order details and user data
-            order_details = OrderDetail.objects.all()  # Query your OrderDetail model here
-            user_data = {
-                'location': form.cleaned_data['location'],
-                'contact': form.cleaned_data['contact'],
-            }
-            context = {'order_details': order_details, 'user_data': user_data}
-            
-            # Redirect the user to the checkout page
-            return render(request, 'checkout.html', context)
-    else:
-        form = UserDetailForm()
+        location = request.POST.get('location')
+        contact = request.POST.get('contact')
+        print(f"Location: {location}, Contact: {contact}")  # Debugging line
+        if not location or not contact:
+            print("Form validation failed")  # Debugging line
+            return render(request, 'Orderfolder/user_detail.html')
+        request.session['location'] = location
+        request.session['contact'] = contact
+        print(f"Stored in session: Location: {request.session['location']}, Contact: {request.session['contact']}")  # Debugging line
+        # Store order details in the session as well, if not already done
+        request.session['order_details'] = ...  # Replace with your order details retrieval logic
+        return redirect('menu:checkout')
+    return render(request, 'Orderfolder/user_detail.html')
 
-    return render(request, 'user_detail.html', {'form': form})
+
 
 def checkout(request):
-    # Render the checkout page with the order details and user data
-    order_details = OrderDetail.objects.all()  # Query your OrderDetail model here
-    user_data = {
-        'location': request.POST.get('location'),  # Get the location from the POST data
-        'contact': request.POST.get('contact'),    # Get the contact from the POST data
-    }
-    context = {'order_details': order_details, 'user_data': user_data}
-    return render(request, 'Orderfolder/checkout.html', context)
+    # Retrieve order details, location, and contact information from the session
+    order_details = request.session.get('order_details', [])
+    location = request.session.get('location', '')
+    contact = request.session.get('contact', '')
+    print(f"Location (Checkout): {location}, Contact (Checkout): {contact}")  # Debugging line
+
+    # Render the checkout template with the data
+    return render(request, 'Orderfolder/checkout.html', {
+        'order_details': order_details,
+        'location': location,
+        'contact': contact,
+    })
+
+
+def confirm_order(request):
+    # Retrieve order details, location, and contact information from the session
+    order_details = request.session.get('order_details', [])
+    location = request.session.get('location', '')
+    contact = request.session.get('contact', '')
+
+    # Perform any necessary actions to confirm the order, such as saving it to the database
+
+    # Clear the session data
+    request.session['order_details'] = []
+    request.session['location'] = ''
+    request.session['contact'] = ''
+
+    # Redirect to a thank you page or any other appropriate page
+    return render(request, 'Orderfolder/thank_you.html')
 
 def cart(request):
     if request.user.is_authenticated:

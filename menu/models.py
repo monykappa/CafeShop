@@ -13,6 +13,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission  
 from django.core.validators import RegexValidator
+from userprofile.models import Customer
 
 def validate_file_extension(value): 
     ext = os.path.splitext(value.name)[1]  # [0] returns path+filenamecd
@@ -36,8 +37,6 @@ category = (
     ('Soda', 'Soda'),
     ('Milk', 'Milk'),
 )
-
-
 
 class Size(models.Model):
     SMALL = 'SM'
@@ -91,4 +90,13 @@ class OrderDetail(models.Model):
 
     def __str__(self):
         return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
-    
+
+class Checkout(models.Model):
+    checkout_id = models.AutoField(primary_key=True)
+    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    location = models.CharField(max_length=300)
+    contact = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Checkout ID: {self.checkout_id}"
