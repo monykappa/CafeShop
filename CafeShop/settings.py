@@ -31,6 +31,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = ['*']
 
+
+
+
 LOGIN_URL = '/userprofile/signin/'
 LOGIN_REDIRECT_URL = '/userprofile'
 LOGOUT_REDIRECT_URL = '/userprofile/signin'
@@ -78,7 +81,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'menu.context_processors.cart_count',
-
             ],
         },
     },

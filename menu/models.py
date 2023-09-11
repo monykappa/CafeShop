@@ -12,6 +12,7 @@ import uuid
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission  
+from django.core.validators import RegexValidator
 
 def validate_file_extension(value): 
     ext = os.path.splitext(value.name)[1]  # [0] returns path+filenamecd
@@ -35,6 +36,8 @@ category = (
     ('Soda', 'Soda'),
     ('Milk', 'Milk'),
 )
+
+
 class Size(models.Model):
     SMALL = 'SM'
     MEDIUM = 'MD'

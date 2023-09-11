@@ -18,7 +18,8 @@
         margin: 0;
         padding: 0;
     }
-    body{
+
+    body {
         font-family: var(--primary-font);
         font-weight: bold;
     }
@@ -164,7 +165,7 @@
         justify-content: space-around;
         max-height: 80vh;
         overflow-y: auto;
-    
+
     }
 
     /* Add media query for smaller screens */
@@ -193,15 +194,18 @@
 
 
     .product-container {
-        width: 25%;
+        width: 30%;
         margin-bottom: 2vh;
 
     }
-    .cofebox{
-        height: 500px;
+
+    .cofebox {
+        height: 600px;
         border-radius: 20px;
+        padding-bottom: 5vh;
 
     }
+
     .cofebox img {
         width: 100%;
         max-width: 440px;
@@ -216,76 +220,80 @@
     }
 
     h1.product-name {
-        color:var(--second-color);
+        color: var(--second-color);
         margin-top: 2vh;
         text-align: center;
         font-family: var(--primary-font);
         font-size: 23px;
     }
-    i.fa-solid{
+
+    i.fa-solid {
         font-size: 10px;
     }
-    p.product{
+
+    p.product {
         text-align: center;
-        padding:10px 0;
-    }
-    p.total-price{
-        color:var(--second-color);
+        padding: 10px 0;
     }
 
+    p.total-price {
+        color: var(--second-color);
+    }
 
-button.continue-button {
-    background-color: var(--second-color);
-    font-family: var(--second-font);
-    border-radius: 25px;
-    border: 1px solid black;
-    font-size: 20px;
-    color: black; /* Set the initial text color to black */
-    margin: 5vh 2vh 0 1vh;
-    padding: 10px 15px 25px 15px;
-    height: 50px;
-    float: right;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: background-color 0.5s ease, color 0.5s ease; /* Added color transition */
-}
 
-button.continue-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background-color: black; /* Change this color to match your design */
-    transition: left 0.5s ease;
-}
+    button.continue-button {
+        background-color: var(--second-color);
+        font-family: var(--second-font);
+        border-radius: 25px;
+        border: 1px solid black;
+        font-size: 20px;
+        color: white;
+        margin: 5vh 2vh 0 1vh;
+        padding: 10px 15px 25px 10px;
+        height: 50px;
+        float: right;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.5s ease, color 0.5s ease;
+        /* Added color transition */
+    }
 
-button.continue-button:hover {
-    background-color: white; /* Change background color to white on hover */
-    color: white; /* Change text color to white on hover */
-}
+    button.continue-button:hover {
+        background-color: black;
+        color: white;
 
-button.continue-button:hover::before {
-    left: 0;
-    background-color: white; /* Change background color of the swipe to black */
-    color:black;
-}
+    }
 
 
 
-    a.go-back-btn{
+
+    a.go-back-btn {
         padding: 15px;
         border-radius: 15px;
         transition: 0.5s ease-in;
     }
-    a.go-back-btn:hover{
+
+    a.go-back-btn:hover {
         background-color: black;
     }
-    
-    
-    
+
+    button.remove-button {
+        transition: 0.3s ease-in;
+        display: flex;
+        margin: 0 auto;
+        padding: 10px;
+        background-color: red;
+        border-radius: 20px;
+        color: white;
+        font-family: var(--primary-font);
+        border: 1px solid white;
+        cursor: pointer;
+    }
+
+    button.remove-button:hover {
+        background-color: black;
+    }
 </style>
 
 <body>
@@ -296,10 +304,10 @@ button.continue-button:hover::before {
                     <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
                         alt="Logo" />
                 </a>
-                <h1><a href="#" onclick="history.go(-1); return false;" class="go-back-btn">&lt; Back to previous page</a></h1>
-
+                <h1><a href="#" onclick="history.go(-1); return false;" class="go-back-btn">&lt; Back to previous
+                        page</a></h1>
             </div>
-            <div class="tagbody"> 
+            <div class="tagbody">
                 <h1>Review Order ({{ order_details.count }})</h1><br>
                 <h2>For item availability</h2>
                 <h2><a href="{% url 'home:findus' %}">Choose a store &gt;</a></h2>
@@ -314,11 +322,27 @@ button.continue-button:hover::before {
                         <img src="{{ order_detail.product_size.images.url }}"
                             alt="{{ order_detail.product_size.product.product_name }}">
                         <div class="cofeinfo">
-                            <h1 class="product-name">{{ order_detail.product_size.product.product_name }}</h1><br><br>
-                            <p style="font-size: 20px;" class="product product-size">{{ order_detail.product_size.size }}</p>
-                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{ order_detail.quantity }}</p>
+                            <h1 class="product-name">{{ order_detail.product_size.product.product_name }}</h1>
+                            <br><br>
+                            <p style="font-size: 20px;" class="product product-size">{{ order_detail.product_size.size}}</p>
+                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{order_detail.quantity }}</p>
+                            <p style="font-size: 25px;" class="product total-price">${{order_detail.total_price|floatformat:2 }}</p><br><br>
+
+
+                            <!-- Add a "Remove" button -->
+                            <form method="post" action="{% url 'menu:remove_product_from_order' order_detail.id %}">
+                                {% csrf_token %}
+                                <button
+                                type="button"
+                                class="remove-button"
+                                data-product-name="{{ order_detail.product_size.product.product_name }}"
+                                data-product-quantity="{{ order_detail.quantity }}"
+                                data-product-size="{{ order_detail.product_size.size }}"
+                                onclick="confirmRemove({{ order_detail.id }})">
+                                Remove
+                            </button>
                             
-                            <p style="font-size: 25px;" class="product total-price">${{ order_detail.total_price|floatformat:2 }}</p><br><br>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -328,11 +352,14 @@ button.continue-button:hover::before {
                 {% endif %}
                 {% endfor %}
             </div>
-            {% endif %}
         </div>
-        <button class="continue-button">Continue</button>
+        {% endif %}
     </div>
-    
+    <button class="continue-button">Continue</button>
+    </div>
+
+
+
 
     <footer>
         <div class="col">
@@ -386,6 +413,42 @@ button.continue-button:hover::before {
         </div>
         <p>© 2023 Starbucks Coffee Company. All rights reserved.</p>
     </footer>
+
+    <script>
+        function confirmRemove(orderDetailId) {
+    const removeButton = document.querySelector(`button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`);
+    const productName = removeButton.getAttribute('data-product-name');
+    const productQuantity = removeButton.getAttribute('data-product-quantity');
+    const productSize = removeButton.getAttribute('data-product-size');
+
+    if (confirm(`Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`)) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'menu:remove_product_from_order' 0 %}".replace("0", orderDetailId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    // Item removed successfully, display a success message
+                    alert("Remove drink success");
+                    location.reload();
+                } else {
+                    alert("Error removing item from cart.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while removing the item from the cart.");
+            });
+    }
+}
+
+    </script>
+
+
 </body>
 
 </html>

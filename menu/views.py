@@ -25,6 +25,8 @@ from django.contrib import messages
 from django.utils import timezone
 
 
+
+
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
@@ -32,9 +34,11 @@ logger = logging.getLogger(__name__)
 
 def cart(request):
     if request.user.is_authenticated:
-        # Retrieve order details associated with the user's orders
-        user_orders = Order.objects.filter(user=request.user)
-        order_details = OrderDetail.objects.filter(order__in=user_orders)
+        # Retrieve order details associated with the user
+        order_details = OrderDetail.objects.filter(user=request.user)
+
+        # Debug: Print order_details to verify it contains the expected data
+        print(order_details)
 
         return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
     else:
@@ -42,11 +46,35 @@ def cart(request):
         return HttpResponse("You must be signed in to view your cart.", status=401)
 
 
+
+
+
+def remove_product_from_order(request, order_detail_id):
+    # Check if the request method is POST
+    if request.method == 'POST':
+        # Get the current user
+        user = request.user
+        
+        # Try to get the OrderDetail instance by its ID, and ensure it belongs to the current user
+        order_detail = get_object_or_404(OrderDetail, pk=order_detail_id, user=user)
+        
+        # Delete the OrderDetail instance
+        order_detail.delete()
+        
+        # Redirect to the cart or another appropriate page
+        return redirect('menu:cart')  # Replace 'menu:cart' with your actual cart page URL
+
+    # Handle invalid requests here (e.g., GET requests)
+    return redirect('some_error_page')  # Replace 'some_error_page' with an error page URL
+
 @login_required 
 def cart_view(request):
     if request.user.is_authenticated:
         # Retrieve order details associated with the user
         order_details = OrderDetail.objects.filter(user=request.user)
+
+        # Debug: Print order_details to verify it contains the expected data
+        print(order_details)
 
         return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
     else:
