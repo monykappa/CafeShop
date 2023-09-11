@@ -34,38 +34,50 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
+def register_user(request):
+    # Your registration logic here, e.g., creating a User object
+
+    # After creating the User object, create a related Customer object
+    customer = Customer.objects.create(user=user, location='', contact='')
+
+    # Save the customer object
+    customer.save()
+
+    # Redirect to the User Detail page or wherever needed
 
 def user_detail(request):
+    customer, created = Customer.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        location = request.POST.get('location')
+        district = request.POST.get('district')
+        house_number = request.POST.get('house_number')
+        road = request.POST.get('road')
         contact = request.POST.get('contact')
-        print(f"Location: {location}, Contact: {contact}")  # Debugging line
-        if not location or not contact:
-            print("Form validation failed")  # Debugging line
-            return render(request, 'Orderfolder/user_detail.html')
-        request.session['location'] = location
-        request.session['contact'] = contact
-        print(f"Stored in session: Location: {request.session['location']}, Contact: {request.session['contact']}")  # Debugging line
-        # Store order details in the session as well, if not already done
-        request.session['order_details'] = ...  # Replace with your order details retrieval logic
+        
+        # Update the district, house_number, road, and contact information
+        customer.district = district
+        customer.house_number = house_number
+        customer.road = road
+        customer.contact = contact
+        customer.save()
+        
         return redirect('menu:checkout')
-    return render(request, 'Orderfolder/user_detail.html')
+
+    return render(request, 'Orderfolder/user_detail.html', {'customer': customer, 'DistrictChoices': DistrictChoices})
 
 
-
+@login_required
 def checkout(request):
-    # Retrieve order details, location, and contact information from the session
-    order_details = request.session.get('order_details', [])
-    location = request.session.get('location', '')
-    contact = request.session.get('contact', '')
-    print(f"Location (Checkout): {location}, Contact (Checkout): {contact}")  # Debugging line
+    if request.user.is_authenticated:
+        # Retrieve order details associated with the user
+        order_details = OrderDetail.objects.filter(user=request.user)
 
-    # Render the checkout template with the data
-    return render(request, 'Orderfolder/checkout.html', {
-        'order_details': order_details,
-        'location': location,
-        'contact': contact,
-    })
+        # Assuming you have a Customer model to store location and contact
+        customer = request.user.customer  # Assuming a one-to-one relationship between User and Customer
+
+        return render(request, 'Orderfolder/checkout.html', {'order_details': order_details, 'user': request.user, 'customer': customer})
+    else:
+        return HttpResponse("You must be signed in to view the checkout page.", status=401)
 
 
 def confirm_order(request):
@@ -96,9 +108,6 @@ def cart(request):
     else:
         # Handle the case where the user is not authenticated
         return HttpResponse("You must be signed in to view your cart.", status=401)
-
-
-
 
 
 def remove_product_from_order(request, order_detail_id):

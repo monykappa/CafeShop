@@ -294,6 +294,10 @@
     button.remove-button:hover {
         background-color: black;
     }
+    a.continue-button{
+        color: white;
+        text-decoration: none;
+    }
 </style>
 
 <body>
@@ -356,7 +360,7 @@
         {% endif %}
     </div>
 
-<button class="continue-button"><a href="{% url 'menu:user_detail' %}">Continue</a></button>
+<button class="continue-button"><a href="{% url 'menu:user_detail' %}" class="continue-button">Continue</a></button>
 
 
     </div>

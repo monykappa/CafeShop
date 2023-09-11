@@ -32,20 +32,45 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 
 
-# Create your models here.
+
 
 Sex = (
     ('Male', 'Male'),
     ('Female', 'Female'),
 )
 
+DistrictChoices = (
+    ("Khan Boeng Keng Kang", "Khan Boeng Keng Kang"),
+    ("Doun Penh section", "Doun Penh section"),
+    ("Khan Kamboul", "Khan Kamboul"),
+    ("Khan Chamkar Mon", "Khan Chamkar Mon"),
+    ("Khan Chbar Ampov", "Khan Chbar Ampov"),
+    ("Khan Chroy Changvar", "Khan Chroy Changvar"),
+    ("Khan Dangkao", "Khan Dangkao"),
+    ("Khan Mean Chey", "Khan Mean Chey"),
+    ("Khan Pou Senchey", "Khan Pou Senchey"),
+    ("Khan Prampir Makara", "Khan Prampir Makara"),
+    ("Khan Russey Keo", "Khan Russey Keo"),
+    ("Khan Sen Sok", "Khan Sen Sok"),
+    ("Khan Tuol Kouk", "Khan Tuol Kouk"),
+    ("Khan Prek Pnov", "Khan Prek Pnov"),
+)
+
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=20, null=True, blank=True)
-    location = models.CharField(max_length=300, null=True)
+    district = models.CharField(
+        max_length=50,
+        choices=DistrictChoices,
+        null=True,
+        blank=True,
+    )
+    house_number = models.CharField(max_length=10, null=True, blank=True)
+    road = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
+
 
 
 class CustomerUser(models.Model):

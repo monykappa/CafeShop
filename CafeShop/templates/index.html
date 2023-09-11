@@ -80,6 +80,41 @@
         margin-top: 4%;
         margin-left: 25px;
     }
+    .btn-primary {
+        margin: 0 10px;
+    }
+
+    .btn-signin {
+        background-color: transparent;
+        border: 1px solid black;
+        transition: 0.2s ease;
+    }
+
+    .btn-signin:hover {
+        background-color: var(--first-color);
+        border: 1px solid black;
+        color: #000;
+    }
+
+    .btn-signup {
+        background-color: var(--second-color);
+        border: 1px solid white;
+        transition: 0.2s ease;
+    }
+
+    .btn-signup:hover {
+        background-color: rgb(194, 116, 47);
+        color: #ffffff;
+    }
+
+    a.btn-signup {
+        color: white;
+        margin: 0 5px;
+    }
+
+    a.btn-signup:hover {
+        color: white;
+    }
 </style>
 
 <body>
@@ -87,7 +122,7 @@
     {% endblock content %}
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a href="{% url 'home:index' %}">
+            <a href="{% url 'home:home' %}">
                 <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
                     class="navbar-brand" alt="Logo" />
             </a>
@@ -112,15 +147,37 @@
                         <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:aboutus'%}">About us</a>
+                        <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
                     </li>
+                    {% if user.is_superuser %}
+                    <!-- Show the Dashboard link only for superusers -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="d-flex">
+                {% if user.is_authenticated %}
+                <p class="welcome-message">{{ user.username }}</p>
+                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+                {% else %}
+                <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
+                <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
+                {% endif %}
                 <a href="{% url 'home:findus' %}" class="btn">Find us</a>
-                <a href="{% url 'userprofile:signin' %}" class="btn btn-sign-in">Sign In</a>
-                <a href="{% url 'userprofile:signup' %}" class="btn btn-sign-up">Sign Up</a>
             </div>
+            <a href="{% url 'menu:cart' %}" class="cart-icon">
+                <span class="cart-icon-svg">
+                    <img src="{% static 'image/logo/icons8-cart-48 brown.png' %}" alt="Cart Icon" class="cart-image">
+                    <img src="{% static 'image/logo/icons8-cart-48 white.png' %}" alt="Cart Icon" class="cart-image-hover">
+                </span>
+                {% if cart_count > 0 %}
+                    <span class="badge badge-pill badge-danger cart-count">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+            
+        </div>
     </nav>
 
 

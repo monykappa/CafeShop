@@ -1,12 +1,18 @@
 <!-- checkout.html -->
 <h1>Checkout</h1>
+<p>{{ user.customer.location }}</p>
 
-<h2>Location:</h2>
-<p>{{ location }}</p>
+
+
+<h2>Address Details:</h2>
+<p>District: {{ user.customer.district }}</p>
+<p>House Number: {{ user.customer.house_number }}</p>
+<p>Road: {{ user.customer.road }}</p>
 
 <h2>Contact:</h2>
-<p>{{ contact }}</p>
+<p>{{ user.customer.contact }}</p>
 
+<!-- Add a "Continue" button for the next step -->
 <h2>Order Details:</h2>
 <ul>
     {% for order_detail in order_details %}
