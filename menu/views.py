@@ -174,6 +174,7 @@ def menu(request):
     grouped_products_page = paginator.get_page(page)
 
     return render(request, 'Orderfolder/orderpage.html', {'grouped_products_page': grouped_products_page, 'cart_count': cart_count})
+
 def iced_drinks(request):
     # Get all products with 'iced' in the product name
     iced_products = AddProduct.objects.filter(product_name__icontains='iced')
@@ -200,7 +201,7 @@ def iced_drinks(request):
 
 def hot_drinks(request):
     # Get all products with 'hot' in the product name
-    hot_products = AddProduct.objects.filter(product_name__icontains='hot')
+    hot_products = AddProduct.objects.filter(product_name__icontains='Hot')
     
     grouped_hot_products = {}
 

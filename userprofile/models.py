@@ -15,6 +15,24 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 
 # Create your models here.
+from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+from django.contrib.auth.models import User
+from datetime import date
+import os
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from ckeditor.fields import RichTextField
+import uuid
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, Group, Permission
+
+
+
+# Create your models here.
 
 Sex = (
     ('Male', 'Male'),
@@ -54,4 +72,6 @@ class Staff(models.Model):
 
     def full_name(self):
         return f"{self.firstname} {self.lastname}"
+    
+
     

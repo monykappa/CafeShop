@@ -38,6 +38,7 @@ category = (
 )
 
 
+
 class Size(models.Model):
     SMALL = 'SM'
     MEDIUM = 'MD'
