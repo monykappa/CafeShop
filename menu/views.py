@@ -23,6 +23,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib import messages
 from django.utils import timezone
+from .forms import UserDetailForm
 
 
 
@@ -31,6 +32,38 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 logger = logging.getLogger(__name__)
 
+
+def user_detail(request):
+    if request.method == 'POST':
+        form = UserDetailForm(request.POST)
+        if form.is_valid():
+            # Process the form data (save to the database, etc.)
+            # You can access the user's location and contact as form.cleaned_data['location'] and form.cleaned_data['contact']
+            
+            # After processing, create a context with the order details and user data
+            order_details = OrderDetail.objects.all()  # Query your OrderDetail model here
+            user_data = {
+                'location': form.cleaned_data['location'],
+                'contact': form.cleaned_data['contact'],
+            }
+            context = {'order_details': order_details, 'user_data': user_data}
+            
+            # Redirect the user to the checkout page
+            return render(request, 'checkout.html', context)
+    else:
+        form = UserDetailForm()
+
+    return render(request, 'user_detail.html', {'form': form})
+
+def checkout(request):
+    # Render the checkout page with the order details and user data
+    order_details = OrderDetail.objects.all()  # Query your OrderDetail model here
+    user_data = {
+        'location': request.POST.get('location'),  # Get the location from the POST data
+        'contact': request.POST.get('contact'),    # Get the contact from the POST data
+    }
+    context = {'order_details': order_details, 'user_data': user_data}
+    return render(request, 'Orderfolder/checkout.html', context)
 
 def cart(request):
     if request.user.is_authenticated:

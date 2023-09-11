@@ -11,7 +11,7 @@ class CustomerAdmin(BaseAdmin):
 
 @admin.register(CustomerUser)
 class CustomerUserAdmin(BaseAdmin):
-    list_display = ['user', 'firstname', 'lastname', 'email', 'dob', 'contact', 'sex']
+    list_display = ['user', 'firstname', 'lastname', 'email', 'dob', 'sex']
 
     def full_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"

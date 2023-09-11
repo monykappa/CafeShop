@@ -13,6 +13,7 @@ from userprofile.models import CustomerUser
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+from .models import CustomerUser, Sex 
 
 from .models import Customer  
 
@@ -57,31 +58,30 @@ class SignupView(View):
         password = request.POST.get('password')
         sex = request.POST.get('sex')
         dob = request.POST.get('dob')
-        contact = request.POST.get('contact')
+        firstname = request.POST.get('first_name')
+        lastname = request.POST.get('last_name')
 
         # Create a new User instance
         user = User.objects.create_user(
             username=username,
             email=email,
-            password=password,
-            sex=sex,
-            dob=dob,
-            contact=contact
+            password=password
         )
 
-        # Create a new SignUp instance linked to the User
-        signup = CustomerUser(
+        # Create a new CustomerUser instance linked to the User
+        customer_user = CustomerUser(
             user=user,
-            email=email,
             username=username,
+            firstname=firstname,
+            lastname=lastname,
+            email=email,
             password=password,
             sex=sex,
-            dob=dob,
-            contact=contact
+            dob=dob
         )
 
-        # Save the SignUp instance
-        signup.save()
+        # Save the CustomerUser instance
+        customer_user.save()
 
         # Authenticate the user and log them in
         user = authenticate(request, username=username, password=password)

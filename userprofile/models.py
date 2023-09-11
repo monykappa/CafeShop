@@ -50,17 +50,17 @@ class Customer(models.Model):
 
 class CustomerUser(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, unique=True,null=True)
+    username = models.CharField(max_length=150, unique=True, null=True)
     firstname = models.CharField(max_length=200, null=True)
     lastname = models.CharField(max_length=200, null=True)
     email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
     password = models.CharField(max_length=128)
     dob = models.DateField(null=True, blank=False)
-    contact = models.CharField(max_length=20, null=True, blank=True)
     sex = models.CharField(max_length=7, choices=Sex, null=True, blank=True)
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}"
+
 
 class Staff(models.Model):
     firstname = models.CharField(max_length=100, null=True)
