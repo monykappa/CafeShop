@@ -24,6 +24,8 @@ from django.db.models import Q
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from .models import Checkout
+
 
 
 
@@ -78,36 +80,58 @@ def checkout(request):
         return render(request, 'Orderfolder/checkout.html', {'order_details': order_details, 'user': request.user, 'customer': customer})
     else:
         return HttpResponse("You must be signed in to view the checkout page.", status=401)
-
-
+    
 def confirm_order(request):
-    # Retrieve order details, location, and contact information from the session
-    order_details = request.session.get('order_details', [])
-    location = request.session.get('location', '')
-    contact = request.session.get('contact', '')
+    if request.method == 'POST':
+        # Retrieve the current customer
+        customer = request.user.customer
 
-    # Perform any necessary actions to confirm the order, such as saving it to the database
+        # Check if a Checkout instance already exists for the customer
+        checkout_instance, created = Checkout.objects.get_or_create(customer=customer)
 
-    # Clear the session data
-    request.session['order_details'] = []
-    request.session['location'] = ''
-    request.session['contact'] = ''
+        # Retrieve all order details associated with the user
+        order_details = OrderDetail.objects.filter(user=request.user)
 
-    # Redirect to a thank you page or any other appropriate page
-    return render(request, 'Orderfolder/thank_you.html')
+        # Create a list to hold order details related to the checkout
+        checkout_instance.order_details.set(order_details)
+
+        # You can optionally clear the user's cart or perform other actions here
+
+        # Debug: Print a message before clearing the cart session data
+        print("Before clearing cart session data:", request.session.get('cart'))
+
+        # Clear the cart session data
+        request.session.pop('cart', None)
+
+        # Debug: Print a message after clearing the cart session data
+        print("After clearing cart session data:", request.session.get('cart'))
+
+        # Redirect to the 'order_confirmation_page' URL
+        return redirect('menu:order_confirmation_page')
+
+    return HttpResponse("Invalid request method", status=405)
+
+
+
+
+def order_confirmation_page(request):
+    return render(request, 'Orderfolder/order_confirmation.html')
+
 
 def cart(request):
     if request.user.is_authenticated:
         # Retrieve order details associated with the user
         order_details = OrderDetail.objects.filter(user=request.user)
 
-        # Debug: Print order_details to verify it contains the expected data
-        print(order_details)
+        # Clear the user's cart by removing session data (assuming cart is stored in the session)
+        if 'cart' in request.session:
+            del request.session['cart']
 
         return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
     else:
         # Handle the case where the user is not authenticated
         return HttpResponse("You must be signed in to view your cart.", status=401)
+
 
 
 def remove_product_from_order(request, order_detail_id):

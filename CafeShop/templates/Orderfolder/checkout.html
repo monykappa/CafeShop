@@ -1,26 +1,26 @@
 <!-- checkout.html -->
-<h1>Checkout</h1>
-<p>{{ user.customer.location }}</p>
+<form method="POST" action="{% url 'menu:confirm_order' %}">
+    {% csrf_token %}
+    <h1>Checkout</h1>
+    <!-- Use the fields from the Customer model -->
+    <h6>District</h6>
+    <p>{{ user.customer.district }}</p>
+    <p>House NO: {{ user.customer.house_number }},  Road: {{ user.customer.road }}</p>
+    <p>Contact: {{ user.customer.contact }}</p>
 
+    <!-- Add a "Continue" button for the next step -->
+    <h2>Order Details:</h2>
+    <ul>
+        {% for order_detail in order_details %}
+        <li>
+            Product: {{ order_detail.product_size.product.product_name }}<br>
+            Size: {{ order_detail.product_size.size }}<br>
+            Quantity: {{ order_detail.quantity }}<br>
+            Total Price: ${{ order_detail.total_price }}
+        </li>
+        {% endfor %}
+    </ul>
 
-
-<h2>Address Details:</h2>
-<p>District: {{ user.customer.district }}</p>
-<p>House Number: {{ user.customer.house_number }}</p>
-<p>Road: {{ user.customer.road }}</p>
-
-<h2>Contact:</h2>
-<p>{{ user.customer.contact }}</p>
-
-<!-- Add a "Continue" button for the next step -->
-<h2>Order Details:</h2>
-<ul>
-    {% for order_detail in order_details %}
-    <li>
-        Product: {{ order_detail.product_size.product.product_name }}<br>
-        Size: {{ order_detail.product_size.size }}<br>
-        Quantity: {{ order_detail.quantity }}<br>
-        Total Price: ${{ order_detail.total_price }}
-    </li>
-    {% endfor %}
-</ul>
+    <!-- Add a "Confirm Order" button -->
+    <button type="submit">Confirm Order</button>
+</form>

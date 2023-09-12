@@ -93,10 +93,16 @@ class OrderDetail(models.Model):
 
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
-    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    location = models.CharField(max_length=300)
-    contact = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    order_details = models.ManyToManyField(OrderDetail)
 
     def __str__(self):
         return f"Checkout ID: {self.checkout_id}"
+
+    def calculate_total_price(self):
+        total_price = 0
+        for order_detail in self.order_details.all():
+            total_price += order_detail.total_price
+        return total_price
+

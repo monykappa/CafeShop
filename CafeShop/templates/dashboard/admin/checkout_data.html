@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Data</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<style>
+    :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+
+    a.go-back-btn {
+        margin: 10vh 0 0 2vh;
+        font-family: var(--primary-font);
+        background-color: var(--second-color);
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+    }
+
+    nav {
+        margin-bottom: 3vh;
+    }
+
+    a.go-back-btn:hover {
+        background-color: black;
+        color: white;
+    }
+</style>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'home:home'%}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userprofile:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
+    <div class="container">
+        <h1>Checkout Data</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Username</th>
+                    <th>Product Name</th>
+                    <th>Cup Size</th> <!-- Add this column for the cup size -->
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for checkout in user_checkout_data %}
+                {% for order_detail in checkout.order_details.all %}
+                <tr>
+                    {% if forloop.first %}
+                    <td rowspan="{{ checkout.order_details.count }}">{{ checkout.checkout_id }}</td>
+                    <td rowspan="{{ checkout.order_details.count }}">{{ checkout.customer.user.username }}</td>
+                    {% endif %}
+                    <td>{{ order_detail.product_size.product.product_name }}</td>
+                    <td>{{ order_detail.product_size.size.get_size_display }}</td> <!-- Display the cup size -->
+                    <td>{{ order_detail.quantity }}</td>
+                    <td>${{ order_detail.product_size.price|floatformat:2 }}</td>
+                    {% if forloop.first %}
+                    <td rowspan="{{ checkout.order_details.count }}">$
+                        {{ checkout.calculate_total_price|floatformat:2 }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- Add Bootstrap JS and jQuery links (required for Bootstrap functionality) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

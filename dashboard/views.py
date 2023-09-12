@@ -15,6 +15,17 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q 
 from django import forms
+from menu.models import Checkout
+
+
+def checkout_view(request):
+    # Retrieve the user's checkout data, e.g., using the user's ID or any other identifier
+    user_checkout_data = Checkout.objects.filter(user=request.user)  # Adjust this query as per your model structure
+
+    # You can add additional logic here to process and prepare the data for display
+
+    return render(request, 'dashboard/admin/checkout_data.html', {'user_checkout_data': user_checkout_data})
+
 
 @login_required
 def dashboard(request):
