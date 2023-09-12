@@ -5,31 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Product</title>
-    <!-- Include Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+        body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
 
-        .container {
-            max-width: 600px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 50px;
+        :root {
+            --primary-font: "Quicksand", sans-serif;
+            --secondary-font: "Poppins", sans-serif;
+            --first-color: #fffdd0;
+            --second-color: #a0522d;
         }
+        .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
 
         a.go-back-btn {
-            margin: 10vh 0 0 2vh;
-            background-color: blue;
+            font-family: var(--primary-font);
+            background-color: #A0522D;
+            margin: 3vh 0 0 3vh;
             padding: 10px;
             border-radius: 10px;
+            font-size: 20px;
             color: white;
             text-decoration: none;
             transition: 0.5s ease;
@@ -37,20 +61,39 @@
 
 
         a.go-back-btn:hover {
-            background-color: white;
-            color: black;
-            border: 1px solid black;
+            background-color: black;
+            color: white;
         }
-
+        .container {
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 50px;
+            margin-bottom: 15vh;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
         nav {
             margin-bottom: 3vh;
+        }
+        button.btn-add-new{
+            background-color: var(--second-color);
+            border:none;
+            transition: 0.3s ease-in-out;
+            font-size: 20px;
+        }
+        button.btn-add-new:hover{
+            background-color: green;
         }
     </style>
 </head>
 
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,16 +102,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home:home'%}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link nav-color" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'userprofile:logout' %}">Logout</a>
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -76,14 +120,14 @@
     <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
 
     <div class="container">
-        <h2 class="mb-4 text-center">Add New Product</h2>
+        <h2 class="mb-4 text-center" style="color: var(--second-color);">Add New Product</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="product_name">Product Name:</label>
                 <input type="text" class="form-control" id="product_name" name="product_name" required>
             </div>
-    
+
             <div class="form-group">
                 <label for="category">Category:</label>
                 <select class="form-select custom-select" id="category" name="category" required>
@@ -93,7 +137,7 @@
                     {% endfor %}
                 </select>
             </div>
-    
+
             {% for size in sizes %}
             <div class="form-group">
                 <label for="size_{{ size.id }}">Size:</label>
@@ -101,7 +145,7 @@
                     <option value="{{ size.id }}">{{ size.get_size_display }}</option>
                 </select>
             </div>
-    
+
             <div class="form-group">
                 <label for="price_{{ size.id }}">Price:</label>
                 <input type="text" class="form-control" id="price_{{ size.id }}" name="price_{{ size.id }}">
@@ -116,7 +160,7 @@
                 </div>
             </div>
             {% endfor %}
-    
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary btn-add-new">Add new product</button>
             </div>

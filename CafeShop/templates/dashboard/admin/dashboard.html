@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- Add Bootstrap CSS Link -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>
@@ -15,7 +16,10 @@
         --first-color: #fffdd0;
         --second-color: #a0522d;
     }
-
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
     a.go-back-btn {
         margin: 10vh 0 0 2vh;
         font-family: var(--primary-font);
@@ -40,13 +44,42 @@
         margin-bottom: 3vh;
     }
 
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+        background-color: transparent;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
+
     main {
         margin-bottom: 10vh;
     }
 
     .pagination {
-        border: 1px solid #ddd;
+        border: 1px solid black;
         padding: 10px;
+        width: 500px;
     }
 
     .pagination a {
@@ -92,18 +125,49 @@
     aside {
         border: 1px solid grey;
         border-radius: 15px;
-        padding:10px;
+        padding: 10px;
         width: 50%;
-        margin:10px 0 15px 20px;
+        margin: 10px 0 15px 20px;
     }
-    a.btn-add-new{
+
+    a.btn-add-new {
+        background-color: green;
+        border: none;
         margin-bottom: 2vh;
+    }
+    a.btn-add-new:hover{
+        background-color: rgb(64, 146, 64);
+
+    }
+    nav.sidebar{
+        border: 2px solid var(--second-color);
+        border-radius: 15px;
+    }
+    a.aside-link{
+        text-align: center;
+        color:var(--second-color);
+        font-size: 20px;
+        padding: 5px;
+        margin:10px 0;
+        border-radius: 15px;
+        transition: 0.5s ease-in;
+    }
+    a.aside-link:hover{
+        background-color: var(--second-color);
+        color:white;
+    }
+    tr{
+        border: 2px solid black;
+    }
+    thead tr{
+        font-size: 20px;
+        color:red;
     }
 </style>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,16 +176,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home:home'%}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link nav-color" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'userprofile:logout' %}">Logout</a>
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -135,17 +200,17 @@
                 <div class="position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'dashboard:add-new-product' %}">
+                            <a class="nav-link active aside-link" href="{% url 'dashboard:add-new-product' %}">
                                 Add Product
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url  'dashboard:order_detail' %}">
+                            <a class="nav-link aside-link" href="{% url  'dashboard:order_detail' %}">
                                 Order Detail
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard:checkout_data'%}">
+                        <li class="nav-item aside-link">
+                            <a class="nav-link aside-link" href="{% url 'dashboard:checkout_data'%}">
                                 Checkout
                             </a>
                         </li>
@@ -157,7 +222,7 @@
             <!-- Main Content Area -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <!-- Display all products -->
-                <h1>Welcome to the Dashboard</h1>
+                <h1 style="font-family: var(--primary-font);">Welcome to the Dashboard</h1>
 
                 <div class="row">
                     <!-- Display total drink counts -->
@@ -173,17 +238,18 @@
                     <div class="col-md-4 col-lg-3">
                         <div class="form-group">
                             <label for="drinkSearch">Search for Drinks:</label>
-                            <input type="text" class="form-control" id="drinkSearch" name="drinkSearch" placeholder="Enter drink name">
+                            <input type="text" class="form-control" id="drinkSearch" name="drinkSearch"
+                                placeholder="Enter drink name">
                         </div>
                     </div>
-                    
-                    
 
-                    
+
+
+
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="product-table">
+                        <table class="table table-bordered custom-table" id="product-table">
                             <h2>All Products</h2>
-                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">Add new product</a>
+                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add new product</a>
 
                             <thead>
                                 <tr>
@@ -197,42 +263,41 @@
                             </thead>
                             <tbody>
                                 {% for product in products %}
-                                    {% for size in product.sizes.all %}
-                                            <tr data-name="{{ product.product_name }}">
-                                            {% if forloop.first %}
-                                                <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
-                                                <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
-                                                <td>{{ size.size.get_size_display }}</td>
-                                                <td>${{ size.price }}</td>
-                                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                                    {% if size.images %}
-                                                        <img src="{{ size.images.url }}"
-                                                            alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
-                                                            style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
-                                                    {% endif %}
-                                                </td>
-                                                <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                                    <!-- Edit button -->
-                                                    <div>
-                                                        <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
-                                                            class="btn btn-primary btn-sm btn-edit">Edit</a>
-                                                    </div>
-                                                    <!-- Delete button with confirmation -->
-                                                    <div>
-                                                        <button class="btn btn-danger btn-sm btn-delete"
-                                                            >Delete</button>
-                                                    </div>
-                                                </td>
-                                            {% else %}
-                                                <td>{{ size.size.get_size_display }}</td>
-                                                <td>${{ size.price }}</td>
-                                            {% endif %}
-                                        </tr>
-                                    {% endfor %}
+                                {% for size in product.sizes.all %}
+                                <tr data-name="{{ product.product_name }}">
+                                    {% if forloop.first %}
+                                    <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
+                                    <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
+                                    <td>{{ size.size.get_size_display }}</td>
+                                    <td>${{ size.price }}</td>
+                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                        {% if size.images %}
+                                        <img src="{{ size.images.url }}"
+                                            alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
+                                            style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
+                                        {% endif %}
+                                    </td>
+                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                        <!-- Edit button -->
+                                        <div>
+                                            <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
+                                                class="btn btn-primary btn-sm btn-edit">Edit</a>
+                                        </div>
+                                        <!-- Delete button with confirmation -->
+                                        <div>
+                                            <button class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                        </div>
+                                    </td>
+                                    {% else %}
+                                    <td>{{ size.size.get_size_display }}</td>
+                                    <td>${{ size.price }}</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
                                 {% empty %}
-                                    <tr>
-                                        <td colspan="6">No products available.</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="6">No products available.</td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -240,22 +305,22 @@
 
 
 
-                <!-- Pagination -->
-                <div class="pagination justify-content-center">
-                    <span class="step-links">
-                        {% if products.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ products.previous_page_number }}">previous</a>
-                        {% endif %}
+                    <!-- Pagination -->
+                    <div class="pagination justify-content-center">
+                        <span class="step-links">
+                            {% if products.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ products.previous_page_number }}">previous</a>
+                            {% endif %}
 
-                        <span class="current-page">{{ products.number }}</span>
+                            <span class="current-page">{{ products.number }}</span>
 
-                        {% if products.has_next %}
-                        <a href="?page={{ products.next_page_number }}">next</a>
-                        <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
+                            {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}">next</a>
+                            <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
             </main>
 
         </div>
@@ -292,10 +357,10 @@
         }
     </script>
     <script>
-        $(document).ready(function() {
-            $("#drinkSearch").on("keyup", function() {
+        $(document).ready(function () {
+            $("#drinkSearch").on("keyup", function () {
                 var searchText = $(this).val().toLowerCase();
-                $("#product-table tbody tr").each(function() {
+                $("#product-table tbody tr").each(function () {
                     var productName = $(this).data("name").toLowerCase();
                     if (productName.indexOf(searchText) === -1) {
                         $(this).hide();
@@ -305,19 +370,19 @@
                 });
             });
         });
-        </script>
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

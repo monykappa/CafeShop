@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Detail</title>
-    <!-- Add Bootstrap CSS link here -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
@@ -14,6 +15,37 @@
         --secondary-font: "Poppins", sans-serif;
         --first-color: #fffdd0;
         --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color: black;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
     }
 
     a.go-back-btn {
@@ -35,11 +67,36 @@
         background-color: black;
         color: white;
     }
+    td.total-count{
+        color:red;
+        font-size: 20px;
+    }
+    td.product-name{
+        color:var(--second-color);
+    }
+    thead tr{
+        color:red;
+    }
+    td.id{
+        color:rgb(16, 139, 16);
+        font-size: 20px;
+    }
+    tr{
+        font-size: 19px;
+        border: 2px solid black;
+    }
+    table{
+        margin-top: 20px;
+    }
+
+    td.total-price{
+        color:red;
+    }
 </style>
 
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,16 +105,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home:home'%}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link nav-color" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'userprofile:logout' %}">Logout</a>
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -83,7 +141,7 @@
                         <th>Order ID</th>
                         <th>User Name</th>
                         <th>Product Name</th>
-                        <th>Cup Size</th> <!-- Add this column for the cup size -->
+                        <th>Cup Size</th>
                         <th>Quantity</th>
                         <th>Total Price</th>
                         <th>Order Time</th>
@@ -92,12 +150,12 @@
                 <tbody>
                     {% for order_detail in order_details %}
                     <tr data-search="{{ order_detail.pk }} {{ order_detail.user.username }}">
-                        <td>{{ order_detail.pk }}</td>
+                        <td class="id">{{ order_detail.pk }}</td>
                         <td>{{ order_detail.user.username }}</td>
                         <td>{{ order_detail.product_size.product.product_name }}</td>
                         <td>{{ order_detail.product_size.size.get_size_display }}</td> <!-- Display the cup size -->
                         <td>{{ order_detail.quantity }}</td>
-                        <td>${{ order_detail.total_price|floatformat:"2" }}</td>
+                        <td class="total-price">${{ order_detail.total_price|floatformat:"2" }}</td>
                         <td>{{ order_detail.order_time|date:"DATETIME_FORMAT" }}</td>
                     </tr>
                     {% endfor %}

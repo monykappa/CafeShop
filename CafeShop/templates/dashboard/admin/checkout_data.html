@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout Data</title>
-    <!-- Add Bootstrap CSS link -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>
@@ -14,6 +15,35 @@
         --secondary-font: "Poppins", sans-serif;
         --first-color: #fffdd0;
         --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
     }
 
     a.go-back-btn {
@@ -35,12 +65,32 @@
         background-color: black;
         color: white;
     }
+    td.total-count{
+        color:red;
+        font-size: 20px;
+    }
+    td.product-name{
+        color:var(--second-color);
+    }
+    thead tr{
+        color:red;
+    }
+    td.id{
+        color:rgb(16, 139, 16);
+        font-size: 20px;
+    }
+    tr{
+        border: 2px solid grey;
+    }
+    table{
+        margin-top: 20px;
+    }
 </style>
 
 <body>
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,16 +99,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home:home'%}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link nav-color" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'userprofile:logout' %}">Logout</a>
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -67,9 +118,9 @@
     <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
     <div class="container">
         <h1>Checkout Data</h1>
-        <table class="table table-bordered">
+        <table class="table table-bordered custom-table">
             <thead>
-                <tr>
+                <tr style="font-size: 19px;">
                     <th>Order ID</th>
                     <th>Username</th>
                     <th>Product Name</th>
@@ -84,15 +135,15 @@
                 {% for order_detail in checkout.order_details.all %}
                 <tr>
                     {% if forloop.first %}
-                    <td rowspan="{{ checkout.order_details.count }}">{{ checkout.checkout_id }}</td>
+                    <td rowspan="{{ checkout.order_details.count }}" class="id">{{ checkout.checkout_id }}</td>
                     <td rowspan="{{ checkout.order_details.count }}">{{ checkout.customer.user.username }}</td>
                     {% endif %}
-                    <td>{{ order_detail.product_size.product.product_name }}</td>
+                    <td class="product-name">{{ order_detail.product_size.product.product_name }}</td>
                     <td>{{ order_detail.product_size.size.get_size_display }}</td> <!-- Display the cup size -->
                     <td>{{ order_detail.quantity }}</td>
                     <td>${{ order_detail.product_size.price|floatformat:2 }}</td>
                     {% if forloop.first %}
-                    <td rowspan="{{ checkout.order_details.count }}">$
+                    <td rowspan="{{ checkout.order_details.count }}" class="total-count">$
                         {{ checkout.calculate_total_price|floatformat:2 }}</td>
                     {% endif %}
                 </tr>
