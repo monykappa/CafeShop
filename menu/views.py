@@ -253,8 +253,7 @@ def menu(request):
         cart_count = 0  # User is not authenticated, cart count is 0
 
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_products.values()), 20)  # Show 20 products per page
-
+    paginator = Paginator(list(grouped_products.values()), 30) 
     page = request.GET.get('page')
     grouped_products_page = paginator.get_page(page)
 
@@ -277,7 +276,7 @@ def iced_drinks(request):
         grouped_iced_products[product.product_name]['sizes'].append(product.sizes.first())
 
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_iced_products.values()), 5)  # Show 5 products per page
+    paginator = Paginator(list(grouped_iced_products.values()), 10)
 
     page = request.GET.get('page')
     iced_products_page = paginator.get_page(page)
@@ -301,7 +300,7 @@ def hot_drinks(request):
         grouped_hot_products[product.product_name]['sizes'].append(product.sizes.first())
 
     # Create a Paginator instance
-    paginator = Paginator(list(grouped_hot_products.values()), 5)  # Show 5 products per page
+    paginator = Paginator(list(grouped_hot_products.values()), 10)  
 
     page = request.GET.get('page')
     hot_products_page = paginator.get_page(page)
@@ -342,7 +341,7 @@ def frappe_drinks(request):
         return render(request, 'Orderfolder/no_drinks.html')
 
     # Create a Paginator instance
-    paginator = Paginator(drinks, 5)  # Show 5 products per page
+    paginator = Paginator(drinks, 10)  
 
     page = request.GET.get('page')
     drinks_page = paginator.get_page(page)
@@ -350,13 +349,6 @@ def frappe_drinks(request):
     return render(request, 'Orderfolder/frappe_drinks.html', {'drinks_page': drinks_page})
 
 
-# def select_size_view(request, product_id):
-#     product = get_object_or_404(AddProduct, pk=product_id)
-
-#     # You can retrieve the available sizes and prices for this product here
-#     # and pass them to the template
-
-#     return render(request, 'menu/select_size.html', {'product': product})
 
 def order_detail_list(request):
     if request.method == 'POST':

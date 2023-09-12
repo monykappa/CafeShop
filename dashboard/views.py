@@ -27,6 +27,8 @@ def checkout_view(request):
     return render(request, 'dashboard/admin/checkout_data.html', {'user_checkout_data': user_checkout_data})
 
 
+
+
 @login_required
 def dashboard(request):
     # Retrieve all products from the database
@@ -48,7 +50,7 @@ def dashboard(request):
     }
 
     # Create a Paginator instance
-    paginator = Paginator(products, 5)  # Show 5 products per page
+    paginator = Paginator(products, 10)  # Show 5 products per page
 
     page = request.GET.get('page')
     try:
@@ -86,6 +88,9 @@ def edit_product(request, product_id):
 
         # Save the updated product to the database
         product.save()
+
+        # Add a success message
+        messages.success(request, 'Changes saved successfully.')
 
         # Redirect to the product list page or another appropriate page
         return redirect('dashboard:dashboard')  # Replace with your URL pattern name

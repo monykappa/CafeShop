@@ -77,17 +77,18 @@
     }
 
     .pagination {
-        border: 1px solid black;
-        padding: 10px;
-        width: 500px;
+        margin-top: 3vh;
+        border: 1px solid brown;
+        border-radius: 5px;
+        padding: 20px;
     }
 
     .pagination a {
         border: 1px solid #000000;
         padding: 5px 10px;
-        margin: 0 2px;
+        margin: 10px;
         border-radius: 5px;
-        transition: 0.5s ease;
+        transition: 0.2s ease-in-out;
     }
 
     .pagination a:hover {
@@ -142,6 +143,7 @@
     nav.sidebar{
         border: 2px solid var(--second-color);
         border-radius: 15px;
+        height: 330px;
     }
     a.aside-link{
         text-align: center;
@@ -149,7 +151,7 @@
         font-size: 20px;
         padding: 5px;
         margin:10px 0;
-        border-radius: 15px;
+        border-radius: 5px;
         transition: 0.5s ease-in;
     }
     a.aside-link:hover{
@@ -163,6 +165,41 @@
         font-size: 20px;
         color:red;
     }
+    .pagination {
+        margin-top: 3vh;
+        border: 1px solid brown;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    .pagination a {
+        border: 1px solid #000000;
+        padding: 5px 10px;
+        margin: 10px;
+        border-radius: 5px;
+        transition: 0.2s ease-in-out;
+    }
+    a.pag-link{
+        font-family: var(--primary-font);
+        font-size: 20px;
+        text-decoration: none;
+        color:black;
+    }
+    a.pag-link:hover{
+        background-color: var(--second-color);
+        text-decoration: underline;
+        color:white;
+
+    }
+    span.current-page{
+        font-family: var(--secondary-font);
+        margin: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color:var(--second-color);
+    }
+
+
 </style>
 
 <body>
@@ -219,6 +256,7 @@
             </nav>
 
 
+
             <!-- Main Content Area -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <!-- Display all products -->
@@ -243,14 +281,25 @@
                         </div>
                     </div>
 
-
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="categorySelect">Sort by Category:</label>
+                            <select class="form-control" id="categorySelect">
+                                <option value="All">All</option>
+                                <option value="Coffee">Coffee</option>
+                                <option value="Tea">Tea</option>
+                                <option value="Soda">Soda</option>
+                                <option value="Milk">Milk</option>
+                            </select>
+                        </div>
+                    </div>
+                    
 
 
                     <div class="table-responsive">
                         <table class="table table-bordered custom-table" id="product-table">
                             <h2>All Products</h2>
                             <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add new product</a>
-
                             <thead>
                                 <tr>
                                     <th>Drinks Name</th>
@@ -302,6 +351,7 @@
                             </tbody>
                         </table>
                     </div>
+                    
 
 
 
@@ -309,15 +359,15 @@
                     <div class="pagination justify-content-center">
                         <span class="step-links">
                             {% if products.has_previous %}
-                            <a href="?page=1">&laquo; first</a>
-                            <a href="?page={{ products.previous_page_number }}">previous</a>
+                            <a href="?page=1" class="pag-link" >&laquo; first page</a>
+                            <a href="?page={{ products.previous_page_number }}" class="pag-link">previous page</a>
                             {% endif %}
 
-                            <span class="current-page">{{ products.number }}</span>
+                            <span class="current-page">Page {{ products.number }}</span>
 
                             {% if products.has_next %}
-                            <a href="?page={{ products.next_page_number }}">next</a>
-                            <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+                            <a href="?page={{ products.next_page_number }}" class="pag-link">next</a>
+                            <a href="?page={{ products.paginator.num_pages }}" class="pag-link">last &raquo;</a>
                             {% endif %}
                         </span>
                     </div>
@@ -331,6 +381,57 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function() {
+    $("#drinkSearch").on("keyup", function() {
+        performSearch();
+    });
+
+    $("#categorySelect").on("change", function() {
+        performCategoryFilter();
+    });
+
+    function performCategoryFilter() {
+        var selectedCategory = $("#categorySelect").val();
+        var searchText = $("#drinkSearch").val().toLowerCase();
+
+        // Loop through all products in the table
+        $("tbody tr").each(function() {
+            var category = $(this).find("td:eq(1)").text();
+            var productName = $(this).find("td:eq(0)").text().toLowerCase();
+
+            if ((selectedCategory === "All" || category === selectedCategory) &&
+                productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    function performSearch() {
+        var selectedCategory = $("#categorySelect").val();
+        var searchText = $("#drinkSearch").val().toLowerCase();
+
+        // Loop through all products in the table
+        $("tbody tr").each(function() {
+            var category = $(this).find("td:eq(1)").text();
+            var productName = $(this).find("td:eq(0)").text().toLowerCase();
+
+            if ((selectedCategory === "All" || category === selectedCategory) &&
+                productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+});
+
+    </script>    
     <script>
         function confirmDelete(productName, productId) {
             var csrfToken = "{{ csrf_token }}"; // Get the CSRF token value from the template
