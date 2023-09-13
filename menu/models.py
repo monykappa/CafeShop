@@ -70,6 +70,19 @@ class ProductSize(models.Model):
     def __str__(self):
         return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
 
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def calculate_total_price(self):
+        if self.product_size is not None:
+            price_per_unit = self.product_size.price
+            return price_per_unit * self.quantity
+        return 0.0
+
+
 class OrderDetail(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE, null=True, blank=True)
@@ -94,7 +107,7 @@ class OrderDetail(models.Model):
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_details = models.ManyToManyField(OrderDetail)
 
     def __str__(self):
@@ -105,5 +118,6 @@ class Checkout(models.Model):
         for order_detail in self.order_details.all():
             total_price += order_detail.total_price
         return total_price
+
 
 

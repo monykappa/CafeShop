@@ -1,26 +1,225 @@
-<!-- checkout.html -->
-<form method="POST" action="{% url 'menu:confirm_order' %}">
-    {% csrf_token %}
-    <h1>Checkout</h1>
-    <!-- Use the fields from the Customer model -->
-    <h6>District</h6>
-    <p>{{ user.customer.district }}</p>
-    <p>House NO: {{ user.customer.house_number }},  Road: {{ user.customer.road }}</p>
-    <p>Contact: {{ user.customer.contact }}</p>
+{% load static %}
+<!DOCTYPE html>
+<body lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <title>{% block title %} Home {% endblock title %}</title> -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <link rel="stylesheet" href="{% static 'css/menucss2.css' %}" /> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+        integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="custom.css"> -->
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+</head>
+<style>
+    .notification-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 9998;
+    }
 
-    <!-- Add a "Continue" button for the next step -->
-    <h2>Order Details:</h2>
-    <ul>
-        {% for order_detail in order_details %}
-        <li>
-            Product: {{ order_detail.product_size.product.product_name }}<br>
-            Size: {{ order_detail.product_size.size }}<br>
-            Quantity: {{ order_detail.quantity }}<br>
-            Total Price: ${{ order_detail.total_price }}
-        </li>
-        {% endfor %}
-    </ul>
+    .alert {
+        background-color: rgb(0, 161, 27);
+        width: 300px;
+        border-radius: 20px;
+        color: #ffffff;
+        text-align: center;
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
 
-    <!-- Add a "Confirm Order" button -->
-    <button type="submit">Confirm Order</button>
-</form>
+    .alert h3,
+    .alert h6,
+    .alert p {
+        margin: 0;
+    }
+
+    .alert #okButton {
+        background-color: #ffffff;
+        color: rgb(0, 161, 27);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    .order-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .order-item-image {
+        flex: 1;
+    }
+
+    .order-item-image img {
+        max-width: 100%;
+    }
+
+    .order-item-details {
+        flex: 3;
+        padding-left: 10px;
+    }
+
+    .product-name {
+        font-weight: bold;
+    }
+</style>
+<body>
+    <div class="container" style="background-color: #ffffff; width:100%; height: 80vh">
+        <div class="row">
+            {% if user.is_authenticated %}
+            <div class="col-md-6" style="background-color: #ffffff; border-radius: 20px;">
+                <h1>Checkout</h1>
+                <h6>SHIPPING DETAILS</h6>
+                <hr>
+                <div class="infor" style="padding-bottom: 20px;">
+                    <div>Username: {{ customer.user }}</div>
+                    <div>Email: {{ user.customer.user.email }}</div>
+                    <div>Tel: {{ customer.contact }}</div>
+                    <div>House No: {{ customer.house_number }}<br> Road: {{ customer.road }} <br>District: {{ customer.district }}</div>
+                </div>
+                <h3>Payment Details</h3>
+                <div class="payment" style="margin-top: 25px;">
+                    <input type="checkbox" id="credit" name="credit"> Credit Card / Debit Card</input>
+                </div>
+                <div id="card">
+                    <!-- Add your credit card input fields here as per your friend's design -->
+                </div>
+                <div class="payment" style="margin-top: 20px; margin-bottom: 20px;">
+                    <input type="checkbox" id="cash" name="cash"> Cash on Delivery
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                    </svg>
+                </div>
+                <hr>
+                <button id="orderButton"
+                    style="background-color: rgb(69, 236, 195); padding: 8px; border-radius: 12px; border: none; font-size: 1.2rem; color: #433a3a; box-shadow: #433a3a;"
+                    onclick="validatePayment()">Purchase ${{ total_price }}</button>
+                <form method="POST" action="{% url 'menu:confirm_order' %}" id="orderForm" style="display: none;">
+                    {% csrf_token %}
+                    <input type="hidden" name="total_price" id="totalPriceInput" value="{{ total_price }}">
+                </form>
+                <hr>
+            </div>
+            <div class="col-md-6" style="background-color: #ffffff; border-radius: 20px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Your Order</h6>
+                        <hr>
+                        {% for order_detail in order_details %}
+                        <div>
+                            <img src="{{ order_detail.product_size.images.url }}" style="max-width: 100%;"
+                                alt="{{ order_detail.product_size.product.product_name }}">
+                            <p>Product Name: {{ order_detail.product_size.product.product_name }}</p>
+                            <p>Price per Unit: ${{ order_detail.product_size.price }}</p>
+                            <p>Quantity: {{ order_detail.quantity }}</p>
+                            <p>Total Price: ${{ order_detail.total_price }}</p>
+                        </div>
+                        <hr>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Total Price</h6>
+                                <div>
+                                    <strong style="color: rgb(249, 70, 70); font-size: 2rem;">
+                                        <p>${{ total_price }}</p>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-12">
+                <h3>You must be signed in to view the checkout page.</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+    <script>
+        document.getElementById("orderButton").addEventListener("click", function () {
+            // Show the form
+            document.getElementById("orderForm").style.display = "block";
+    
+            // Hide the button
+            document.getElementById("orderButton").style.display = "none";
+        });
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#cvccard').hide(); // Hide the element initially
+
+        $('#cash').change(function () {
+            if (this.checked) {
+                $('#credit').prop('checked', false); // Uncheck the credit card checkbox
+                $('#cvccard').hide(); // Hide the cvccard element
+            } else {
+                //   $('#cvccard').show(); // Show the cvccard element when the checkbox is unchecked
+            }
+        });
+
+        $('#credit').change(function () {
+            if (this.checked) {
+                $('#cash').prop('checked', false); // Uncheck the cash checkbox
+                $('#cvccard').show(); // Show the cvccard element when the credit card checkbox is checked
+            } else {
+                $('#cvccard').hide(); // Hide the cvccard element when the credit card checkbox is unchecked
+            }
+        });
+        $("#order").click(function () {
+            $(".notification-background").fadeIn();
+            $("#alert").fadeIn();
+        });
+
+        $("#okButton").click(function () {
+            $(".notification-background").fadeOut();
+            $("#alert").fadeOut();
+        });
+    });
+
+</script>
+<script>
+    function validatePayment() {
+        const creditCheckbox = document.getElementById('credit');
+        const cashCheckbox = document.getElementById('cash');
+
+        if (!creditCheckbox.checked && !cashCheckbox.checked) {
+            alert('Please select a payment method: Credit Card / Debit Card or Cash on Delivery.');
+        } else {
+            // Proceed with the purchase by submitting the form
+            document.getElementById('orderForm').submit();
+        }
+    }
+</script>
+
+</body>
+</html>

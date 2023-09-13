@@ -127,7 +127,7 @@
     </div>
 </div>
 
-<form action="{% url 'menu:add_to_order' %}" method="post" onsubmit="return validateForm()">
+<form action="{% url 'menu:add_to_cart' %}" method="post" onsubmit="return validateForm()">
     {% csrf_token %}
     <div class="container">
         <div class="row" style="padding-left: 0%; padding-top: 5%;">

@@ -294,7 +294,8 @@
     button.remove-button:hover {
         background-color: black;
     }
-    a.continue-button{
+
+    a.continue-button {
         color: white;
         text-decoration: none;
     }
@@ -318,35 +319,34 @@
             </div>
         </div>
         <div class="blockbodyahti2">
-            {% if order_details %}
+            {% if cart_items %}
             <div class="order-container">
-                {% for order_detail in order_details %}
+                {% for cart_item in cart_items %}
                 <div class="product-container">
                     <div class="cofebox">
-                        <img src="{{ order_detail.product_size.images.url }}"
-                            alt="{{ order_detail.product_size.product.product_name }}">
+                        <img src="{{ cart_item.product_size.images.url }}"
+                            alt="{{ cart_item.product_size.product.product_name }}">
                         <div class="cofeinfo">
-                            <h1 class="product-name">{{ order_detail.product_size.product.product_name }}</h1>
+                            <h1 class="product-name">{{ cart_item.product_size.product.product_name }}</h1>
                             <br><br>
-                            <p style="font-size: 20px;" class="product product-size">{{ order_detail.product_size.size}}</p>
-                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{order_detail.quantity }}</p>
-                            <p style="font-size: 25px;" class="product total-price">${{order_detail.total_price|floatformat:2 }}</p><br><br>
-
+                            <p style="font-size: 20px;" class="product product-size">{{ cart_item.product_size.size}}
+                            </p>
+                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{cart_item.quantity}}</p>
+                            <p style="font-size: 25px;" class="product total-price">${{cart_item.calculate_total_price|floatformat:2 }}</p><br><br>
 
                             <!-- Add a "Remove" button -->
-                            <form method="post" action="{% url 'menu:remove_product_from_order' order_detail.id %}">
+                            <form method="post" action="{% url 'menu:remove_product_from_order' cart_item.id %}">
                                 {% csrf_token %}
-                                <button
-                                type="button"
-                                class="remove-button"
-                                data-product-name="{{ order_detail.product_size.product.product_name }}"
-                                data-product-quantity="{{ order_detail.quantity }}"
-                                data-product-size="{{ order_detail.product_size.size }}"
-                                onclick="confirmRemove({{ order_detail.id }})">
-                                Remove
-                            </button>
-                            
+                                <button type="button" class="remove-button"
+                                    data-product-name="{{ cart_item.product_size.product.product_name }}"
+                                    data-product-quantity="{{ cart_item.quantity }}"
+                                    data-product-size="{{ cart_item.product_size.size }}"
+                                    onclick="confirmRemove({{ cart_item.id }})">
+                                    Remove
+                                </button>
                             </form>
+                            
+                            
                         </div>
                     </div>
                 </div>
@@ -356,11 +356,13 @@
                 {% endif %}
                 {% endfor %}
             </div>
-        </div>
-        {% endif %}
-    </div>
+            {% endif %}
 
-<button class="continue-button"><a href="{% url 'menu:user_detail' %}" class="continue-button">Continue</a></button>
+        </div>
+
+        <button class="continue-button"><a href="{% url 'menu:continue_to_order' %}"
+            class="continue-button">Continue</a></button>
+
 
 
     </div>
@@ -423,37 +425,39 @@
 
     <script>
         function confirmRemove(orderDetailId) {
-    const removeButton = document.querySelector(`button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`);
-    const productName = removeButton.getAttribute('data-product-name');
-    const productQuantity = removeButton.getAttribute('data-product-quantity');
-    const productSize = removeButton.getAttribute('data-product-size');
-
-    if (confirm(`Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`)) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        fetch("{% url 'menu:remove_product_from_order' 0 %}".replace("0", orderDetailId), {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-            },
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    // Item removed successfully, display a success message
-                    alert("Remove drink success");
-                    location.reload();
-                } else {
-                    alert("Error removing item from cart.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred while removing the item from the cart.");
-            });
-    }
-}
-
+            const removeButton = document.querySelector(`button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`);
+            const productName = removeButton.getAttribute('data-product-name');
+            const productQuantity = removeButton.getAttribute('data-product-quantity');
+            const productSize = removeButton.getAttribute('data-product-size');
+    
+            if (confirm(`Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`)) {
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+                fetch("{% url 'menu:remove_product_from_order' 0 %}".replace("0", orderDetailId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                    },
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        // Item removed successfully, display a success message
+                        alert("Remove drink success");
+                        location.reload();
+                    } else {
+                        alert("Error removing item from cart.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while removing the item from the cart.");
+                });
+            }
+        }
     </script>
+    
+    
+    
 
 
 </body>

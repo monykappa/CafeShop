@@ -2,18 +2,28 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin  
 from django.contrib.auth.models import User
-from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout
+from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout, CartItem
+from django.utils import formats 
 
 admin.site.register(Size)
-admin.site.register(Checkout)
+
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product_size', 'quantity']
+
+admin.site.register(CartItem, CartItemAdmin)
 
 class CheckoutAdmin(admin.ModelAdmin):
-    list_display = ('checkout_id', 'customer', 'user', 'calculate_total_price')
+    list_display = ('checkout_id', 'customer', 'user', 'display_total_price')
 
-    def calculate_total_price(self, obj):
-        return obj.calculate_total_price()
+    def display_total_price(self, obj):
+        total_price = obj.calculate_total_price()
+        return '${:,.2f}'.format(total_price)  # Format the total price with "$" and comma as a thousands separator
 
-    calculate_total_price.short_description = 'Total Price'
+    display_total_price.short_description = 'Total Price'
+
+
+
+admin.site.register(Checkout, CheckoutAdmin)
 
 class OrderDetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'product_name', 'user_name', 'quantity', 'formatted_total_price')
