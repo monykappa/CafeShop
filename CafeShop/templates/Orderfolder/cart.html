@@ -1,0 +1,461 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: var(--primary-font);
+        font-weight: bold;
+    }
+
+    :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+
+    .confirmpage {
+        width: 100%;
+        display: flex;
+    }
+
+    .confirmpage .blocka {
+        width: 50%;
+        background-color: #A0522D;
+        color: white;
+    }
+
+    .confirmpage .blocka .conlogo {
+        width: 8%;
+    }
+
+    .taghead {
+        display: flex;
+        align-items: center;
+        margin: 4% 0% 0% 5%;
+    }
+
+    .taghead a {
+        width: 15%;
+    }
+
+    .taghead a img {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .taghead h1 {
+        margin-left: 1%;
+    }
+
+    .taghead h1 a {
+        text-decoration: none;
+        color: white;
+    }
+
+    .tagbody {
+        display: flex;
+        flex-direction: column;
+        margin: 40% 0% 0% 5%;
+    }
+
+    .tagbody h1 {
+        font-size: 55px;
+    }
+
+    .tagbody h2 a {
+        color: white;
+    }
+
+    .tagbody h2 {
+        color: #BCC4C2;
+    }
+
+    footer {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        background-color: #F9F9F9;
+    }
+
+    footer .col {
+        border-top: 1px solid #9B8888;
+        border-bottom: 1px solid #9B8888;
+        display: flex;
+        padding: 4% 0% 6% 3%;
+        margin-bottom: 5px;
+    }
+
+    footer .col .col2 {
+        margin-left: 5%;
+    }
+
+    footer .col .col3 {
+        margin-left: 5%;
+    }
+
+    footer .col .col4 {
+        margin-left: 5%;
+    }
+
+    footer .col .col5 {
+        margin-left: 5%;
+    }
+
+    footer .col h2 {
+        color: #A0522D;
+    }
+
+    footer .footericon {
+        display: flex;
+    }
+
+    footer .footericon img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-left: 25px;
+    }
+
+    footer .footerlink ul {
+        list-style: none;
+        display: flex;
+        margin-top: 4%;
+    }
+
+    footer .footerlink ul li a {
+        color: black;
+        text-decoration: none;
+        margin-right: 25px;
+    }
+
+    footer p {
+        color: #A0522D;
+        margin-top: 4%;
+        margin-left: 25px;
+    }
+
+    .blockbodyahti2 {
+        width: 50%;
+        background-color: #F9F9F9;
+        overflow-y: auto;
+        margin-top: 5vh;
+        margin-left: 5vh;
+    }
+
+    .blockbodyahti2 .cofebox {
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        justify-content: space-around;
+        max-height: 80vh;
+        overflow-y: auto;
+
+    }
+
+    /* Add media query for smaller screens */
+    @media screen and (max-width: 768px) {
+
+        .confirmpage .blocka,
+        .blockbodyahti2 {
+            width: 100%;
+        }
+
+        .taghead a img {
+            max-width: 150px;
+        }
+    }
+
+
+
+    .order-container {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: white;
+        justify-content: center;
+        gap: 35px;
+
+    }
+
+
+    .product-container {
+        width: 30%;
+        margin-bottom: 2vh;
+
+    }
+
+    .cofebox {
+        height: 600px;
+        border-radius: 20px;
+        padding-bottom: 5vh;
+
+    }
+
+    .cofebox img {
+        width: 100%;
+        max-width: 440px;
+
+    }
+
+    /* Add media query for smaller screens to display one item per row */
+    @media screen and (max-width: 768px) {
+        .product-container {
+            width: 100%;
+        }
+    }
+
+    h1.product-name {
+        color: var(--second-color);
+        margin-top: 2vh;
+        text-align: center;
+        font-family: var(--primary-font);
+        font-size: 23px;
+    }
+
+    i.fa-solid {
+        font-size: 10px;
+    }
+
+    p.product {
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    p.total-price {
+        color: var(--second-color);
+    }
+
+
+    button.continue-button {
+        background-color: var(--second-color);
+        font-family: var(--second-font);
+        border-radius: 25px;
+        border: 1px solid black;
+        font-size: 20px;
+        color: white;
+        margin: 5vh 2vh 0 1vh;
+        padding: 10px 15px 25px 10px;
+        height: 50px;
+        float: right;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.5s ease, color 0.5s ease;
+        /* Added color transition */
+    }
+
+    button.continue-button:hover {
+        background-color: black;
+        color: white;
+
+    }
+
+
+
+
+    a.go-back-btn {
+        padding: 15px;
+        border-radius: 15px;
+        transition: 0.5s ease-in;
+    }
+
+    a.go-back-btn:hover {
+        background-color: black;
+    }
+
+    button.remove-button {
+        transition: 0.3s ease-in;
+        display: flex;
+        margin: 0 auto;
+        padding: 10px;
+        background-color: red;
+        border-radius: 20px;
+        color: white;
+        font-family: var(--primary-font);
+        border: 1px solid white;
+        cursor: pointer;
+    }
+
+    button.remove-button:hover {
+        background-color: black;
+    }
+    a.continue-button{
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<body>
+    <div class="confirmpage">
+        <div class="blocka">
+            <div class="taghead">
+                <a href="{% url 'home:index' %}">
+                    <img src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}"
+                        alt="Logo" />
+                </a>
+                <h1><a href="#" onclick="history.go(-1); return false;" class="go-back-btn">&lt; Back to previous
+                        page</a></h1>
+            </div>
+            <div class="tagbody">
+                <h1>Review Order ({{ order_details.count }})</h1><br>
+                <h2>For item availability</h2>
+                <h2><a href="{% url 'home:findus' %}">Choose a store &gt;</a></h2>
+            </div>
+        </div>
+        <div class="blockbodyahti2">
+            {% if order_details %}
+            <div class="order-container">
+                {% for order_detail in order_details %}
+                <div class="product-container">
+                    <div class="cofebox">
+                        <img src="{{ order_detail.product_size.images.url }}"
+                            alt="{{ order_detail.product_size.product.product_name }}">
+                        <div class="cofeinfo">
+                            <h1 class="product-name">{{ order_detail.product_size.product.product_name }}</h1>
+                            <br><br>
+                            <p style="font-size: 20px;" class="product product-size">{{ order_detail.product_size.size}}</p>
+                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{order_detail.quantity }}</p>
+                            <p style="font-size: 25px;" class="product total-price">${{order_detail.total_price|floatformat:2 }}</p><br><br>
+
+
+                            <!-- Add a "Remove" button -->
+                            <form method="post" action="{% url 'menu:remove_product_from_order' order_detail.id %}">
+                                {% csrf_token %}
+                                <button
+                                type="button"
+                                class="remove-button"
+                                data-product-name="{{ order_detail.product_size.product.product_name }}"
+                                data-product-quantity="{{ order_detail.quantity }}"
+                                data-product-size="{{ order_detail.product_size.size }}"
+                                onclick="confirmRemove({{ order_detail.id }})">
+                                Remove
+                            </button>
+                            
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
+            </div>
+            <div class="order-container">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+<button class="continue-button"><a href="{% url 'menu:user_detail' %}" class="continue-button">Continue</a></button>
+
+
+    </div>
+
+
+
+
+    <footer>
+        <div class="col">
+            <div class="col1">
+                <h2>Careers</h2>
+                <p>Culture and Values</p>
+                <p>Inclusion, Diversity <br>, and Equity</p>
+                <p>College Achievement Plan</p>
+                <p>Alumni Community</p>
+                <p>International Careers</p>
+            </div>
+
+            <div class="col2">
+                <h2>People</h2>
+                <p>Planet</p>
+                <p>Environmental and Social <br> Impact Reporting</p>
+            </div>
+
+            <div class="col3">
+                <h2>For Business Partners</h2>
+                <p>Landlord Support Center</p>
+                <p>Suppliers</p>
+                <p>Corporate Gift Card Sales</p>
+                <p>Office and Foodservice Coffee</p>
+            </div>
+
+            <div class="col4">
+                <h2>Order and Pick Up</h2>
+                <p>Order on the App</p>
+                <p>Order on the Web</p>
+                <p>Delivery</p>
+                <p>Order and Pick Up Options</p>
+                <p>Explore and Find Coffee for Home</p>
+            </div>
+        </div>
+        <div class="footericon">
+            <img src="{% static 'image/footer/fbicon.png' %}" alt="">
+            <img src="{% static 'image/footer/igicon.png' %}" alt="">
+            <img src="{% static 'image/footer/pinteresticon.png' %}" alt="">
+            <img src="{% static 'image/footer/twittericon.png' %}" alt="">
+            <img src="{% static 'image/footer/yticon.png' %}" alt="">
+        </div>
+        <div class="footerlink">
+            <ul>
+                <li><a href="#">Privacy Notice |</a></li>
+                <li><a href="#">Term of Use | </a></li>
+                <li><a href="#">Do Not Share My Personal Information |</a></li>
+                <li><a href="#">CA Supply Chain Act |</a></li>
+                <li><a href="#">Cookie Preferences |</a></li>
+            </ul>
+        </div>
+        <p>© 2023 Starbucks Coffee Company. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function confirmRemove(orderDetailId) {
+    const removeButton = document.querySelector(`button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`);
+    const productName = removeButton.getAttribute('data-product-name');
+    const productQuantity = removeButton.getAttribute('data-product-quantity');
+    const productSize = removeButton.getAttribute('data-product-size');
+
+    if (confirm(`Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`)) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'menu:remove_product_from_order' 0 %}".replace("0", orderDetailId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    // Item removed successfully, display a success message
+                    alert("Remove drink success");
+                    location.reload();
+                } else {
+                    alert("Error removing item from cart.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while removing the item from the cart.");
+            });
+    }
+}
+
+    </script>
+
+
+</body>
+
+</html>

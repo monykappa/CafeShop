@@ -9,7 +9,9 @@
   --first-color: #fffdd0;
   --second-color: #a0522d;
 }
-
+#divinfo{
+  max-height: 4100;
+}
 .navbar {
   font-family: var(--primary-font);
   font-size: 20px;
@@ -38,19 +40,23 @@ nav {
 
 #body #row1 {
   display: flex;
-  width: 100%;
+  /* width: 100%; */
   padding-bottom: 4%;
 }
 
 #body #row1 #divimg {
-  width: 50%;
+  width: 50%; 
 }
 
 #body #row1 #divimg img {
   width: 100%;
   background-color: #a0522d;
 }
-
+#divinfo{
+  width: 50%;
+  text-align: center;
+  background-color: #FEDF00;
+}
 #body #row1 #divinfo {
   width: 50%;
   text-align: center;
@@ -61,7 +67,6 @@ nav {
 #body #row1 #divinfo h1 {
   color: #a0522d;
 
-
 }
 
 #body #row1 #divinfo input {
@@ -69,8 +74,8 @@ nav {
   border-radius: 20px;
   border: 2px solid #a0522d;
   background-color: #FEDF00;
-
 }
+
 
 
 #body #row2 {
@@ -267,9 +272,8 @@ li.nav-item a.nav-link {
   /* Set the desired margin for the expanded state */
 }
 
-@media screen and (max-width: 1747px) {
+@media screen and (max-width: 1745px) {
   #row1 {
-    display: flex;
     flex-direction: column;
   }
 
@@ -287,7 +291,6 @@ li.nav-item a.nav-link {
   }
 
   #row2 {
-    display: flex;
     flex-direction: column;
   }
 
@@ -317,7 +320,6 @@ li.nav-item a.nav-link {
 
 
   #row4 {
-    display: flex;
     flex-direction: column;
   }
 

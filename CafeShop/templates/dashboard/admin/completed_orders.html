@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Completed Orders</title>
+</head>
+<body>
+    <h1>Completed Orders</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Product Name</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for completed_order in completed_orders_data %}
+                <tr>
+                    <td>{{ completed_order.user.username }}</td>
+                    <td>{{ completed_order.product_size.product.product_name }}</td>
+                    <td>{{ completed_order.product_size.size.get_size_display }}</td>
+                    <td>{{ completed_order.quantity }}</td>
+                    <td>{{ completed_order.total_price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<style>
+    :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+    a.go-back-btn {
+        margin: 10vh 0 0 2vh;
+        font-family: var(--primary-font);
+        background-color: var(--second-color);
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+    }
+
+    nav {
+        margin-bottom: 3vh;
+    }
+
+    a.go-back-btn:hover {
+        background-color: black;
+        color: white;
+    }
+
+    nav {
+        margin-bottom: 3vh;
+    }
+
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+        background-color: transparent;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
+
+    main {
+        margin-bottom: 10vh;
+    }
+
+    .pagination {
+        margin-top: 3vh;
+        border: 1px solid brown;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    .pagination a {
+        border: 1px solid #000000;
+        padding: 5px 10px;
+        margin: 10px;
+        border-radius: 5px;
+        transition: 0.2s ease-in-out;
+    }
+
+    .pagination a:hover {
+        background-color: lightskyblue;
+        color: black;
+    }
+
+    td.product-name {
+        font-weight: 500;
+        font-size: 24px;
+        color: rgb(194, 116, 47);
+    }
+
+    a.btn-edit {
+        width: 65px;
+        margin: 15px 0;
+        transition: 0.5s ease;
+    }
+
+    a.btn-edit:hover {
+        background-color: lightskyblue;
+        color: black;
+    }
+
+    button.btn-delete {
+        transition: 0.5s ease;
+
+    }
+
+    button.btn-delete:hover {
+        background-color: lightcoral;
+        color: black;
+    }
+
+    aside {
+        border: 1px solid grey;
+        border-radius: 15px;
+        padding: 10px;
+        width: 50%;
+        margin: 10px 0 15px 20px;
+    }
+
+    a.btn-add-new {
+        background-color: green;
+        border: none;
+        margin-bottom: 2vh;
+    }
+    a.btn-add-new:hover{
+        background-color: rgb(64, 146, 64);
+
+    }
+    nav.sidebar{
+        border: 2px solid var(--second-color);
+        border-radius: 15px;
+        height: 330px;
+    }
+    a.aside-link{
+        text-align: center;
+        color:var(--second-color);
+        font-size: 20px;
+        padding: 5px;
+        margin:10px 0;
+        border-radius: 5px;
+        transition: 0.5s ease-in;
+    }
+    a.aside-link:hover{
+        background-color: var(--second-color);
+        color:white;
+    }
+    tr{
+        border: 2px solid black;
+    }
+    thead tr{
+        font-size: 20px;
+        color:red;
+    }
+    .pagination {
+        margin-top: 3vh;
+        border: 1px solid brown;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    .pagination a {
+        border: 1px solid #000000;
+        padding: 5px 10px;
+        margin: 10px;
+        border-radius: 5px;
+        transition: 0.2s ease-in-out;
+    }
+    a.pag-link{
+        font-family: var(--primary-font);
+        font-size: 20px;
+        text-decoration: none;
+        color:black;
+    }
+    a.pag-link:hover{
+        background-color: var(--second-color);
+        text-decoration: underline;
+        color:white;
+
+    }
+    span.current-page{
+        font-family: var(--secondary-font);
+        margin: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color:var(--second-color);
+    }
+
+
+</style>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <a href="javascript:history.go(-1);" class="go-back-btn">Go Back to Homepage</a>
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active aside-link" href="{% url 'dashboard:add-new-product' %}">
+                                Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link aside-link" href="{% url  'dashboard:order_detail' %}">
+                                Order Detail
+                            </a>
+                        </li>
+                        <li class="nav-item aside-link">
+                            <a class="nav-link aside-link" href="{% url 'dashboard:checkout_data'%}">
+                                Checkout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+
+            <!-- Main Content Area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <!-- Display all products -->
+                <h1 style="font-family: var(--primary-font);">Welcome to the Dashboard</h1>
+
+                <div class="row">
+                    <!-- Display total drink counts -->
+                    <aside class="col-md-4 col-lg-3 d-md-block bg-light sidebar">
+                        <h5>Total Drinks: {{ total_drinks_count }}</h5>
+                        <ul>
+                            <li>Hot Drinks: {{ hot_drinks_count }}</li>
+                            <li>Iced Drinks: {{ iced_drinks_count }}</li>
+                            <li>Frappe Drinks: {{ frappe_drinks_count }}</li>
+                        </ul>
+                    </aside>
+
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="drinkSearch">Search for Drinks:</label>
+                            <input type="text" class="form-control" id="drinkSearch" name="drinkSearch"
+                                placeholder="Enter drink name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="categorySelect">Sort by Category:</label>
+                            <select class="form-control" id="categorySelect">
+                                <option value="All">All</option>
+                                <option value="Coffee">Coffee</option>
+                                <option value="Tea">Tea</option>
+                                <option value="Soda">Soda</option>
+                                <option value="Milk">Milk</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered custom-table" id="product-table">
+                            <h2>All Products</h2>
+                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add new product</a>
+                            <thead>
+                                <tr>
+                                    <th>Drinks Name</th>
+                                    <th>Category</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                    <th>Image</th>
+                                    <th>Action</th> <!-- New "Action" column -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                {% for size in product.sizes.all %}
+                                <tr data-name="{{ product.product_name }}">
+                                    {% if forloop.first %}
+                                    <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
+                                    <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
+                                    <td>{{ size.size.get_size_display }}</td>
+                                    <td>${{ size.price }}</td>
+                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                        {% if size.images %}
+                                        <img src="{{ size.images.url }}"
+                                            alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
+                                            style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
+                                        {% endif %}
+                                    </td>
+                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
+                                        <!-- Edit button -->
+                                        <div>
+                                            <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
+                                                class="btn btn-primary btn-sm btn-edit">Edit</a>
+                                        </div>
+                                        <!-- Delete button with confirmation -->
+                                        <div>
+                                            <button class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                        </div>
+                                    </td>
+                                    {% else %}
+                                    <td>{{ size.size.get_size_display }}</td>
+                                    <td>${{ size.price }}</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6">No products available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+
+
+
+                    <!-- Pagination -->
+                    <div class="pagination justify-content-center">
+                        <span class="step-links">
+                            {% if products.has_previous %}
+                            <a href="?page=1" class="pag-link" >&laquo; first page</a>
+                            <a href="?page={{ products.previous_page_number }}" class="pag-link">previous page</a>
+                            {% endif %}
+
+                            <span class="current-page">Page {{ products.number }}</span>
+
+                            {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}" class="pag-link">next</a>
+                            <a href="?page={{ products.paginator.num_pages }}" class="pag-link">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+            </main>
+
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function() {
+    $("#drinkSearch").on("keyup", function() {
+        performSearch();
+    });
+
+    $("#categorySelect").on("change", function() {
+        performCategoryFilter();
+    });
+
+    function performCategoryFilter() {
+        var selectedCategory = $("#categorySelect").val();
+        var searchText = $("#drinkSearch").val().toLowerCase();
+
+        // Loop through all products in the table
+        $("tbody tr").each(function() {
+            var category = $(this).find("td:eq(1)").text();
+            var productName = $(this).find("td:eq(0)").text().toLowerCase();
+
+            if ((selectedCategory === "All" || category === selectedCategory) &&
+                productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    function performSearch() {
+        var selectedCategory = $("#categorySelect").val();
+        var searchText = $("#drinkSearch").val().toLowerCase();
+
+        // Loop through all products in the table
+        $("tbody tr").each(function() {
+            var category = $(this).find("td:eq(1)").text();
+            var productName = $(this).find("td:eq(0)").text().toLowerCase();
+
+            if ((selectedCategory === "All" || category === selectedCategory) &&
+                productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+});
+
+    </script>    
+    <script>
+        function confirmDelete(productName, productId) {
+            var csrfToken = "{{ csrf_token }}"; // Get the CSRF token value from the template
+            if (confirm(`Are you sure you want to delete ${productName}?`)) {
+                $.ajax({
+                    url: `/menu/delete_product/${productId}/`,
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: csrfToken,
+                    },
+                    success: function (data) {
+                        if (data.message) {
+                            alert(data.message);
+                            location.reload(); // Reload the page to reflect the changes
+                        } else if (data.error) {
+                            alert(data.error);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while deleting the product.');
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#drinkSearch").on("keyup", function () {
+                var searchText = $(this).val().toLowerCase();
+                $("#product-table tbody tr").each(function () {
+                    var productName = $(this).data("name").toLowerCase();
+                    if (productName.indexOf(searchText) === -1) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

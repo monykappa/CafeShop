@@ -31,6 +31,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = ['*']
 
+
+
+
 LOGIN_URL = '/userprofile/signin/'
 LOGIN_REDIRECT_URL = '/userprofile'
 LOGOUT_REDIRECT_URL = '/userprofile/signin'
@@ -44,8 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'home',
     'userprofile',
+    'menu',
+    'dashboard',
     
 ]
 
@@ -74,10 +80,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'menu.context_processors.cart_count',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'CafeShop.wsgi.application'
 
@@ -88,7 +96,7 @@ WSGI_APPLICATION = 'CafeShop.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "db_CafeShop",
+        "NAME": "db_cafeshop",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",
@@ -122,7 +130,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+
+
+USE_TZ = True
+
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 

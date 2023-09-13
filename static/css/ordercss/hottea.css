@@ -1,0 +1,54 @@
+.containers{
+    display: flex;
+    width: 70%;
+    justify-content: space-around;
+}
+.containers .ulorder{
+    width: 30%;
+}
+.containers .drinkbody{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+.redirectory{
+    display: flex;
+    list-style: none;
+}
+.redirectory li a{
+    text-decoration: none;
+    color: black;  
+}
+.orderhead .ordereviroment{
+    margin-top: 8%;
+}
+.orderhead .ordereviroment .port1{
+width: 100%;
+}
+.orderhead .ordereviroment .port1 .b1{
+    width: 33.33%;
+}
+.orderhead .ordereviroment .port2{
+    width: 100%;
+   
+}
+.orderhead .ordereviroment .port2 .cafeport{
+    display: flex;
+    flex-wrap: wrap;
+}
+.orderhead .ordereviroment .port2 .cafeport .b1{
+    width: 33.33%;
+}
+
+
+.orderhead .ordereviroment .port3{
+    width: 100%;
+   
+}
+.orderhead .ordereviroment .port3 .cafeport{
+    display: flex;
+    flex-wrap: wrap;
+}
+.orderhead .ordereviroment .port3 .cafeport .b1{
+    width: 33.33%;
+}

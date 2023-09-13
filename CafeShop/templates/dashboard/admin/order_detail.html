@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color: black;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
+
+    a.go-back-btn {
+        margin: 10vh 0 0 2vh;
+        font-family: var(--primary-font);
+        background-color: var(--second-color);
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+    }
+
+    nav {
+        margin-bottom: 3vh;
+    }
+
+    a.go-back-btn:hover {
+        background-color: black;
+        color: white;
+    }
+    td.total-count{
+        color:red;
+        font-size: 20px;
+    }
+    td.product-name{
+        color:var(--second-color);
+    }
+    thead tr{
+        color:red;
+    }
+    td.id{
+        color:rgb(16, 139, 16);
+        font-size: 20px;
+    }
+    tr{
+        font-size: 19px;
+        border: 2px solid black;
+    }
+    table{
+        margin-top: 20px;
+    }
+
+    td.total-price{
+        color:red;
+    }
+</style>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Go Back Button -->
+    <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
+
+    <!-- Order Detail Table -->
+
+    <div class="container mt-4">
+        <h1>Order Detail</h1>
+
+        <!-- Search input -->
+        <div class="form-group">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="orderTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User Name</th>
+                        <th>Product Name</th>
+                        <th>Cup Size</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Order Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order_detail in order_details %}
+                    <tr data-search="{{ order_detail.pk }} {{ order_detail.user.username }}">
+                        <td class="id">{{ order_detail.pk }}</td>
+                        <td>{{ order_detail.user.username }}</td>
+                        <td>{{ order_detail.product_size.product.product_name }}</td>
+                        <td>{{ order_detail.product_size.size.get_size_display }}</td> <!-- Display the cup size -->
+                        <td>{{ order_detail.quantity }}</td>
+                        <td class="total-price">${{ order_detail.total_price|floatformat:"2" }}</td>
+                        <td>{{ order_detail.order_time|date:"DATETIME_FORMAT" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if order_details.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ order_details.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current-page">{{ order_details.number }}</span>
+
+            {% if order_details.has_next %}
+            <a href="?page={{ order_details.next_page_number }}">next</a>
+            <a href="?page={{ order_details.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+
+    </div>
+
+
+
+    <!-- Add Bootstrap JS and jQuery scripts here -->
+    <script src="path/to/jquery.min.js"></script>
+    <script src="path/to/bootstrap.min.js"></script>
+    <script>
+        // Get the input element and table
+        var input = document.getElementById("searchInput");
+        var table = document.getElementById("orderTable");
+
+        // Add an event listener for input changes
+        input.addEventListener("input", function () {
+            var searchText = input.value.toLowerCase();
+
+            // Loop through the table rows and hide/show based on the search text
+            var rows = table.querySelectorAll("tbody tr");
+            rows.forEach(function (row) {
+                var searchData = row.getAttribute("data-search").toLowerCase();
+                if (searchData.includes(searchText)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+
+</body>
+
+</html>

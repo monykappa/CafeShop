@@ -1,0 +1,243 @@
+{% extends 'menufolder/menu5.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<!-- Orderfolder/drink_details.html -->
+<style>
+    .btn-back {
+        margin-top: 5vh;
+        margin-right: 2vh;
+        width: 150px;
+    }
+    a.go-back-btn {
+        font-family: var(--secondary-font);
+        margin: 10vh 0 0 5vh;
+        padding: 10px;
+        border-radius: 20px;
+        color: darkslategray;
+        background-color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+        font-weight: bold;
+        
+    }
+
+
+    a.go-back-btn:hover {
+        background-color: var(--first-color);
+        color: var(--second-color); 
+    }
+
+    .ctn-product {
+
+        background-color: var(--second-color);
+        display: flex;
+    }
+
+    .image-ctn {
+        width: 40%;
+        object-fit: cover;
+    }
+
+    .image-ctn img {
+        width: 50%;
+        margin-left: auto;
+        display: block;
+    }
+
+    .product-name-ctn {
+        font-family: var(--primary-font);
+        margin: 10vh 0 0 3vh;
+        width: 100%;
+        color: white;
+    }
+    .size-option {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between; 
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: var(--secondary-font);
+}
+
+.size-option .price {
+    margin-left: 10px; 
+}
+
+.size-option:hover {
+    background-color: #ddd;
+}
+
+.size-option.selected {
+    background-color: var(--second-color);
+    color: white;
+}
+.quantity-button {
+        background-color: var(--first-color);
+        font-family: var(--primary-font);
+        color: black;
+        border: 1px solid black;
+        border-radius: 20px;
+        font-size: 25px;
+        padding: 2px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 0 1vh;
+    }
+
+    .quantity-button:hover {
+        background-color: var(--second-color);
+        color: white;
+    }
+    button.add-to-order{
+        margin-top: 2vh;
+        background-color: var(--second-color);
+        font-family: var(--primary-font);
+        padding: 15px;
+        transition: 0.5s ease;
+    }
+    button.add-to-order:hover{
+        background-color: black;
+    }
+    input.quantity-input{
+        border-radius: 20px;
+        border: 2px solid var(--second-color);
+        padding: 10px;
+        font-family: var(--secondary-font);
+
+    }
+
+</style>
+<div class="ctn-product">
+    <div class="btn-back">
+        <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
+    </div>
+    <div class="image-ctn">
+        <img src="{{ product.sizes.first.images.url }}" alt="pic">
+    </div>
+    <div>
+        <h1 class="product-name-ctn">{{ product.product_name }}</h1>
+    </div>
+</div>
+
+<form action="{% url 'menu:add_to_order' %}" method="post" onsubmit="return validateForm()">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row" style="padding-left: 0%; padding-top: 5%;">
+            <div class="col-md-6"
+                style="background-color: transparent; color: #000000; padding-left: 2%; border: none;">
+                <h1>Size Options</h1>
+                <hr style="color: green;">
+                <div id="size" style="display: flex; flex-direction: column;">
+                    {% for size in product.sizes.all %}
+                    <label class="size-option">
+                        <input type="radio" name="selected_size" value="{{ size.id }}" style="display: none;">
+                        <div style="text-align: center;">{{ size.size.get_size_display }}</div>
+                        <div style="text-align: center;">${{ size.price }}</div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6" style="background-color: transparent; color: #000000; padding-left: 5%;">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label for="quantity" style="font-family: var(--primary-font); font-size: 25px; margin-bottom: 2vh;">Quantity:</label>
+                    <div class="quantity-input">
+                        <button type="button" class="quantity-button" id="decrease">-</button>
+                        <input class="quantity-input" type="number" id="quantity" name="quantity" value="1" min="1" style="width: 60px; text-align: center;">
+                        <button type="button" class="quantity-button" id="increase">+</button>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <button class="add-to-order"
+                        type="submit"
+                        style="border-radius: 20px; border: none;color: #F0F0F0;">
+                        Add to Order
+                    </button>
+                    {% else %}
+                    <p style="font-weight: bold; color: red;">You must be signed in to add to your order.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add an event listener to the "Add to Order" button
+        document.querySelector(".add-to-order").addEventListener("click", function() {
+            // Get the selected size (you may need to adjust this part based on your HTML structure)
+            var selectedSize = document.querySelector('input[name="selected_size"]:checked').value;
+            // Update the hidden input field with the selected size
+            document.querySelector("#product_size_id").value = selectedSize;
+
+            // Get the selected quantity
+            var selectedQuantity = parseInt(document.querySelector("#quantity").value);
+            // Update the hidden input field with the selected quantity
+            document.querySelector("#order_quantity").value = selectedQuantity;
+        });
+    });
+</script>
+
+
+<script>
+    function validateForm() {
+        // Check if a size option is selected
+        const selectedSize = document.querySelector('input[name="selected_size"]:checked');
+        if (!selectedSize) {
+            alert('Please select a size before adding to your order.');
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+</script>
+
+
+
+
+<script>
+    // JavaScript to handle size option selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const sizeOptions = document.querySelectorAll('.size-option');
+
+        sizeOptions.forEach(function(option) {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(function(otherOption) {
+                    otherOption.classList.remove('selected');
+                });
+
+                option.classList.add('selected');
+                // Optionally, you can set the selected size in a hidden input field for form submission.
+                const selectedSizeInput = document.querySelector('#selected-size');
+                selectedSizeInput.value = option.querySelector('input[type="radio"]').value;
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const decreaseButton = document.getElementById('decrease');
+        const increaseButton = document.getElementById('increase');
+        const quantityInput = document.getElementById('quantity');
+
+        decreaseButton.addEventListener('click', function() {
+            if (quantityInput.value > 1) {
+                quantityInput.value--;
+            }
+        });
+
+        increaseButton.addEventListener('click', function() {
+            quantityInput.value++;
+        });
+    });
+</script>
+
+
+{% endblock %}

@@ -19,7 +19,10 @@ urlpatterns = [
     re_path('^test/$', home_view.test, name='test'),
     re_path('^aboutus/$', home_view.aboutus, name='aboutus'),
     re_path('^findus/$', home_view.FindUs, name='findus'),
+    re_path('^drinks/$',home_view.drinks,name='drinkpage'),
+    re_path('^hottea/$',home_view.hottea,name='hotcoffee'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    

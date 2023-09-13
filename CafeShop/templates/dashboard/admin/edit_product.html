@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Product</title>
+    <!-- Include Bootstrap CSS (You should have Bootstrap installed and configured) -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="path-to-bootstrap-css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+
+</head>
+    <style>
+        
+        :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        a.go-back-btn {
+        margin: 10vh 0 0 2vh;
+        font-family: var(--primary-font);
+        background-color: var(--second-color);
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+    }
+
+        a.go-back-btn:hover {
+            background-color: black;
+            color: white;
+            border: none;
+        }
+        .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
+        nav {
+            margin-bottom: 8vh;
+        }
+        .form-group img{
+            display: flex;
+            margin: 0 auto;
+            max-width: 300px; 
+            max-height: 300px;
+            border-radius: 20px;
+        }
+        /* Center the container */
+        .center-container {
+            margin-top: 10vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Adjust the height as needed */
+            margin-bottom: 30vh;
+        }
+
+        .custom-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width:40%;
+            
+        }
+        h1.mt-4{
+            text-align: center;
+        }
+        h1.product-name{
+            color:var(--second-color);
+        }
+        form{
+            font-size: 25px;
+            padding: 30px;
+        }
+        input.form-control {
+        font-size: 22px; 
+    }
+        button.btn-save-change{
+            background-color: var(--second-color);
+            border: none;
+            font-size: 20px;
+            transition: 0.3s ease-in;
+        }
+        button.btn-save-change:hover{
+            background-color: green;
+        }
+    </style>
+
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
+
+
+
+
+    <div class="center-container">
+        <div class="custom-container">
+            <h1 class="mt-4">Edit Drink: </h1>
+            <h1 class="mt-4 product-name">{{ product.product_name }}</h1>
+            <form method="post" enctype="multipart/form-data" action="{% url 'dashboard:edit_product' product.id %}">
+                {% csrf_token %}
+                <!-- Product Image -->
+                <div class="form-group">
+                    <label for="current_image"></label>
+                    {% if product.sizes.first.images %}
+                    <img src="{{ product.sizes.first.images.url }}"
+                        alt="{{ product.product_name }} Image"
+                        >
+                    {% else %}
+                    <p>No Image</p>
+                    {% endif %}
+                </div>
+                <!-- Product Name -->
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" id="name" name="name" class="form-control"
+                        value="{{ product.product_name }}">
+                </div>
+                <!-- Category Selection -->
+                <div class="form-group">
+                    <label for="id_category">Category:</label>
+                    <select name="category" id="id_category" class="form-control">
+                        <option value="">Select a category</option>
+                        {% for category in all_categories %}
+                        <option value="{{ category }}"
+                            {% if category == product.category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for size in product.sizes.all %}
+                <div class="form-group">
+                    <label for="size_{{ size.id }}">{{ size.size.get_size_display }}:</label>
+                    $
+                    <input type="text" id="size_{{ size.id }}" name="size_{{ size.id }}"
+                        class="form-control" value="{{ size.price }}">
+                </div>
+                {% endfor %}
+                <input type="hidden" name="next" value="{{ products.number }}">
+                <!-- Add other form fields for editing product details -->
+                <!-- Add other form fields for editing product details -->
+                <button type="button" class="btn btn-primary btn-save-change" id="saveChangeButton">Save change</button>
+
+
+
+
+            </form>
+        </div>
+    </div>
+    <input type="hidden" id="successParam" name="successParam" value="false">
+
+    <!-- Bootstrap Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Success!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Change saved successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="path-to-jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Check if the successParam is set to 'true'
+            const successParam = new URLSearchParams(window.location.search).get('success');
+    
+            // Add a click event handler for the "Save change" button
+            $('.btn-save-change').click(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                // Manually submit the form
+                $('form').submit();
+            });
+    
+            // If successParam is 'true', show the modal
+            if (successParam === 'true') {
+                $('#successModal').modal('show');
+            }
+        });
+    </script>
+    
+    
+    
+    
+
+    <script>
+        function goBack() {
+            // Use window.history to navigate back to the previous page
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>
