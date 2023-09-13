@@ -91,11 +91,26 @@ class OrderDetail(models.Model):
     def __str__(self):
         return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
 
+
+class Order(models.Model):
+    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Order ID: {self.pk} - Product: {self.order_detail.product_size.product.product_name} - Quantity: {self.order_detail.quantity}"
+
+    def calculate_total_price(self):
+        return self.order_detail.total_price
+
+    def save(self, *args, **kwargs):
+        self.order_detail.calculate_total_price()  # Recalculate total price if needed
+        super().save(*args, **kwargs)
+
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     order_details = models.ManyToManyField(OrderDetail)
+    order = models.ManyToManyField(Order)
 
     def __str__(self):
         return f"Checkout ID: {self.checkout_id}"
@@ -105,4 +120,5 @@ class Checkout(models.Model):
         for order_detail in self.order_details.all():
             total_price += order_detail.total_price
         return total_price
+
 

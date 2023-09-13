@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin  
 from django.contrib.auth.models import User
-from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout
+from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout, Order
 
 admin.site.register(Size)
 admin.site.register(Checkout)
+admin.site.register(Order)
 
 class CheckoutAdmin(admin.ModelAdmin):
     list_display = ('checkout_id', 'customer', 'user', 'calculate_total_price')
