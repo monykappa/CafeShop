@@ -8,11 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from userprofile.models import User
 from menu.models import *
+from userprofile.models import *
 
 
 def index(request):
     templates = 'index.html'
-
     # Calculate cart count based on CartItem model for the current user
     if request.user.is_authenticated:
         cart_count = CartItem.objects.filter(user=request.user).count()
@@ -77,6 +77,25 @@ def home(request):
     context['cart_count'] = cart_count  # Include cart_count in the context
 
     return render(request, 'home.html', context)
+
+@login_required
+def profile(request):
+    user = request.user
+
+    try:
+        customer_user = CustomerUser.objects.get(user=user)
+    except CustomerUser.DoesNotExist:
+        customer_user = None
+
+    checkout_history = Checkout.objects.filter(customer=user.customer)
+
+    context = {
+        'user': user,
+        'customer_user': customer_user,
+        'checkout_history': checkout_history,
+    }
+
+    return render(request, 'dashboard/userprofile/profile.html', context)
 
 
 def aboutus(request):

@@ -122,7 +122,7 @@ def edit_product(request, product_id):
         messages.success(request, 'Changes saved successfully.')
 
         # Redirect to the product list page or another appropriate page
-        return redirect('dashboard:dashboard')  # Replace with your URL pattern name
+        return redirect('dashboard:dashboard') 
 
     # Retrieve all possible category choices from your model
     all_categories = [choice[1] for choice in AddProduct.category.field.choices]

@@ -8,8 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="path-to-bootstrap-css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
+    <script src="sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 </head>
     <style>
@@ -235,31 +237,39 @@
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="path-to-jquery/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // Check if the successParam is set to 'true'
-            const successParam = new URLSearchParams(window.location.search).get('success');
+    $("#saveChangeButton").on("click",function(){
+        swal("Good job!", "You clicked the button!", "success");
+    })
+        //$(document).ready(function () {
+//             $("#saveChangeButton").on("click",function(){
+//                 swal("Good job!", "You clicked the button!", "success");
     
-            // Add a click event handler for the "Save change" button
-            $('.btn-save-change').click(function (event) {
-                event.preventDefault(); // Prevent the default form submission
+// })
+
+//             })
+//             // Check if the successParam is set to 'true'
+//             const successParam = new URLSearchParams(window.location.search).get('success');
     
-                // Manually submit the form
-                $('form').submit();
-            });
+//             // Add a click event handler for the "Save change" button
+//             $('.btn-save-change').click(function (event) {
+//                 event.preventDefault(); // Prevent the default form submission
     
-            // If successParam is 'true', show the modal
-            if (successParam === 'true') {
-                $('#successModal').modal('show');
-            }
-        });
+//                 // Manually submit the form
+//                 $('form').submit();
+//             });
+    
+//             // If successParam is 'true', show the modal
+//             if (successParam === 'true') {
+//                 $('#successModal').modal('show');
+//             }
+//         });
     </script>
     
     
-    
+<!--     
     
 
     <script>
@@ -267,7 +277,7 @@
             // Use window.history to navigate back to the previous page
             window.history.back();
         }
-    </script>
+    </script> -->
 </body>
 
 </html>

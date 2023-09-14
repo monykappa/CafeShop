@@ -1,4 +1,4 @@
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from django.conf import settings 
 from django.conf.urls.static import static
 from django.views.generic import DetailView
@@ -21,6 +21,7 @@ urlpatterns = [
     re_path('^findus/$', home_view.FindUs, name='findus'),
     re_path('^drinks/$',home_view.drinks,name='drinkpage'),
     re_path('^hottea/$',home_view.hottea,name='hotcoffee'),
+    re_path('profile/', views.profile, name='profile'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,123 @@
+{% extends 'menufolder/menu3.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Form</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .profile-image {
+            border-radius: 50%;
+            width: 500px;
+            height: 500px;
+            border: 2px solid #000;
+            /* Add border properties here */
+            object-fit: cover;
+            /* Ensure the image fills the container */
+        }
+
+        #devimg {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid white;
+        }
+
+        #devinfo {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="padding-top: 5%;" class="container">
+        <div class="row">
+            <div class="col-md-4" id="devimg">
+                <div class="card-body">
+                    <div class="form-outline">
+                        <div class="card-body" id="imgUpload">
+                            <img src="{% static 'image/logo/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile-thumbnail.png' %}"
+                                alt="" class="profile-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" id="devinfo">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body" id="studentInfoDisplay">
+                            <div class="info-heading">
+                                <h2>Profile</h2>
+                            </div>
+                            <label for="studentFname">First Name</label>
+                            <input type="text" class="form-control" id="studentFname" readonly
+                                value="{{ customer_user.firstname }}">
+                            <label for="studentSex">Sex</label>
+                            <input type="text" class="form-control" id="studentSex" readonly
+                                value="{{ customer_user.sex }}">
+                            <label for="studentemail">Email</label>
+                            <input type="email" class="form-control" id="studentemail" readonly
+                                value="{{ customer_user.email }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body" id="studentInfoDisplay">
+                            <div class="info-heading">
+                                <h2><i>{{ customer_user.firstname }} {{ customer_user.lastname }}</i> </h2>
+                            </div>
+                            <label for="studentlastname">Last Name</label>
+                            <input type="text" readonly class="form-control" id="studentlastname"
+                                value="{{ customer_user.lastname }}">
+                            <label for="studentDobth">Date Of Birth</label>
+                            <input type="text" readonly class="form-control bg-light" id="studentDobth" name="dob"
+                                value="{{ customer_user.dob }}" data-toggle="datepicker">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card-body" id="orderHistory">
+                        <div class="row">
+                            <div class="info-heading">
+                                <h2>Order History</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Product Name</th>
+                                        <th>Total Price</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for checkout in checkout_history %}
+                                        {% for order_item in checkout.order_items.all %}
+                                            <tr>
+                                                <td>{{ checkout.checkout_id }}</td>
+                                                <td>{{ order_item.product_size.product.product_name }}</td>
+                                                <td>{{ order_item.product_size.price }}</td>
+                                                <td>{{ checkout.order_date }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</body>
+
+</html>
+{% endblock content %}
