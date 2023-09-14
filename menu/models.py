@@ -122,7 +122,8 @@ class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_items = models.ManyToManyField(OrderItem, related_name='checkouts', blank=True) 
+    order_items = models.ManyToManyField(OrderItem, related_name='checkouts', blank=True)
+    order_date = models.DateTimeField(auto_now_add=True, null=True)  # Automatically record the order date
 
     def __str__(self):
         return f"Checkout ID {self.checkout_id}"

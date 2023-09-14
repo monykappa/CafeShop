@@ -28,6 +28,7 @@ from .models import Checkout
 from decimal import Decimal
 from django.db import transaction
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from datetime import datetime
 
 
 
@@ -160,10 +161,11 @@ def confirm_order(request):
             # Retrieve OrderDetail instances for the current user
             order_details = OrderDetail.objects.filter(user=user)
 
-            # Create a Checkout instance with a unique identifier
+            # Create a Checkout instance with a unique identifier and order_date
             checkout = Checkout.objects.create(
                 customer=user.customer,
-                user=user
+                user=user,
+                order_date=datetime.now()  # Use the current date and time
             )
 
             # Create OrderItem instances for each OrderDetail and associate them with the Checkout

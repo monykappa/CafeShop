@@ -19,7 +19,7 @@ class CartItemAdmin(admin.ModelAdmin):
 admin.site.register(CartItem, CartItemAdmin)
 
 class CheckoutAdmin(admin.ModelAdmin):
-    list_display = ('checkout_id', 'customer', 'user', 'display_total_price')
+    list_display = ('checkout_id', 'customer', 'user', 'display_total_price', 'order_date')  # Add 'order_date' to the list_display
     
     def display_total_price(self, obj):
         # Calculate the total price based on associated OrderItem objects
@@ -30,6 +30,7 @@ class CheckoutAdmin(admin.ModelAdmin):
 
 if not admin.site.is_registered(Checkout):
     admin.site.register(Checkout, CheckoutAdmin)
+
 
 
 class OrderDetailAdmin(admin.ModelAdmin):

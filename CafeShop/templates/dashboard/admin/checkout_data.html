@@ -60,7 +60,6 @@
     nav {
         margin-bottom: 3vh;
     }
-
     a.go-back-btn:hover {
         background-color: black;
         color: white;
@@ -73,11 +72,13 @@
         color:var(--second-color);
     }
     thead tr{
+        
         color:red;
     }
     td.id{
         color:red;
         text-decoration: underline;
+        /* text-align: center; */
         font-size: 20px;
     }
     tr{
@@ -85,6 +86,7 @@
     }
     table{
         margin-top: 20px;
+
     }
     td.total-price{
         text-align: center;
@@ -128,13 +130,14 @@
         <table class="table table-bordered custom-table">
             <thead>
                 <tr style="font-size: 19px;">
-                    <th>Order ID</th>
+                    <th style="width: 130px;">Order ID</th>  
                     <th>Username</th>
-                    <th>Product Name</th>
-                    <th>Cup Size</th>
+                    <th style="width: 250px;">Product Name</th>
+                    <th style="width: 130px;">Cup Size</th>
                     <th>Quantity</th>
-                    <th>Price per Unit</th>
-                    <th>Total Price</th>
+                    <th style="width: 220px;">Price per Unit</th>
+                    <th style="width: 165px;">Total Price</th>
+                    <th style="width: 280px;">Order Date</th>  <!-- Add Order Date column -->
                 </tr>
             </thead>
             <tbody>
@@ -151,6 +154,7 @@
                     <td>${{ product.price_per_unit|floatformat:2 }}</td>
                     {% if forloop.first %}
                     <td rowspan="{{ checkout.products|length }}" class="total-price">$ {{ checkout.total_price|floatformat:2 }}</td>
+                    <td rowspan="{{ checkout.products|length }}">{{ checkout.order_date|date:"F d, Y H:i A" }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -158,6 +162,7 @@
             </tbody>
         </table>
     </div>
+    
     
     
     
