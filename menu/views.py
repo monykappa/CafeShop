@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from userprofile.models import *
 import logging
-from .models import AddProduct, Size, ProductSize, OrderDetail, CartItem, Confirm, OrderItem
+from .models import AddProduct, Size, ProductSize, OrderDetail, CartItem, OrderItem
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
@@ -154,45 +154,37 @@ def checkout(request):
 def confirm_order(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
-            customer = request.user.customer
+            # Get the current user
+            user = request.user
 
-            # Create a new Confirm instance for each order
-            confirm_instance = Confirm.objects.create(customer=customer, user=request.user)
+            # Retrieve OrderDetail instances for the current user
+            order_details = OrderDetail.objects.filter(user=user)
 
-            order_details = OrderDetail.objects.filter(user=request.user)
+            # Create a Checkout instance with a unique identifier
+            checkout = Checkout.objects.create(
+                customer=user.customer,
+                user=user
+            )
 
-            # Calculate the total quantity by summing up the quantities of OrderDetail instances
-            total_quantity = order_details.aggregate(Sum('quantity'))['quantity__sum']
-
+            # Create OrderItem instances for each OrderDetail and associate them with the Checkout
             for order_detail in order_details:
-                confirm_instance.products.add(order_detail.product_size)
+                order_item, _ = OrderItem.objects.get_or_create(
+                    product_size=order_detail.product_size,
+                    defaults={'quantity': order_detail.quantity}
+                )
+                checkout.order_items.add(order_item)
 
-            # Set the total quantity for the confirm instance
-            confirm_instance.quantity = total_quantity
-
-            # Create OrderItem instances and populate them with ordered products
-            for order_detail in order_details:
-                OrderItem.objects.create(product_size=order_detail.product_size, quantity=order_detail.quantity)
-
-            # Retrieve data from OrderItem and update the Confirm instance
-            order_items = OrderItem.objects.filter(product_size__user=request.user)
-            for order_item in order_items:
-                product_size = order_item.product_size
-                confirm_instance.products.add(product_size)
-                confirm_instance.total_price += product_size.price * order_item.quantity
-
-            confirm_instance.save()
-
-            # Delete the data from the OrderDetail instances
+            # Delete the OrderDetail instances for the current user
             order_details.delete()
 
-            # Clear the cart session data
-            request.session.pop('cart', None)
-
-            # Redirect to the 'order_confirmation_page' URL
+            # Redirect to the 'order_confirmation_page' URL or wherever you want
             return redirect('menu:order_confirmation_page')
 
     return HttpResponse("Invalid request method", status=405)
+
+
+
+
 
 
 

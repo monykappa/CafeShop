@@ -29,8 +29,6 @@ urlpatterns = [
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
     path('continue-to-order/', views.continue_to_order, name='continue_to_order'),
     path('remove_product_from_order/<int:cart_item_id>/', views.remove_product_from_order, name='remove_product_from_order'),
-
-
 ]
 
 

@@ -102,7 +102,12 @@ class OrderDetail(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
+        product_size = self.product_size
+        if product_size and product_size.product:
+            return f"OrderDetailID: {self.pk} - {product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
+        else:
+            return f"OrderDetailID: {self.pk} - Product: N/A - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
+
 
 
 class OrderItem(models.Model):
@@ -112,23 +117,15 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"OrderItem ID: {self.pk} - Product: {self.product_size.product.product_name} - Quantity: {self.quantity}"
 
-class Confirm(models.Model):
-    confirm_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_items = models.ManyToManyField('OrderItem', related_name='confirmations')
-    
-    def __str__(self):
-        return f"Confirm ID: {self.confirm_id}"
-
 
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    confirm = models.ForeignKey(Confirm, on_delete=models.CASCADE, null=True, blank=True)
+    order_items = models.ManyToManyField(OrderItem, related_name='checkouts', blank=True) 
 
     def __str__(self):
-        return f"Checkout ID: {self.checkout_id}"
+        return f"Checkout ID {self.checkout_id}"
+
 
 

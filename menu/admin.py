@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin  
 from django.contrib.auth.models import User
-from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout, CartItem, Confirm, OrderItem
+from .models import Size, AddProduct, OrderDetail, ProductSize, Checkout, CartItem, OrderItem
 from django.utils import formats 
 
 admin.site.register(Size)
@@ -13,14 +13,6 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('product_size', 'quantity')
 
 
-class ConfirmAdmin(admin.ModelAdmin):
-    list_display = ('confirm_id', 'customer', 'user')
-    list_filter = ('customer', 'user')
-    search_fields = ('confirm_id', 'customer__user__username')  # Customize search fields as needed
-
-# Register the Confirm model with its admin class
-admin.site.register(Confirm, ConfirmAdmin)
-
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ['user', 'product_size', 'quantity']
 
@@ -30,8 +22,8 @@ class CheckoutAdmin(admin.ModelAdmin):
     list_display = ('checkout_id', 'customer', 'user', 'display_total_price')
     
     def display_total_price(self, obj):
-        # Calculate the total price based on associated OrderDetail objects
-        total_price = sum(order_detail.total_price for order_detail in obj.order_details.all())
+        # Calculate the total price based on associated OrderItem objects
+        total_price = sum(order_item.product_size.price * order_item.quantity for order_item in obj.order_items.all())
         return f"${total_price:.2f}"
     
     display_total_price.short_description = "Total Price"
@@ -39,17 +31,22 @@ class CheckoutAdmin(admin.ModelAdmin):
 if not admin.site.is_registered(Checkout):
     admin.site.register(Checkout, CheckoutAdmin)
 
+
 class OrderDetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'product_name', 'user_name', 'quantity', 'formatted_total_price')
     list_filter = ('product_size__product', 'user')  # Add any additional filters if needed
 
     def product_name(self, obj):
-        return obj.product_size.product.product_name
+        product_size = obj.product_size
+        if product_size and product_size.product:
+            return product_size.product.product_name
+        return "N/A"
 
     def user_name(self, obj):
-        if obj.user:
-            return obj.user.username  # Display the username if the user exists
-        return "N/A"  # Display "N/A" if there is no user
+        user = obj.user
+        if user:
+            return user.username
+        return "N/A"
 
     def formatted_total_price(self, obj):
         return f"${obj.total_price:.2f}"
@@ -58,9 +55,9 @@ class OrderDetailAdmin(admin.ModelAdmin):
     user_name.short_description = 'User Name'
     formatted_total_price.short_description = 'Total Price'
 
-
-
+# Register the admin class with the OrderDetail model
 admin.site.register(OrderDetail, OrderDetailAdmin)
+
 
 
 class ProductPriceAdmin(admin.ModelAdmin):

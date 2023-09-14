@@ -15,16 +15,50 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q 
 from django import forms
-from menu.models import Checkout
+from menu.models import Checkout, OrderDetail, OrderItem, ProductSize, AddProduct, CartItem
 
 
 def checkout_view(request):
-    # Retrieve the user's checkout data, e.g., using the user's ID or any other identifier
-    user_checkout_data = Checkout.objects.filter(user=request.user)  # Adjust this query as per your model structure
+    # Retrieve the checkout data with related OrderDetail data
+    checkout_data = Checkout.objects.select_related('user', 'customer').prefetch_related(
+        'order_items__product_size__product'
+    )
 
-    # You can add additional logic here to process and prepare the data for display
+    # Create a list to store organized data by unique checkout IDs
+    unique_checkouts = []
 
-    return render(request, 'dashboard/admin/checkout_data.html', {'user_checkout_data': user_checkout_data})
+    # Create a set to keep track of processed checkout IDs
+    processed_checkouts = set()
+
+    for checkout in checkout_data:
+        checkout_id = checkout.checkout_id
+        if checkout_id not in processed_checkouts:
+            # Initialize data for this unique checkout ID
+            unique_checkout = {
+                'checkout_id': checkout_id,
+                'username': checkout.user.username,
+                'products': [],
+                'total_price': 0,  # Initialize total price
+            }
+            for order_item in checkout.order_items.all():
+                product = order_item.product_size.product
+                if product:  # Check if there is a product
+                    total_price = order_item.product_size.price * order_item.quantity
+                    unique_checkout['products'].append({
+                        'product_name': product.product_name,
+                        'size': order_item.product_size.size.get_size_display(),
+                        'quantity': order_item.quantity,
+                        'price_per_unit': order_item.product_size.price,
+                        'total_price': total_price,
+                    })
+                    unique_checkout['total_price'] += total_price  # Update total price
+            unique_checkouts.append(unique_checkout)
+            processed_checkouts.add(checkout_id)
+
+    # Pass the data to the template
+    context = {'user_checkouts': unique_checkouts}
+    return render(request, 'dashboard/admin/checkout_data.html', context)
+
 
 
 
