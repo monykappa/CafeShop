@@ -12,6 +12,16 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 </head>
 <style>
+    :root {
+    --primary-font: "Quicksand", sans-serif;
+    --secondary-font: "Poppins", sans-serif;
+    --first-color: #fffdd0;
+    --second-color: #a0522d;
+}
+    p.welcome-message:hover{
+        text-decoration: underline;
+        color: var(--second-color);
+    }
     .welcome-message{
         margin:5px 10px 0 10px;
     }

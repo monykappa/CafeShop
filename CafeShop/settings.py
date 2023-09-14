@@ -24,6 +24,9 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1ai=_j)*qu7i^-^9*&zer^xg-3rclr^#x8w2*-f(w2ej8c31#t'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 MEDIA_URL = '/media/'

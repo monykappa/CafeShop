@@ -22,6 +22,8 @@ urlpatterns = [
     re_path('^drinks/$',home_view.drinks,name='drinkpage'),
     re_path('^hottea/$',home_view.hottea,name='hotcoffee'),
     re_path('^profile/$', home_view.profile, name='profile'),
+    path('update_profile_picture/', views.update_profile_picture, name='update_profile_picture'),
+    path('delete_profile_picture/', views.delete_profile_picture, name='delete_profile_picture'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

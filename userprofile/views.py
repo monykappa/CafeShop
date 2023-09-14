@@ -61,6 +61,9 @@ class SignupView(View):
         firstname = request.POST.get('first_name')
         lastname = request.POST.get('last_name')
 
+        # Retrieve the profile image file from the request
+        profile_image = request.FILES.get('profile_image')
+
         # Create a new User instance
         user = User.objects.create_user(
             username=username,
@@ -77,7 +80,8 @@ class SignupView(View):
             email=email,
             password=password,
             sex=sex,
-            dob=dob
+            dob=dob,
+            profile_image=profile_image  # Associate the profile image with the CustomerUser
         )
 
         # Save the CustomerUser instance
@@ -88,7 +92,7 @@ class SignupView(View):
         if user is not None:
             login(request, user)
 
-        return redirect('userprofile:signin')
+        return redirect('home:home')
 
 
 

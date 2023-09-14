@@ -1,8 +1,9 @@
+
 {% load static %}
 
 
 
-{% block main_body %}
+{% block content %}
 <style>
     * {
         padding: 0;
@@ -177,11 +178,17 @@
     .go-back-btn:hover{
         background-color: #495057;
     }
+    label.pfp{
+        font-size: 20px;
+        font-family: var(--primary-font);
+        font-weight: bold;
+        margin-right: 55px;
+    }
 </style>
 <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
 <h1 class="create-acc">Create an account</h1>
 <div class="container">
-    <form method="post" action="{% url 'userprofile:signup' %}">
+    <form method="post" action="{% url 'userprofile:signup' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
@@ -196,7 +203,8 @@
                         <option value="Female">Female</option>
                     </select>
                     <input type="date" class="form-control" placeholder="* Date of Birth" name="dob">
-                    <input type="text" class="form-control" placeholder="Contact" name="contact">
+                    <label for="profile_image" class="pfp">Profile Picture</label>
+                    <input type="file" class="form-control-file pfp" name="profile_image">
                 </div>
             </div>
             <div class="col-md-6">
@@ -236,4 +244,4 @@
         submitButton.disabled = !checkbox.checked;
     });
 </script>
-{% endblock main_body %}
+{% endblock content %}
