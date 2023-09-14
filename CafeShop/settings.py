@@ -36,7 +36,8 @@ ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = '/userprofile/signin/'
 LOGIN_REDIRECT_URL = '/userprofile'
-LOGOUT_REDIRECT_URL = '/userprofile/signin'
+LOGOUT_REDIRECT_URL = '/home/index'
+
 
 # Application definition
 

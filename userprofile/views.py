@@ -96,3 +96,4 @@ class LogoutView(View):
     def get(self, request): 
         logout(request)
         return redirect('home:index')
+
