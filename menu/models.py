@@ -104,20 +104,31 @@ class OrderDetail(models.Model):
     def __str__(self):
         return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
 
+
+class OrderItem(models.Model):
+    product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"OrderItem ID: {self.pk} - Product: {self.product_size.product.product_name} - Quantity: {self.quantity}"
+
+class Confirm(models.Model):
+    confirm_id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_items = models.ManyToManyField('OrderItem', related_name='confirmations')
+    
+    def __str__(self):
+        return f"Confirm ID: {self.confirm_id}"
+
+
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_details = models.ManyToManyField(OrderDetail)
+    confirm = models.ForeignKey(Confirm, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"Checkout ID: {self.checkout_id}"
-
-    def calculate_total_price(self):
-        total_price = 0
-        for order_detail in self.order_details.all():
-            total_price += order_detail.total_price
-        return total_price
-
 
 

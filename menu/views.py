@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from userprofile.models import *
 import logging
-from .models import AddProduct, Size, ProductSize, OrderDetail, CartItem
+from .models import AddProduct, Size, ProductSize, OrderDetail, CartItem, Confirm, OrderItem
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
@@ -26,6 +26,8 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import Checkout
 from decimal import Decimal
+from django.db import transaction
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 
 
 
@@ -148,35 +150,54 @@ def checkout(request):
         return HttpResponse("You must be signed in to view the checkout page.", status=401)
 
     
+@login_required
 def confirm_order(request):
     if request.method == 'POST':
-        # Retrieve the current customer
-        customer = request.user.customer
+        if request.user.is_authenticated:
+            customer = request.user.customer
 
-        # Check if a Checkout instance already exists for the customer
-        checkout_instance, created = Checkout.objects.get_or_create(customer=customer)
+            # Create a new Confirm instance for each order
+            confirm_instance = Confirm.objects.create(customer=customer, user=request.user)
 
-        # Retrieve all order details associated with the user
-        order_details = OrderDetail.objects.filter(user=request.user)
+            order_details = OrderDetail.objects.filter(user=request.user)
 
-        # Create a list to hold order details related to the checkout
-        checkout_instance.order_details.set(order_details)
+            # Calculate the total quantity by summing up the quantities of OrderDetail instances
+            total_quantity = order_details.aggregate(Sum('quantity'))['quantity__sum']
 
-        # You can optionally clear the user's cart or perform other actions here
+            for order_detail in order_details:
+                confirm_instance.products.add(order_detail.product_size)
 
-        # Debug: Print a message before clearing the cart session data
-        print("Before clearing cart session data:", request.session.get('cart'))
+            # Set the total quantity for the confirm instance
+            confirm_instance.quantity = total_quantity
 
-        # Clear the cart session data
-        request.session.pop('cart', None)
+            # Create OrderItem instances and populate them with ordered products
+            for order_detail in order_details:
+                OrderItem.objects.create(product_size=order_detail.product_size, quantity=order_detail.quantity)
 
-        # Debug: Print a message after clearing the cart session data
-        print("After clearing cart session data:", request.session.get('cart'))
+            # Retrieve data from OrderItem and update the Confirm instance
+            order_items = OrderItem.objects.filter(product_size__user=request.user)
+            for order_item in order_items:
+                product_size = order_item.product_size
+                confirm_instance.products.add(product_size)
+                confirm_instance.total_price += product_size.price * order_item.quantity
 
-        # Redirect to the 'order_confirmation_page' URL
-        return redirect('menu:order_confirmation_page')
+            confirm_instance.save()
+
+            # Delete the data from the OrderDetail instances
+            order_details.delete()
+
+            # Clear the cart session data
+            request.session.pop('cart', None)
+
+            # Redirect to the 'order_confirmation_page' URL
+            return redirect('menu:order_confirmation_page')
 
     return HttpResponse("Invalid request method", status=405)
+
+
+
+
+
 
 
 
@@ -235,15 +256,16 @@ def add_to_cart(request):
         if request.user.is_authenticated:
             try:
                 selected_size = ProductSize.objects.get(pk=selected_size_id)
-
-                # Create a cart item and associate it with the user
-                cart_item = CartItem(
+                
+                # Check if a cart item with the same product size already exists for the user
+                cart_item, created = CartItem.objects.get_or_create(
                     user=request.user,
                     product_size=selected_size,
-                    quantity=quantity,
+                    defaults={'quantity': 0}  # Create with quantity 0 if it doesn't exist
                 )
 
-                # Save the cart item
+                # Update the quantity by adding the new quantity
+                cart_item.quantity += quantity
                 cart_item.save()
 
                 return redirect('menu:menu')  # Redirect to the 'menu' page
