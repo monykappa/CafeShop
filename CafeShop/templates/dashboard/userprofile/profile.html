@@ -92,25 +92,34 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Order ID</th>
+                                        <th>Date</th>
                                         <th>Product Name</th>
                                         <th>Total Price</th>
-                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for checkout in checkout_history %}
-                                        {% for order_item in checkout.order_items.all %}
+                                    {% for checkout_group in grouped_checkouts %}
+                                        {% for order_item in checkout_group.order_items %}
                                             <tr>
-                                                <td>{{ checkout.checkout_id }}</td>
+                                                {% if forloop.first %}
+                                                    <td rowspan="{{ checkout_group.order_items.count }}" style="border-bottom: 1px solid #dee2e6;">
+                                                        {{ checkout_group.order_date }}
+                                                    </td>
+                                                {% endif %}
                                                 <td>{{ order_item.product_size.product.product_name }}</td>
                                                 <td>{{ order_item.product_size.price }}</td>
-                                                <td>{{ checkout.order_date }}</td>
                                             </tr>
                                         {% endfor %}
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                         </div>
                     </div>
                 </div>

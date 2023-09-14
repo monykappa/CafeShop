@@ -87,12 +87,21 @@ def profile(request):
     except CustomerUser.DoesNotExist:
         customer_user = None
 
-    checkout_history = Checkout.objects.filter(customer=user.customer)
+    checkout_history = Checkout.objects.filter(customer=user.customer).order_by('order_date')
+
+    # Group the checkout items by date and time
+    grouped_checkouts = {}
+    for checkout in checkout_history:
+        key = checkout.order_date.strftime('%d-%B-%Y %I:%M %p')
+        if key in grouped_checkouts:
+            grouped_checkouts[key]['order_items'].extend(checkout.order_items.all())
+        else:
+            grouped_checkouts[key] = {'order_date': checkout.order_date, 'order_items': list(checkout.order_items.all())}
 
     context = {
         'user': user,
         'customer_user': customer_user,
-        'checkout_history': checkout_history,
+        'grouped_checkouts': grouped_checkouts.values(),
     }
 
     return render(request, 'dashboard/userprofile/profile.html', context)
