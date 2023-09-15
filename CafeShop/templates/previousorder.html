@@ -1,0 +1,40 @@
+{% extends 'menufolder/menu1.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .block-preorder{
+        margin: 3% 0% 3% 12%;
+    }
+   .block-preorder .presiginin{
+        background-color: white;
+        color: black;
+        width: 6%;
+        height: 45px;
+        border-radius: 25px;
+    }
+    .block-preorder .prejoinnow{
+        background-color: #A0522D;
+        color: white;
+        width: 6%;
+        height: 45px;
+        border-radius: 25px;
+    }
+</style>
+
+<div class="block-preorder">
+
+    <h1>Previous Orders</h1><br>
+    <img src="{% static 'image/order/moon-phases.gif' %}" alt=""><br>
+    <h1>When history repeats <br> itself</h1><br><br>
+    <p>Previous orders will appear here to quickly order again.</p>
+    <div class="prebtn">
+        <input type="button" class="presiginin" value="Sigin in" name="" id="">
+        <input type="button" class="prejoinnow" value="Join Now" name="" id="">
+    </div>
+</div>
+   
+{% endblock content %}
+
+
+  

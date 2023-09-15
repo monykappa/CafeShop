@@ -10,7 +10,12 @@ from userprofile.models import User
 from menu.models import *
 from userprofile.models import *
 
-
+def favdrink(request):
+    templates='favoriteproduct.html'
+    return render(request,templates)
+def previousorder(request):
+    templates='previousorder.html'
+    return render(request,templates)
 def index(request):
     templates = 'index.html'
     # Calculate cart count based on CartItem model for the current user

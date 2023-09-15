@@ -1,12 +1,78 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body{
+            position: relative;
+        }
+        #thankgif{
+            position: absolute;
+            bottom: -100px;
+            right: 45px;
+            width: 180px;
+        }
+        #cafelogo{
+            position: absolute;
+            top: -135px;
+            left: 25px;
+            width: 70px;
+        }
+        .thankcontainer {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            text-align: center;
+            margin-top: 8%;
+            padding: 3%;
+        }
+
+        .thankcontainer img {
+          width: 65px;
+            margin-bottom: 20px;
+        }
+
+        .thankcontainer a {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .thankcontainer p {
+            margin-bottom: 10px;
+        }
+
+        .thankcontainer .signature {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Thank you</h1>
-    <a href="{% url 'home:home' %}">Back to Home</a>
+    <div class="thankcontainer">
+        <img id="cafelogo" src="{% static 'image/logo/image-removebg-preview__2__auto_x2-removebg-preview.png' %}">
+       <img src="{% static 'image/logo/giphy (1).gif' %}" id="thankgif" alt="">
+
+        <img style="width: 225px;" src="{% static 'image/logo/National_Thank_You_Day-1.png' %}" alt="">
+        
+        <p>Dear Customer,</p>
+        <p>Thank you for your recent purchase. We truly appreciate your business and the trust you have placed in us.</p>
+        <p>Your order has been successfully processed and will be shipped shortly. If there are any updates regarding your order, we will notify you promptly.</p>
+        <p>If you have any questions or need further assistance, please don't hesitate to contact our customer support team. We're here to help!</p>
+        <div style="text-align: right;">
+             <p class="signature">Best regards</p>
+        <b>Shiloh</b><br>
+        </div>
+       
+        
+        <a href="{% url 'home:home' %}"  style="margin-right: 255px;" class="btn btn-primary">Back to Home</a> 
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
