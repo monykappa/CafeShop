@@ -22,14 +22,12 @@ urlpatterns = [
     re_path('^drinks/$',home_view.drinks,name='drinkpage'),
     re_path('^hottea/$',home_view.hottea,name='hotcoffee'),
     re_path('^profile/$', home_view.profile, name='profile'),
-<<<<<<< HEAD
     re_path('^favoritedrinks/$', home_view.favdrink, name='favoritedrink'),
     re_path('^previousorder/$', home_view.previousorder, name='previousorder'),
-=======
     path('update_profile_picture/', views.update_profile_picture, name='update_profile_picture'),
     path('delete_profile_picture/', views.delete_profile_picture, name='delete_profile_picture'),
+    # path('edit_user_info/', views.edit_user_info, name='edit_user_info'),
     # path('update_profile_info/', views.update_profile_info, name='update_profile_info'),
->>>>>>> 11d3b290e8541f567efccc7cdc6ae189ea9b456f
 ]
 
 if settings.DEBUG:

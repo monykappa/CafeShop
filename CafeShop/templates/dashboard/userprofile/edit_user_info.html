@@ -1,0 +1,40 @@
+{% extends "menufolder/menu5.html" %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card-body">
+            <h2>Edit Profile</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="currentProfileImage">Current Profile Image</label>
+                    <img src="{{ customer_user.profile_image.url }}" alt="Current Profile Image"
+                        class="img-fluid mb-3" id="currentProfileImage" style="max-height: 200px;">
+                </div>
+                <div class="form-group">
+                    <label for="profileImage">New Profile Image</label>
+                    <input type="file" class="form-control-file" id="profileImage" name="profile_image">
+                </div>
+                <div class="form-group">
+                    <label for="studentFname">First Name</label>
+                    <input type="text" class="form-control" id="studentFname" name="firstname"
+                        value="{{ customer_user.firstname }}">
+                </div>
+                <div class="form-group">
+                    <label for="studentlastname">Last Name</label>
+                    <input type="text" class="form-control" id="studentlastname" name="lastname"
+                        value="{{ customer_user.lastname }}">
+                </div>
+                <div class="form-group">
+                    <label for="studentemail">Email</label>
+                    <input type="email" class="form-control" id="studentemail" name="email"
+                        value="{{ customer_user.email }}">
+                </div>
+                <!-- Add more fields for editing other information if needed -->
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
