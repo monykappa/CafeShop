@@ -9,10 +9,19 @@ from django.contrib.auth.decorators import login_required
 from userprofile.models import User
 from menu.models import *
 from userprofile.models import *
+from userprofile.models import CustomerUser
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
+import os
+import logging
 
-
+def favdrink(request):
+    templates='favoriteproduct.html'
+    return render(request,templates)
+def previousorder(request):
+    templates='previousorder.html'
+    return render(request,templates)
 def index(request):
     templates = 'index.html'
     # Calculate cart count based on CartItem model for the current user
@@ -65,6 +74,56 @@ def hottea(request):
 
     return render(request, templates, context)
 
+from datetime import datetime
+# def edit_user_info(request):
+#     user = request.user
+
+#     if request.method == 'POST':
+#         firstname = request.POST.get('firstname')
+#         lastname = request.POST.get('lastname')
+#         email = request.POST.get('email')
+#         profile_image = request.FILES.get('profile_image')
+
+#         # Use a database transaction to ensure both models are updated or none at all
+#         with transaction.atomic():
+#             try:
+#                 # Update CustomerUser model if user is a Customer
+#                 if hasattr(user, 'customeruser'):
+#                     customer_user = user.customeruser
+#                     customer_user.firstname = firstname
+#                     customer_user.lastname = lastname
+#                     customer_user.email = email
+#                     if profile_image:
+#                         customer_user.profile_image = profile_image
+#                     customer_user.save()
+
+#                 # Update Staff model if user is a Staff
+#                 elif hasattr(user, 'staff'):
+#                     staff = user.staff
+#                     staff.firstname = firstname
+#                     staff.lastname = lastname
+#                     staff.email = email
+#                     staff.save()
+
+#                 user.first_name = firstname
+#                 user.last_name = lastname
+#                 user.email = email
+#                 user.save()
+
+#                 messages.success(request, 'Profile updated successfully.')
+#                 return redirect('home:profile')
+
+#             except Exception as e:
+#                 # Handle any exceptions that may occur during the update
+#                 messages.error(request, 'An error occurred while updating your profile.')
+#                 print(str(e))
+
+#     return render(request, 'dashboard/userprofile/edit_user_info.html', {'user': user})
+
+
+
+
+
 
 @login_required
 def home(request):
@@ -81,32 +140,6 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-
-def update_profile_info(request):
-    if request.method == 'POST':
-        # Get the user object
-        user = request.user
-
-        # Get the updated profile information from the POST data
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        sex = request.POST.get('sex')
-        email = request.POST.get('email')
-        dob = request.POST.get('dob')
-
-        # Update the user's profile information
-        user.customeruser.firstname = firstname
-        user.customeruser.lastname = lastname
-        user.customeruser.sex = sex
-        user.customeruser.email = email
-        user.customeruser.dob = dob
-        user.customeruser.save()
-
-        # Redirect back to the profile page or another appropriate page
-        return redirect('home:profile')  # Change to the actual URL name for the profile page
-    
-
-    
 @csrf_exempt
 def update_profile_picture(request):
     if request.method == 'POST':
@@ -124,9 +157,7 @@ def update_profile_picture(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-from django.views.decorators.http import require_POST
-import os
-import logging
+
 
 from django.urls import reverse
 

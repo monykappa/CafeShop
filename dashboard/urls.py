@@ -3,7 +3,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import DetailView
 from django.contrib.auth import views as auth_views
-
+from django.urls import path
+from . import views
 from dashboard import views as dashboard_view
 from . import views
 from dashboard.views import *
@@ -16,7 +17,7 @@ urlpatterns = [
     path('add_new_product/', views.add_new_product_view, name='add-new-product'),
     path('checkout_data/', views.checkout_view, name='checkout_data'),
     path('order-detail/', views.order_detail_view, name='order_detail'),
-
+    path('User-Account/', views.display_customer_users, name='user-account'),
 
 
 

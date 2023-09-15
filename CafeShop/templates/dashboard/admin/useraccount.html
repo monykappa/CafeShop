@@ -126,38 +126,30 @@
 
     <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
     <div class="container">
-        <h1>Checkout Data</h1>
+        <h1>Total Account</h1>
+        <input type="search" style="width: 320px;border: 1px solid #CBCFD5 ; padding: 5px 0px 5px 15px;" placeholder="Search..." name="" id="searchInput">
         <table class="table table-bordered custom-table">
             <thead>
                 <tr style="font-size: 19px;">
-                    <th style="width: 130px;"></th>  
-                    <th>Username</th>
-                    <th style="width: 250px;">Product Name</th>
-                    <th style="width: 130px;">Cup Size</th>
-                    <th>Quantity</th>
-                    <th style="width: 220px;">Price per Unit</th>
-                    <th style="width: 165px;">Total Price</th>
-                    <th style="width: 280px;">Order Date</th>  <!-- Add Order Date column -->
+                    <th style="width: 130px;">Username</th>
+                    <th>First Name</th>
+                    
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <!-- Add more table headers as needed -->
                 </tr>
             </thead>
-            <tbody>
-                {% for checkout in user_checkouts %}
-                {% for product in checkout.products %}
+            <tbody  id="tableBody">
+                {% for customer_user in customer_users %}
                 <tr>
-                    {% if forloop.first %}
-                    <td class="id" rowspan="{{ checkout.products|length }}">{{ checkout.checkout_id }}</td>
-                    <td rowspan="{{ checkout.products|length }}">{{ checkout.username }}</td>
-                    {% endif %}
-                    <td class="product-name">{{ product.product_name }}</td>
-                    <td>{{ product.size }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>${{ product.price_per_unit|floatformat:2 }}</td>
-                    {% if forloop.first %}
-                    <td rowspan="{{ checkout.products|length }}" class="total-price">$ {{ checkout.total_price|floatformat:2 }}</td>
-                    <td rowspan="{{ checkout.products|length }}">{{ checkout.order_date|date:"F d, Y H:i A" }}</td>
-                    {% endif %}
+                    <td>{{ customer_user.username }}</td>
+                    <td>{{ customer_user.firstname }}</td>
+                    <td>{{ customer_user.lastname }}</td>
+                    <td>{{ customer_user.sex }}</td>
+                    <td>{{ customer_user.email }}</td>
+                    <!-- Add more table cells with other fields as needed -->
                 </tr>
-                {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -165,18 +157,43 @@
     
     
     
-    
-    
-    
-    
-    
-
-
-
     <!-- Add Bootstrap JS and jQuery links (required for Bootstrap functionality) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
+<script>
+    // Select the search input field and table body
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('tableBody');
+
+    // Add event listener for input changes
+    searchInput.addEventListener('input', function () {
+        const searchValue = searchInput.value.toLowerCase();
+
+        // Loop through each table row
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            const row = tableBody.rows[i];
+            const username = row.cells[0].innerText.toLowerCase();
+            const firstname = row.cells[1].innerText.toLowerCase();
+            const lastname = row.cells[2].innerText.toLowerCase();
+            const gender = row.cells[3].innerText.toLowerCase();
+            const email = row.cells[4].innerText.toLowerCase();
+
+            // Show/hide rows based on search value
+            if (
+                username.includes(searchValue) ||
+                firstname.includes(searchValue) ||
+                lastname.includes(searchValue) ||
+                gender.includes(searchValue) ||
+                email.includes(searchValue)
+            ) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+</script>
 </html>

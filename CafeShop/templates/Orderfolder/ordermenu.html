@@ -686,10 +686,9 @@ a.cart-icon img.cart-image-hover {
 
 
   <ul id="nav-bottom-bar">
-    <li><a style="text-decoration: underline;" href="#">All Products</a></li>
-    <li><a href="#">Featured</a></li>
-    <li><a href="#">Previous Orders</a></li>
-    <li><a href="#">Favorite Products</a></li>
+    <li><a style="text-decoration: underline;" href="{% url 'home:drinkpage' %}">All Products</a></li>
+    <li><a href="{% url 'home:previousorder' %}">Previous Orders</a></li>
+    <li><a href="{% url 'home:favoritedrink' %}">Favorite Products</a></li>
   </ul>
 
 

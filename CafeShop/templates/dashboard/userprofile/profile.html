@@ -159,7 +159,7 @@
                                 value="{{ customer_user.lastname }}">
                             <label for="studentDobth">Date Of Birth</label>
                             <input type="text" readonly class="form-control bg-light" id="studentDobth" name="dob"
-                                value="{{ customer_user.dob }}" data-toggle="datepicker">
+                                value="{{ customer_user.dob }}" data-toggle="datepicker">   
                         </div>
                     </div>
                 </div>
@@ -182,8 +182,7 @@
                                 <tbody>
                                     {% for checkout_group in grouped_checkouts %}
                                     <tr>
-                                        <td rowspan="{{ checkout_group.order_items|length }}">{{
-                                            checkout_group.order_date }}</td>
+                                        <td rowspan="{{ checkout_group.order_items|length }}">{{ checkout_group.order_date }}</td>
                                         <td>{{ checkout_group.order_items.0.product_size.product.product_name }}</td>
                                         <td>${{ checkout_group.order_items.0.product_size.price }}</td>
                                     </tr>
@@ -197,8 +196,7 @@
                                         <td></td> <!-- Empty cell for spacing -->
                                         <td style="color: red; background-color: rgb(245, 236, 116); font-size: 20px;">
                                             Total Price</td>
-                                        <td style="color:red; background-color: rgb(245, 236, 116); font-size: 20px;">
-                                            ${{ checkout_group.total_price }}</td>
+                                        <td style="color:red; background-color: rgb(245, 236, 116); font-size: 20px;">${{ checkout_group.total_price }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

@@ -160,52 +160,51 @@
             <h1 class="mt-4 product-name">{{ product.product_name }}</h1>
             <form method="post" enctype="multipart/form-data" action="{% url 'dashboard:edit_product' product.id %}">
                 {% csrf_token %}
+            
                 <!-- Product Image -->
                 <div class="form-group">
                     <label for="current_image"></label>
                     {% if product.sizes.first.images %}
-                    <img src="{{ product.sizes.first.images.url }}"
-                        alt="{{ product.product_name }} Image"
-                        >
+                    <img src="{{ product.sizes.first.images.url }}" alt="{{ product.product_name }} Image">
                     {% else %}
                     <p>No Image</p>
                     {% endif %}
                 </div>
+            
                 <!-- Product Name -->
                 <div class="form-group">
                     <label for="name">Product Name:</label>
-                    <input type="text" id="name" name="name" class="form-control"
-                        value="{{ product.product_name }}">
+                    <input type="text" id="name" name="name" class="form-control" value="{{ product.product_name }}">
                 </div>
+            
                 <!-- Category Selection -->
                 <div class="form-group">
-                    <label for="id_category">Category:</label>
-                    <select name="category" id="id_category" class="form-control">
+                    <label for="category">Category:</label>
+                    <select name="category" id="category" class="form-control">
                         <option value="">Select a category</option>
                         {% for category in all_categories %}
-                        <option value="{{ category }}"
-                            {% if category == product.category %}selected{% endif %}>
+                        <option value="{{ category }}" {% if category == product.category %}selected{% endif %}>
                             {{ category }}
                         </option>
                         {% endfor %}
                     </select>
                 </div>
+            
                 {% for size in product.sizes.all %}
                 <div class="form-group">
                     <label for="size_{{ size.id }}">{{ size.size.get_size_display }}:</label>
+                    <input type="hidden" name="size_id" value="{{ size.id }}">
                     $
-                    <input type="text" id="size_{{ size.id }}" name="size_{{ size.id }}"
-                        class="form-control" value="{{ size.price }}">
+                    <input type="text" id="size_{{ size.id }}" name="price_{{ size.id }}" class="form-control"
+                        value="{{ size.price }}">
                 </div>
                 {% endfor %}
+            
                 <input type="hidden" name="next" value="{{ products.number }}">
+            
                 <!-- Add other form fields for editing product details -->
-                <!-- Add other form fields for editing product details -->
-                <button type="button" class="btn btn-primary btn-save-change" id="saveChangeButton">Save change</button>
-
-
-
-
+            
+                <button type="submit" class="btn btn-primary btn-save-change">Save Change</button>
             </form>
         </div>
     </div>
@@ -240,9 +239,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="path-to-bootstrap-js/bootstrap.min.js"></script>
     <script>
-    $("#saveChangeButton").on("click",function(){
-        swal("Good job!", "You clicked the button!", "success");
-    })
+    // $("#saveChangeButton").on("click",function(){
+    //     swal("Good job!", "You clicked the button!", "success");
+    // })
         //$(document).ready(function () {
 //             $("#saveChangeButton").on("click",function(){
 //                 swal("Good job!", "You clicked the button!", "success");

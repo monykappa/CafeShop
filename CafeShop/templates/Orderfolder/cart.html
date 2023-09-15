@@ -12,6 +12,9 @@
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <style>
     * {
@@ -331,8 +334,10 @@
                             <br><br>
                             <p style="font-size: 20px;" class="product product-size">{{ cart_item.product_size.size}}
                             </p>
-                            <p style="font-size: 20px;" class="product product-quantity">Quantity: {{cart_item.quantity}}</p>
-                            <p style="font-size: 25px;" class="product total-price">${{cart_item.calculate_total_price|floatformat:2 }}</p><br><br>
+                            <p style="font-size: 20px;" class="product product-quantity">Quantity:
+                                {{cart_item.quantity}}</p>
+                            <p style="font-size: 25px;" class="product total-price">
+                                ${{cart_item.calculate_total_price|floatformat:2 }}</p><br><br>
 
                             <!-- Add a "Remove" button -->
                             <form method="post" action="{% url 'menu:remove_product_from_order' cart_item.id %}">
@@ -345,8 +350,8 @@
                                     Remove
                                 </button>
                             </form>
-                            
-                            
+
+
                         </div>
                     </div>
                 </div>
@@ -361,7 +366,7 @@
         </div>
 
         <button class="continue-button"><a href="{% url 'menu:continue_to_order' %}"
-            class="continue-button">Continue</a></button>
+                class="continue-button">Continue</a></button>
 
 
 
@@ -424,40 +429,60 @@
     </footer>
 
     <script>
-        function confirmRemove(orderDetailId) {
-            const removeButton = document.querySelector(`button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`);
-            const productName = removeButton.getAttribute('data-product-name');
-            const productQuantity = removeButton.getAttribute('data-product-quantity');
-            const productSize = removeButton.getAttribute('data-product-size');
-    
-            if (confirm(`Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`)) {
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
-                fetch("{% url 'menu:remove_product_from_order' 0 %}".replace("0", orderDetailId), {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                    },
-                })
-                .then(response => {
-                    if (response.status === 200) {
-                        // Item removed successfully, display a success message
-                        alert("Remove drink success");
-                        location.reload();
-                    } else {
-                        alert("Error removing item from cart.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred while removing the item from the cart.");
-                });
-            }
+        $(document).ready(function() {
+            $('.continue-button').on('click', function() {
+        if ($('.product-container').length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: "There are no products in your basket",
+            });
+            return false;
+        } else {
+         
         }
-    </script>
-    
-    
-    
+    });
+        
+            function confirmRemove(orderDetailId) {
+                const removeButton = document.querySelector(
+                    `button[data-product-name][data-product-quantity][data-product-size][onclick="confirmRemove(${orderDetailId})"]`
+                );
+                const productName = removeButton.getAttribute('data-product-name');
+                const productQuantity = removeButton.getAttribute('data-product-quantity');
+                const productSize = removeButton.getAttribute('data-product-size');
+        
+                if (
+                    confirm(
+                        `Are you sure you want to remove (${productQuantity}) ${productName} (${productSize} size) from your cart?`
+                    )
+                ) {
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+                    fetch("{% url 'menu:remove_product_from_order' 0 %}".replace('0', orderDetailId), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                        },
+                    })
+                        .then((response) => {
+                            if (response.status === 200) {
+                                // Item removed successfully, display a success message
+                                alert('Remove drink success');
+                                location.reload();
+                            } else {
+                                alert('Error removing item from cart.');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            alert('An error occurred while removing the item from the cart.');
+                        });
+                }
+            }
+        });
+        </script>
+
+
+
 
 
 </body>
