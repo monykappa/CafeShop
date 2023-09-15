@@ -8,15 +8,59 @@
 <html>
 
 <head>
-    <title>Form</title>
-
+    <title>Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</head>
+
+
     <style>
+        :root {
+            --primary-font: "Quicksand", sans-serif;
+            --secondary-font: "Poppins", sans-serif;
+            --first-color: #fffdd0;
+            --second-color: #a0522d;
+        }
+
+        body {
+            font-family: var(--primary-font);
+            background-color: rgba(245, 242, 242, 0.863);
+        }
+
+        input.form-control {
+
+            margin-bottom: 2vh;
+        }
+
+        input#studentFname {
+            margin-bottom: 3vh;
+        }
+
+        input#studentlastname {
+            margin-bottom: 3vh;
+        }
+
+        label#studentDobth {
+            margin-top: 2vh;
+        }
+
+        #orderHistory {
+            margin-top: 3vh;
+        }
+
         .profile-image {
             border-radius: 50%;
             width: 500px;
             height: 500px;
             border: 2px solid #000;
+            margin-bottom: 3vh;
             /* Add border properties here */
             object-fit: cover;
             /* Ensure the image fills the container */
@@ -28,25 +72,63 @@
             align-items: center;
             justify-content: center;
             border: 1px solid white;
+            border: none;
         }
 
         #devinfo {
             width: 50%;
         }
+
+        th.row-table {
+            color: var(--second-color);
+            font-size: 20px;
+        }
+
+        .profile-buttons {
+            width: 80%;
+            padding-left: 10vh;
+        }
+
+        #change-profile-picture {
+            margin-right: 1vh;
+        }
+
+        #update-profile-picture {
+            margin-top: 2vh;
+            margin-left: 10.5vh;
+        }
     </style>
-</head>
 
 <body>
     <div style="padding-top: 5%;" class="container">
         <div class="row">
             <div class="col-md-4" id="devimg">
                 <div class="card-body">
-                    <div class="form-outline">
-                        <div class="card-body" id="imgUpload">
-                            <img src="{% static 'image/logo/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile-thumbnail.png' %}"
-                                alt="" class="profile-image">
+                    <div class="card-body" id="imgUpload">
+                        {% if customer_user.profile_image %}
+                        <img src="{{ customer_user.profile_image.url }}" alt="" class="profile-image" id="profile-image">
+                        {% else %}
+                        <img src="{% static 'image/logo/Default_pfp.jpg' %}" alt="" class="profile-image" id="profile-image">
+                        {% endif %}
+                        <div class="profile-buttons">
+                            {% if customer_user.profile_image %}
+                            <button type="button" class="btn btn-primary" id="change-profile-picture">Change Profile Picture</button>
+                            <form method="post" action="{% url 'home:delete_profile_picture' %}" id="delete-profile-form">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-danger" id="delete-profile-picture">Delete</button>
+                            </form>
+                            {% else %}
+                            <button type="button" class="btn btn-primary" id="upload-profile-picture">Upload Profile Picture</button>
+                            {% endif %}
                         </div>
+                        <input type="file" id="profile-image-input" style="display: none;">
+                        <button type="button" class="btn btn-success" id="update-profile-picture" disabled>Update Profile</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" id="csrf-token">
                     </div>
+                    
+                    
+
+
                 </div>
             </div>
             <div class="col-md-8" id="devinfo">
@@ -92,40 +174,202 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Product Name</th>
-                                        <th>Total Price</th>
+                                        <th class="row-table">Date</th>
+                                        <th class="row-table">Product Name</th>
+                                        <th class="row-table">Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for checkout_group in grouped_checkouts %}
-                                        {% for order_item in checkout_group.order_items %}
-                                            <tr>
-                                                {% if forloop.first %}
-                                                    <td rowspan="{{ checkout_group.order_items.count }}" style="border-bottom: 1px solid #dee2e6;">
-                                                        {{ checkout_group.order_date }}
-                                                    </td>
-                                                {% endif %}
-                                                <td>{{ order_item.product_size.product.product_name }}</td>
-                                                <td>{{ order_item.product_size.price }}</td>
-                                            </tr>
-                                        {% endfor %}
+                                    <tr>
+                                        <td rowspan="{{ checkout_group.order_items|length }}">{{
+                                            checkout_group.order_date }}</td>
+                                        <td>{{ checkout_group.order_items.0.product_size.product.product_name }}</td>
+                                        <td>${{ checkout_group.order_items.0.product_size.price }}</td>
+                                    </tr>
+                                    {% for order_item in checkout_group.order_items|slice:"1:" %}
+                                    <tr>
+                                        <td>{{ order_item.product_size.product.product_name }}</td>
+                                        <td>${{ order_item.product_size.price }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td></td> <!-- Empty cell for spacing -->
+                                        <td style="color: red; background-color: rgb(245, 236, 116); font-size: 20px;">
+                                            Total Price</td>
+                                        <td style="color:red; background-color: rgb(245, 236, 116); font-size: 20px;">
+                                            ${{ checkout_group.total_price }}</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
+
+    <!-- Modal for confirming profile picture change -->
+    <div class="modal fade" id="confirmProfilePictureModal" tabindex="-1" role="dialog"
+        aria-labelledby="confirmProfilePictureModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmProfilePictureModalLabel">Confirm Profile Picture Change</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to change your profile picture?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateProfilePicture">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="confirmDeleteProfilePictureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to remove your current profile picture?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteProfilePicture">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Add an event listener to the "Upload Profile Picture" button
+    document.getElementById('upload-profile-picture').addEventListener('click', function () {
+        // Trigger the file input click event when the button is clicked
+        document.getElementById('profile-image-input').click();
+    });
+</script>
+
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Add an event listener to the "Delete" button
+        document.getElementById("delete-profile-picture").addEventListener("click", function () {
+            // Show a confirmation dialog
+            Swal.fire({
+                title: "Are you sure you want to remove your current profile picture?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "Cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user clicks "Yes, delete it," submit the form
+                    document.getElementById("delete-profile-form").submit();
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+        // Inside your JavaScript code
+$(document).ready(function () {
+    // Enable Bootstrap popover
+    $('[data-toggle="popover"]').popover({
+        html: true,
+    });
+
+    // Handle file input change
+    $('#profile-image-input').change(function () {
+        var fileInput = $(this)[0];
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            // Update the profile image with the selected image
+            $('#profile-image').attr('src', e.target.result);
+            $('#update-profile-picture').prop('disabled', false); // Enable the update button
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    // Handle "Change Profile Picture" button click
+    $('#change-profile-picture').click(function () {
+        $('#profile-image-input').click(); // Trigger the file input click event
+    });
+
+    // Handle "Update" button click
+    $('#update-profile-picture').click(function () {
+        var fileInput = $('#profile-image-input')[0];
+        var file = fileInput.files[0];
+        var formData = new FormData();
+        formData.append('profile_image', file);
+
+        // Retrieve the CSRF token from the hidden input field
+        var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+
+        $.ajax({
+            url: '/update_profile_picture/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: { "X-CSRFToken": csrfToken }, // Include the CSRF token in headers
+            success: function (data) {
+                alert('Profile picture updated successfully!');
+                location.reload(); // Reload the page to display the updated picture
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText); // Log the detailed error message
+                alert('Failed to update profile picture. Please try again.');
+            }
+        });
+    });
+});
+    </script>
+
+{% if success_message %}
+<script>
+    Swal.fire({
+        title: "{{ success_message }}",
+        icon: "success",
+        onClose: function () {
+            // Clear the success_message variable and reload the page
+            const url = new URL(window.location.href);
+            url.searchParams.delete('success');
+            window.location.href = url.toString();
+        }
+    });
+</script>
+{% endif %}
+
+
+    
+
+
+
+
+
 </body>
 
 </html>

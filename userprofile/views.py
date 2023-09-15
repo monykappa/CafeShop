@@ -45,6 +45,8 @@ class SigninView(View):
             template_name = 'dashboard/userprofile/signin.html'
             return render(request, template_name, context)
 
+from django.contrib.auth import login
+
 class SignupView(View):
     template_name = 'dashboard/userprofile/signup.html'
 
@@ -61,12 +63,38 @@ class SignupView(View):
         firstname = request.POST.get('first_name')
         lastname = request.POST.get('last_name')
 
+        # Check if username or email already exists
+        username_error = None
+        email_error = None
+
+        if User.objects.filter(username=username).exists():
+            username_error = 'Username already exists. Please choose another username.'
+
+        if User.objects.filter(email=email).exists():
+            email_error = 'Email already exists. Please use another email.'
+
+        if username_error or email_error:
+            return render(request, self.template_name, {'username_error': username_error, 'email_error': email_error})
+
+        # Retrieve the profile image file from the request
+        profile_image = request.FILES.get('profile_image')
+
         # Create a new User instance
         user = User.objects.create_user(
             username=username,
             email=email,
             password=password
         )
+
+        # Create a new Customer instance linked to the User
+        customer = Customer(
+            user=user,
+            contact='',  # You can add other fields as needed
+            district='',
+            house_number='',
+            road=''
+        )
+        customer.save()
 
         # Create a new CustomerUser instance linked to the User
         customer_user = CustomerUser(
@@ -76,8 +104,9 @@ class SignupView(View):
             lastname=lastname,
             email=email,
             password=password,
+            dob=dob,
             sex=sex,
-            dob=dob
+            profile_image=profile_image  # Associate the profile image with the CustomerUser
         )
 
         # Save the CustomerUser instance
@@ -88,9 +117,12 @@ class SignupView(View):
         if user is not None:
             login(request, user)
 
-        return redirect('userprofile:signin')
+        return redirect('home:home')
 
 
+
+
+    
 
 class LogoutView(View):
     def get(self, request): 

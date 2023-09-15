@@ -134,7 +134,9 @@
     /* Set the desired margin for the expanded state */
   }
 
-
+  p.welcome-message:hover{
+        text-decoration: underline;
+    }
 
   footer {
 
@@ -660,7 +662,9 @@ a.cart-icon img.cart-image-hover {
         </div>
         <div class="d-flex">
             {% if user.is_authenticated %}
-            <p class="welcome-message">{{ user.username }}</p>
+            <p class="welcome-message">
+                <a href="{% url 'home:profile' %}">{{ user.username }}</a>
+            </p>
             <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
             {% else %}
             <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>

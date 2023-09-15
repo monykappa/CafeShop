@@ -1,8 +1,9 @@
+
 {% load static %}
 
 
 
-{% block main_body %}
+{% block content %}
 <style>
     * {
         padding: 0;
@@ -177,11 +178,17 @@
     .go-back-btn:hover{
         background-color: #495057;
     }
+    label.pfp{
+        font-size: 20px;
+        font-family: var(--primary-font);
+        font-weight: bold;
+        margin-right: 55px;
+    }
 </style>
 <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
 <h1 class="create-acc">Create an account</h1>
 <div class="container">
-    <form method="post" action="{% url 'userprofile:signup' %}">
+    <form method="post" action="{% url 'userprofile:signup' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
@@ -191,18 +198,25 @@
                     <input type="text" class="form-control" placeholder="* First name" name="first_name">
                     <input type="text" class="form-control" placeholder="* Last name" name="last_name">
                     <input type="text" class="form-control" placeholder="* Username" name="username">
+                    {% if username_error %}
+                    <div class="alert alert-danger">{{ username_error }}</div>
+                    {% endif %}
                     <select class="form-control custom-select" name="sex">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>
                     <input type="date" class="form-control" placeholder="* Date of Birth" name="dob">
-                    <input type="text" class="form-control" placeholder="Contact" name="contact">
+                    <label for="profile_image" class="pfp">Profile Picture</label>
+                    <input type="file" class="form-control-file pfp" name="profile_image">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="personal-info">
                     <h3>Account Security</h3>
                     <input type="email" class="form-control" placeholder="* Email address" name="email">
+                    {% if email_error %}
+                    <div class="alert alert-danger">{{ email_error }}</div>
+                    {% endif %}
                     <input type="password" class="form-control" placeholder="* Password" name="password">
                     <h6 class="pass-warn">Create a password 8 to 25 characters long that includes at least 1 uppercase
                         and 1 lowercase letter, 1 number and 1 special character like an exclamation point or asterisk.
@@ -224,7 +238,10 @@
         </div>
         <button class="btn btn-primary" type="submit" id="submitButton" disabled>Create an account</button>
     </form>
+    
 </div>
+
+
 <script>
     // Get references to the checkbox and submit button
     const checkbox = document.getElementById('myCheckbox');
@@ -236,4 +253,4 @@
         submitButton.disabled = !checkbox.checked;
     });
 </script>
-{% endblock main_body %}
+{% endblock content %}
