@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from userprofile.models import *
 import logging
-from .models import AddProduct, Size, ProductSize, OrderDetail
+from .models import AddProduct, Size, ProductSize, OrderDetail, CartItem, OrderItem
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
@@ -25,6 +25,10 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import Checkout
+from decimal import Decimal
+from django.db import transaction
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from datetime import datetime
 
 
 
@@ -67,49 +71,127 @@ def user_detail(request):
 
     return render(request, 'Orderfolder/user_detail.html', {'customer': customer, 'DistrictChoices': DistrictChoices})
 
+def continue_to_order(request):
+    if request.user.is_authenticated:
+        # Retrieve cart items associated with the user
+        cart_items = CartItem.objects.filter(user=request.user)
+
+        for cart_item in cart_items:
+            # Create an OrderDetail object from the cart item
+            order_detail = OrderDetail(
+                user=request.user,
+                product_size=cart_item.product_size,
+                quantity=cart_item.quantity,
+            )
+            order_detail.save()
+
+        # Clear the user's cart by deleting cart items
+        cart_items.delete()
+
+        # Redirect to user_detail or the desired page
+        return redirect('menu:user_detail')
+
+    else:
+        # Handle the case where the user is not authenticated
+        return HttpResponse("You must be signed in to continue to order.", status=401)
+    
+
+@login_required
+def initiate_checkout(request):
+    if request.user.is_authenticated:
+        # Create a new Checkout instance for the user
+        checkout = Checkout.objects.create(
+            customer=request.user.customer,
+            user=request.user,
+        )
+
+        # Redirect the user to the new checkout
+        return redirect('menu:checkout')  # Change 'menu:checkout' to your actual checkout URL
+    else:
+        return HttpResponse("You must be signed in to initiate a checkout.", status=401)
+
 
 @login_required
 def checkout(request):
     if request.user.is_authenticated:
+        if request.method == 'POST':
+            # Assuming you have a form or a button to initiate the checkout process
+            # Here, we'll assume you have a button with name="checkout" in your template
+            if 'checkout' in request.POST:
+                # Retrieve cart items associated with the user
+                cart_items = CartItem.objects.filter(user=request.user)
+
+                # Create OrderDetail objects from cart items and associate them with the user
+                for cart_item in cart_items:
+                    OrderDetail.objects.create(
+                        user=request.user,
+                        product_size=cart_item.product_size,
+                        quantity=cart_item.quantity,
+                    )
+
+                # Clear the cart by deleting cart items
+                cart_items.delete()
+
+                # Redirect the user to the 'checkout' page or a confirmation page
+                return redirect('menu:checkout')  # Change 'menu:checkout' to your actual checkout URL
+
         # Retrieve order details associated with the user
         order_details = OrderDetail.objects.filter(user=request.user)
+
+        # Calculate the total price
+        total_price = Decimal(0)
+        for order_detail in order_details:
+            total_price += order_detail.total_price
 
         # Assuming you have a Customer model to store location and contact
         customer = request.user.customer  # Assuming a one-to-one relationship between User and Customer
 
-        return render(request, 'Orderfolder/checkout.html', {'order_details': order_details, 'user': request.user, 'customer': customer})
+        return render(request, 'Orderfolder/checkout.html', {'order_details': order_details, 'user': request.user, 'customer': customer, 'total_price': total_price})
     else:
         return HttpResponse("You must be signed in to view the checkout page.", status=401)
+
     
+@login_required
 def confirm_order(request):
     if request.method == 'POST':
-        # Retrieve the current customer
-        customer = request.user.customer
+        if request.user.is_authenticated:
+            # Get the current user
+            user = request.user
 
-        # Check if a Checkout instance already exists for the customer
-        checkout_instance, created = Checkout.objects.get_or_create(customer=customer)
+            # Retrieve OrderDetail instances for the current user
+            order_details = OrderDetail.objects.filter(user=user)
 
-        # Retrieve all order details associated with the user
-        order_details = OrderDetail.objects.filter(user=request.user)
+            # Create a Checkout instance with a unique identifier and order_date
+            checkout = Checkout.objects.create(
+                customer=user.customer,
+                user=user,
+                order_date=datetime.now()  # Use the current date and time
+            )
 
-        # Create a list to hold order details related to the checkout
-        checkout_instance.order_details.set(order_details)
+            # Create OrderItem instances for each OrderDetail and associate them with the Checkout
+            for order_detail in order_details:
+                order_item, _ = OrderItem.objects.get_or_create(
+                    product_size=order_detail.product_size,
+                    defaults={'quantity': order_detail.quantity}
+                )
+                checkout.order_items.add(order_item)
 
-        # You can optionally clear the user's cart or perform other actions here
+            # Delete the OrderDetail instances for the current user
+            order_details.delete()
 
-        # Debug: Print a message before clearing the cart session data
-        print("Before clearing cart session data:", request.session.get('cart'))
-
-        # Clear the cart session data
-        request.session.pop('cart', None)
-
-        # Debug: Print a message after clearing the cart session data
-        print("After clearing cart session data:", request.session.get('cart'))
-
-        # Redirect to the 'order_confirmation_page' URL
-        return redirect('menu:order_confirmation_page')
+            # Redirect to the 'order_confirmation_page' URL or wherever you want
+            return redirect('menu:order_confirmation_page')
 
     return HttpResponse("Invalid request method", status=405)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -120,51 +202,75 @@ def order_confirmation_page(request):
 
 def cart(request):
     if request.user.is_authenticated:
-        # Retrieve order details associated with the user
-        order_details = OrderDetail.objects.filter(user=request.user)
-
-        # Clear the user's cart by removing session data (assuming cart is stored in the session)
-        if 'cart' in request.session:
-            del request.session['cart']
-
-        return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+        # Count the number of items in the user's cart (CartItems)
+        cart_count = CartItem.objects.filter(user=request.user).count()
     else:
-        # Handle the case where the user is not authenticated
-        return HttpResponse("You must be signed in to view your cart.", status=401)
+        # User is not authenticated, cart count is 0
+        cart_count = 0
+
+    # Retrieve cart items associated with the user from the CartItem model
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    return render(request, 'Orderfolder/cart.html', {'cart_items': cart_items, 'cart_count': cart_count})
 
 
 
-def remove_product_from_order(request, order_detail_id):
-    # Check if the request method is POST
+
+def remove_product_from_order(request, cart_item_id):
     if request.method == 'POST':
-        # Get the current user
-        user = request.user
-        
-        # Try to get the OrderDetail instance by its ID, and ensure it belongs to the current user
-        order_detail = get_object_or_404(OrderDetail, pk=order_detail_id, user=user)
-        
-        # Delete the OrderDetail instance
-        order_detail.delete()
-        
-        # Redirect to the cart or another appropriate page
-        return redirect('menu:cart')  # Replace 'menu:cart' with your actual cart page URL
+        try:
+            cart_item = CartItem.objects.get(id=cart_item_id)
+            cart_item.delete()
+            return HttpResponse(status=200)  # Return a success response
+        except CartItem.DoesNotExist:
+            return HttpResponse(status=404)  # Return a not found response
 
-    # Handle invalid requests here (e.g., GET requests)
-    return redirect('some_error_page')  # Replace 'some_error_page' with an error page URL
+    return HttpResponse(status=400)  # Return a bad request response
 
 @login_required 
 def cart_view(request):
     if request.user.is_authenticated:
-        # Retrieve order details associated with the user
-        order_details = OrderDetail.objects.filter(user=request.user)
-
-        # Debug: Print order_details to verify it contains the expected data
-        print(order_details)
-
-        return render(request, 'Orderfolder/cart.html', {'order_details': order_details})
+        # Count the number of items in the user's cart (CartItems)
+        cart_count = CartItem.objects.filter(user=request.user).count()
     else:
-        # Handle the case where the user is not authenticated
-        return HttpResponse("You must be signed in to view your cart.", status=401)
+        # User is not authenticated, cart count is 0
+        cart_count = 0
+
+    # Retrieve cart items associated with the user from the CartItem model
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    return render(request, 'Orderfolder/cart.html', {'cart_items': cart_items, 'cart_count': cart_count})
+
+
+def add_to_cart(request):
+    if request.method == 'POST':
+        selected_size_id = request.POST.get('selected_size')
+        quantity = int(request.POST.get('quantity'))
+
+        if request.user.is_authenticated:
+            try:
+                selected_size = ProductSize.objects.get(pk=selected_size_id)
+                
+                # Check if a cart item with the same product size already exists for the user
+                cart_item, created = CartItem.objects.get_or_create(
+                    user=request.user,
+                    product_size=selected_size,
+                    defaults={'quantity': 0}  # Create with quantity 0 if it doesn't exist
+                )
+
+                # Update the quantity by adding the new quantity
+                cart_item.quantity += quantity
+                cart_item.save()
+
+                return redirect('menu:menu')  # Redirect to the 'menu' page
+
+            except ProductSize.DoesNotExist:
+                return HttpResponse("Selected product size does not exist.", status=400)
+
+        else:
+            return HttpResponse("You must be signed in to add to your cart.", status=401)
+
+    return HttpResponse("Invalid request.", status=400)
 
 
 def add_to_order(request):
@@ -219,14 +325,26 @@ def drink_details(request, product_id):
     else:
         product_image_url = None
 
-    print("Product Image URL:", product_image_url)  # Debugging line
+    # Calculate cart count based on CartItem model for the current user
+    if request.user.is_authenticated:
+        cart_count = CartItem.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0  # User is not authenticated, cart count is 0
 
-    return render(request, 'Orderfolder/drink_details.html', {'product': product})
+    # Pass 'cart_count' as part of the context
+    context = {
+        'product': product,
+        'product_image_url': product_image_url,
+        'cart_count': cart_count,  # Include cart_count in the context
+    }
+
+    return render(request, 'Orderfolder/drink_details.html', context)
 
 
 def menu_view(request):
     if request.user.is_authenticated:
-        cart_count = OrderDetail.objects.filter(user=request.user).count()
+        # Calculate cart count based on CartItem model
+        cart_count = CartItem.objects.filter(user=request.user).count()
     else:
         cart_count = 0
 
@@ -246,9 +364,9 @@ def menu(request):
             }
         grouped_products[product.product_name]['sizes'].append(product.sizes.first())
 
-    # Calculate cart count for the current user
+    # Calculate cart count based on CartItem model for the current user
     if request.user.is_authenticated:
-        cart_count = OrderDetail.objects.filter(user=request.user).count()
+        cart_count = CartItem.objects.filter(user=request.user).count()
     else:
         cart_count = 0  # User is not authenticated, cart count is 0
 
@@ -275,13 +393,26 @@ def iced_drinks(request):
             }
         grouped_iced_products[product.product_name]['sizes'].append(product.sizes.first())
 
+    # Calculate cart count based on CartItem model for the current user
+    if request.user.is_authenticated:
+        cart_count = CartItem.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0  # User is not authenticated, cart count is 0
+
     # Create a Paginator instance
     paginator = Paginator(list(grouped_iced_products.values()), 10)
 
     page = request.GET.get('page')
     iced_products_page = paginator.get_page(page)
 
-    return render(request, 'Orderfolder/iced_drinks.html', {'iced_products_page': iced_products_page})
+    # Pass 'cart_count' as part of the context
+    context = {
+        'iced_products_page': iced_products_page,
+        'cart_count': cart_count,  # Include cart_count in the context
+    }
+
+    return render(request, 'Orderfolder/iced_drinks.html', context)
+
 
 def hot_drinks(request):
     # Get all products with 'hot' in the product name
@@ -305,7 +436,20 @@ def hot_drinks(request):
     page = request.GET.get('page')
     hot_products_page = paginator.get_page(page)
 
-    return render(request, 'Orderfolder/hot_drinks.html', {'hot_products_page': hot_products_page})
+    # Calculate cart count based on CartItem model for the current user
+    if request.user.is_authenticated:
+        cart_count = CartItem.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0  # User is not authenticated, cart count is 0
+
+    # Pass 'cart_count' as part of the context
+    context = {
+        'hot_products_page': hot_products_page,
+        'cart_count': cart_count,  # Include cart_count in the context
+    }
+
+    return render(request, 'Orderfolder/hot_drinks.html', context)
+
 
 def frappe_drinks(request):
     # Get all products with 'milkshake' or 'frappe' in the product name
@@ -346,7 +490,20 @@ def frappe_drinks(request):
     page = request.GET.get('page')
     drinks_page = paginator.get_page(page)
 
-    return render(request, 'Orderfolder/frappe_drinks.html', {'drinks_page': drinks_page})
+    # Calculate cart count based on CartItem model for the current user
+    if request.user.is_authenticated:
+        cart_count = CartItem.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0  # User is not authenticated, cart count is 0
+
+    # Pass 'cart_count' as part of the context
+    context = {
+        'drinks_page': drinks_page,
+        'cart_count': cart_count,  # Include cart_count in the context
+    }
+
+    return render(request, 'Orderfolder/frappe_drinks.html', context)
+
 
 
 

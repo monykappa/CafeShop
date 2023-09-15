@@ -70,11 +70,24 @@ class ProductSize(models.Model):
     def __str__(self):
         return f"{self.product.product_name} - Size: {self.size.get_size_display()} - Price: ${self.price:.2f}"
 
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def calculate_total_price(self):
+        if self.product_size is not None:
+            price_per_unit = self.product_size.price
+            return price_per_unit * self.quantity
+        return 0.0
+
+
 class OrderDetail(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0.0, null=True)
     order_time = models.DateTimeField(default=timezone.now)
 
     def calculate_total_price(self):
@@ -89,36 +102,31 @@ class OrderDetail(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"OrderDetailID: {self.pk} - {self.product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
+        product_size = self.product_size
+        if product_size and product_size.product:
+            return f"OrderDetailID: {self.pk} - {product_size.product.product_name} - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
+        else:
+            return f"OrderDetailID: {self.pk} - Product: N/A - Quantity: {self.quantity} - Total Price: ${self.total_price:.2f}"
 
 
-class Order(models.Model):
-    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE)
+
+class OrderItem(models.Model):
+    product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"Order ID: {self.pk} - Product: {self.order_detail.product_size.product.product_name} - Quantity: {self.order_detail.quantity}"
+        return f"OrderItem ID: {self.pk} - Product: {self.product_size.product.product_name} - Quantity: {self.quantity}"
 
-    def calculate_total_price(self):
-        return self.order_detail.total_price
-
-    def save(self, *args, **kwargs):
-        self.order_detail.calculate_total_price()  # Recalculate total price if needed
-        super().save(*args, **kwargs)
 
 class Checkout(models.Model):
     checkout_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    order_details = models.ManyToManyField(OrderDetail)
-    order = models.ManyToManyField(Order)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_items = models.ManyToManyField(OrderItem, related_name='checkouts', blank=True)
+    order_date = models.DateTimeField(auto_now_add=True, null=True)  # Automatically record the order date
 
     def __str__(self):
-        return f"Checkout ID: {self.checkout_id}"
+        return f"Checkout ID {self.checkout_id}"
 
-    def calculate_total_price(self):
-        total_price = 0
-        for order_detail in self.order_details.all():
-            total_price += order_detail.total_price
-        return total_price
 
 

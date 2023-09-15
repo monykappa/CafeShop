@@ -29,6 +29,8 @@ import uuid
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
+import uuid
+
 
 
 
@@ -73,6 +75,22 @@ class Customer(models.Model):
 
 
 
+def validate_file_extension(value): 
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filenamecd
+    valid_extensions = ['.png', '.jpg', '.jpeg', '.webp']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError(u'Unsupported file extension.')
+
+
+def user_directory_path(instance, filename):
+    # Generate a unique identifier for the directory
+    unique_id = str(uuid.uuid4())
+    # Construct the directory path
+    directory_path = f'content/{unique_id}/'
+    
+    # Return the complete file path
+    return os.path.join(directory_path, filename)
+
 class CustomerUser(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     username = models.CharField(max_length=150, unique=True, null=True)
@@ -82,6 +100,7 @@ class CustomerUser(models.Model):
     password = models.CharField(max_length=128)
     dob = models.DateField(null=True, blank=False)
     sex = models.CharField(max_length=7, choices=Sex, null=True, blank=True)
+    profile_image = models.ImageField(upload_to=user_directory_path, validators=[validate_file_extension], blank=True)
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}"

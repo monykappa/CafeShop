@@ -60,7 +60,6 @@
     nav {
         margin-bottom: 3vh;
     }
-
     a.go-back-btn:hover {
         background-color: black;
         color: white;
@@ -73,10 +72,13 @@
         color:var(--second-color);
     }
     thead tr{
+        
         color:red;
     }
     td.id{
-        color:rgb(16, 139, 16);
+        color:red;
+        text-decoration: underline;
+        /* text-align: center; */
         font-size: 20px;
     }
     tr{
@@ -84,7 +86,14 @@
     }
     table{
         margin-top: 20px;
+
     }
+    td.total-price{
+        text-align: center;
+        color: green;
+        font-size: 19px;
+    }
+
 </style>
 
 <body>
@@ -121,30 +130,31 @@
         <table class="table table-bordered custom-table">
             <thead>
                 <tr style="font-size: 19px;">
-                    <th>Order ID</th>
+                    <th style="width: 130px;">Order ID</th>  
                     <th>Username</th>
-                    <th>Product Name</th>
-                    <th>Cup Size</th> <!-- Add this column for the cup size -->
+                    <th style="width: 250px;">Product Name</th>
+                    <th style="width: 130px;">Cup Size</th>
                     <th>Quantity</th>
-                    <th>Price per Unit</th>
-                    <th>Total Price</th>
+                    <th style="width: 220px;">Price per Unit</th>
+                    <th style="width: 165px;">Total Price</th>
+                    <th style="width: 280px;">Order Date</th>  <!-- Add Order Date column -->
                 </tr>
             </thead>
             <tbody>
-                {% for checkout in user_checkout_data %}
-                {% for order_detail in checkout.order_details.all %}
+                {% for checkout in user_checkouts %}
+                {% for product in checkout.products %}
                 <tr>
                     {% if forloop.first %}
-                    <td rowspan="{{ checkout.order_details.count }}" class="id">{{ checkout.checkout_id }}</td>
-                    <td rowspan="{{ checkout.order_details.count }}">{{ checkout.customer.user.username }}</td>
+                    <td class="id" rowspan="{{ checkout.products|length }}">{{ checkout.checkout_id }}</td>
+                    <td rowspan="{{ checkout.products|length }}">{{ checkout.username }}</td>
                     {% endif %}
-                    <td class="product-name">{{ order_detail.product_size.product.product_name }}</td>
-                    <td>{{ order_detail.product_size.size.get_size_display }}</td> <!-- Display the cup size -->
-                    <td>{{ order_detail.quantity }}</td>
-                    <td>${{ order_detail.product_size.price|floatformat:2 }}</td>
+                    <td class="product-name">{{ product.product_name }}</td>
+                    <td>{{ product.size }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>${{ product.price_per_unit|floatformat:2 }}</td>
                     {% if forloop.first %}
-                    <td rowspan="{{ checkout.order_details.count }}" class="total-count">$
-                        {{ checkout.calculate_total_price|floatformat:2 }}</td>
+                    <td rowspan="{{ checkout.products|length }}" class="total-price">$ {{ checkout.total_price|floatformat:2 }}</td>
+                    <td rowspan="{{ checkout.products|length }}">{{ checkout.order_date|date:"F d, Y H:i A" }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -152,6 +162,14 @@
             </tbody>
         </table>
     </div>
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 

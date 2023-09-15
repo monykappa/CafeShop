@@ -115,10 +115,20 @@
     a.btn-signup:hover {
         color: white;
     }
-    p.welcome-message{
+    .welcome-message{
         color:var(--second-color);
+        margin-top: 2vh;
         margin-right: 15px;
+
     }
+
+    a.btn-logout{
+        margin-top: 1vh;
+        margin-right: 2vh;
+        padding:10px 15px;
+        height: 50px;
+    }
+
 </style>
 
 <body>
@@ -163,8 +173,10 @@
             </div>
             <div class="d-flex">
                 {% if user.is_authenticated %}
-                <p class="welcome-message">{{ user.username }}</p>
-                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+                <p class="welcome-message">
+                    <a href="{% url 'home:profile' %}">{{ user.username }}</a>
+                </p>
+                <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary btn-logout" id="logout-btn">Logout</a>
                 {% else %}
                 <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
                 <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>
@@ -180,7 +192,6 @@
                     <span class="badge badge-pill badge-danger cart-count">{{ cart_count }}</span>
                 {% endif %}
             </a>
-            
         </div>
     </nav>
 

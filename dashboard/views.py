@@ -15,16 +15,45 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q 
 from django import forms
-from menu.models import Checkout
+from menu.models import Checkout, OrderDetail, OrderItem, ProductSize, AddProduct, CartItem
+from datetime import datetime 
 
 
 def checkout_view(request):
-    # Retrieve the user's checkout data, e.g., using the user's ID or any other identifier
-    user_checkout_data = Checkout.objects.filter(user=request.user)  # Adjust this query as per your model structure
+    # Retrieve the checkout data with related OrderDetail data, ordered by checkout ID in descending order
+    checkout_data = Checkout.objects.select_related('user', 'customer').prefetch_related(
+        'order_items__product_size__product'
+    ).order_by('-checkout_id')
 
-    # You can add additional logic here to process and prepare the data for display
+    # Create a list to store organized data by unique checkout IDs
+    unique_checkouts = []
 
-    return render(request, 'dashboard/admin/checkout_data.html', {'user_checkout_data': user_checkout_data})
+    for checkout in checkout_data:
+        unique_checkout = {
+            'checkout_id': checkout.checkout_id,
+            'username': checkout.user.username,
+            'products': [],
+            'total_price': 0,  # Initialize total price
+            'order_date': checkout.order_date,  # Include the 'order_date' field
+        }
+        for order_item in checkout.order_items.all():
+            product = order_item.product_size.product
+            if product:  # Check if there is a product
+                total_price = order_item.product_size.price * order_item.quantity
+                unique_checkout['products'].append({
+                    'product_name': product.product_name,
+                    'size': order_item.product_size.size.get_size_display(),
+                    'quantity': order_item.quantity,
+                    'price_per_unit': order_item.product_size.price,
+                    'total_price': total_price,
+                })
+                unique_checkout['total_price'] += total_price  # Update total price
+        unique_checkouts.append(unique_checkout)
+
+    # Pass the data to the template
+    context = {'user_checkouts': unique_checkouts}
+    return render(request, 'dashboard/admin/checkout_data.html', context)
+
 
 
 
@@ -93,7 +122,7 @@ def edit_product(request, product_id):
         messages.success(request, 'Changes saved successfully.')
 
         # Redirect to the product list page or another appropriate page
-        return redirect('dashboard:dashboard')  # Replace with your URL pattern name
+        return redirect('dashboard:dashboard') 
 
     # Retrieve all possible category choices from your model
     all_categories = [choice[1] for choice in AddProduct.category.field.choices]

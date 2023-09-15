@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Customer, CustomerUser, Staff
+from django.utils.html import format_html
 
 class BaseAdmin(admin.ModelAdmin):
     search_fields = ['full_name', 'user']
@@ -11,11 +12,21 @@ class CustomerAdmin(BaseAdmin):
 
 @admin.register(CustomerUser)
 class CustomerUserAdmin(BaseAdmin):
-    list_display = ['user', 'firstname', 'lastname', 'email', 'dob', 'sex']
+    list_display = ['user', 'firstname', 'lastname', 'email', 'dob', 'sex', 'display_profile_image']  
     search_fields = ['user__username']
 
     def full_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"
+
+    def display_profile_image(self, obj):
+        if obj.profile_image:
+            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.profile_image.url)
+        else:
+            return "No Image"
+
+    display_profile_image.allow_tags = True
+    display_profile_image.short_description = 'Profile Image'
+
 
 @admin.register(Staff)
 class StaffAdmin(BaseAdmin):
