@@ -14,7 +14,7 @@ from userprofile.views import *
 
 app_name = 'home'
 urlpatterns = [
-    re_path('^index/$', home_view.index, name='index'),
+  re_path('^index/$', home_view.index, name='index'),
     re_path('^home/$', home_view.home, name='home'),
     re_path('^test/$', home_view.test, name='test'),
     re_path('^aboutus/$', home_view.aboutus, name='aboutus'),
