@@ -223,6 +223,9 @@
       display: block;
     }
   }
+    a.about-us{
+      width: 120px;
+    }
 
   @media (max-width: 960px) {
     .ctn {
@@ -255,10 +258,13 @@
     color: var(--second-color);
   }
   p.welcome-message{
-    margin: 1vh 1vh 0 0;
+    margin: 2vh 1vh 1vh 1vh;
 
   }
-
+  a.btn-logout{
+    color:white;
+    padding-top: 20px;
+  }
 
 </style>
 
@@ -291,7 +297,7 @@
                     <a class="nav-link" href="{% url 'menu:menu' %}">Menu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home:aboutus' %}">About us</a>
+                    <a class="nav-link about-us" href="{% url 'home:aboutus' %}">About us</a>
                 </li>
                 {% if user.is_superuser %}
                 <!-- Show the Dashboard link only for superusers -->
@@ -306,7 +312,7 @@
             <p class="welcome-message">
                 <a href="{% url 'home:profile' %}">{{ user.username }}</a>
             </p>
-            <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary">Logout</a>
+            <a href="{% url 'userprofile:logout' %}" class="btn btn-secondary btn-logout">Logout</a>
             {% else %}
             <a href="{% url 'userprofile:signin' %}" class="btn btn-secondary btn-signin">Sign in</a>
             <a href="{% url 'userprofile:signup' %}" class="btn btn-secondary btn-signup">Sign Up</a>

@@ -80,6 +80,33 @@ def home(request):
 
     return render(request, 'home.html', context)
 
+
+
+def update_profile_info(request):
+    if request.method == 'POST':
+        # Get the user object
+        user = request.user
+
+        # Get the updated profile information from the POST data
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        sex = request.POST.get('sex')
+        email = request.POST.get('email')
+        dob = request.POST.get('dob')
+
+        # Update the user's profile information
+        user.customeruser.firstname = firstname
+        user.customeruser.lastname = lastname
+        user.customeruser.sex = sex
+        user.customeruser.email = email
+        user.customeruser.dob = dob
+        user.customeruser.save()
+
+        # Redirect back to the profile page or another appropriate page
+        return redirect('home:profile')  # Change to the actual URL name for the profile page
+    
+
+    
 @csrf_exempt
 def update_profile_picture(request):
     if request.method == 'POST':
@@ -97,30 +124,40 @@ def update_profile_picture(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
+from django.views.decorators.http import require_POST
+import os
+import logging
 
-@login_required
+from django.urls import reverse
+
 def delete_profile_picture(request):
     if request.method == 'POST':
-        user = request.user
         try:
-            customer_user = CustomerUser.objects.get(user=user)
-            
-            # Check if the user has the necessary permissions to delete their profile picture
-            if customer_user.user != user:
-                raise PermissionDenied
-            
-            if customer_user.profile_image:
-                customer_user.profile_image.delete()  # Delete the profile picture file
-                customer_user.save()  # Save the changes
-                return JsonResponse({'success': True})
-            else:
-                return JsonResponse({'success': False, 'message': 'Profile picture not found.'})
+            user_profile = CustomerUser.objects.get(user=request.user)
         except CustomerUser.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'User not found.'})
-        except PermissionDenied:
-            return JsonResponse({'success': False, 'message': 'Permission denied.'})
+            user_profile = None
 
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+        if user_profile:
+            if user_profile.profile_image:
+                # Delete the profile image file
+                user_profile.profile_image.delete()
+
+                # Set the 'profile_image' field to None to clear the reference
+                user_profile.profile_image = None
+                user_profile.save()
+
+                messages.success(request, 'Profile picture deleted successfully.')
+            else:
+                messages.error(request, 'No profile picture to delete.')
+        else:
+            messages.error(request, 'User profile not found.')
+
+    return redirect(reverse('home:profile'))
+
+
+
+
+
 
 
 
