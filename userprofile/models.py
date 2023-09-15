@@ -12,7 +12,7 @@ import uuid
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
-
+from django.db import models
 
 # Create your models here.
 from django.db import models

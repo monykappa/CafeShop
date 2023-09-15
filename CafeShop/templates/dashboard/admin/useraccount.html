@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<style>
+    :root {
+        --primary-font: "Quicksand", sans-serif;
+        --secondary-font: "Poppins", sans-serif;
+        --first-color: #fffdd0;
+        --second-color: #a0522d;
+    }
+    body{
+        font-family: var(--primary-font);
+        background-color: rgba(245, 242, 242, 0.863);
+    }
+    .navbar-light .navbar-nav .active>.nav-link {
+        color: white;
+        transition: 0.5s ease;
+    }
+    .navbar-light .navbar-nav .active>.nav-link:hover {
+        color:black;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        color: white;
+        font-family: var(--primary-font);
+        transition: 0.5s ease;
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-brand {
+        font-family: var(--primary-font);
+        color: white;
+        transition: 0.5s ease;
+    }
+
+    .navbar {
+        background-color: var(--second-color);
+        color: white;
+    }
+
+    a.go-back-btn {
+        margin: 10vh 0 0 2vh;
+        font-family: var(--primary-font);
+        background-color: var(--second-color);
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        transition: 0.5s ease;
+    }
+
+    nav {
+        margin-bottom: 3vh;
+    }
+    a.go-back-btn:hover {
+        background-color: black;
+        color: white;
+    }
+    td.total-count{
+        color:red;
+        font-size: 20px;
+    }
+    td.product-name{
+        color:var(--second-color);
+    }
+    thead tr{
+        
+        color:red;
+    }
+    td.id{
+        color:red;
+        text-decoration: underline;
+        /* text-align: center; */
+        font-size: 20px;
+    }
+    tr{
+        border: 2px solid grey;
+    }
+    table{
+        margin-top: 20px;
+
+    }
+    td.total-price{
+        text-align: center;
+        color: green;
+        font-size: 19px;
+    }
+
+</style>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="{% url 'dashboard:dashboard'%}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link nav-color" href="{% url 'home:home'%}">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-color" href="{% url 'userprofile:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="javascript:history.go(-1);" class="go-back-btn">Go Back</a>
+    <div class="container">
+        <h1>Total Account</h1>
+        <input type="search" style="width: 320px;border: 1px solid #CBCFD5 ; padding: 5px 0px 5px 15px;" placeholder="Search..." name="" id="searchInput">
+        <table class="table table-bordered custom-table">
+            <thead>
+                <tr style="font-size: 19px;">
+                    <th style="width: 130px;">Username</th>
+                    <th>First Name</th>
+                    
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <!-- Add more table headers as needed -->
+                </tr>
+            </thead>
+            <tbody  id="tableBody">
+                {% for customer_user in customer_users %}
+                <tr>
+                    <td>{{ customer_user.username }}</td>
+                    <td>{{ customer_user.firstname }}</td>
+                    <td>{{ customer_user.lastname }}</td>
+                    <td>{{ customer_user.sex }}</td>
+                    <td>{{ customer_user.email }}</td>
+                    <!-- Add more table cells with other fields as needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    
+    
+    <!-- Add Bootstrap JS and jQuery links (required for Bootstrap functionality) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+<script>
+    // Select the search input field and table body
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('tableBody');
+
+    // Add event listener for input changes
+    searchInput.addEventListener('input', function () {
+        const searchValue = searchInput.value.toLowerCase();
+
+        // Loop through each table row
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            const row = tableBody.rows[i];
+            const username = row.cells[0].innerText.toLowerCase();
+            const firstname = row.cells[1].innerText.toLowerCase();
+            const lastname = row.cells[2].innerText.toLowerCase();
+            const gender = row.cells[3].innerText.toLowerCase();
+            const email = row.cells[4].innerText.toLowerCase();
+
+            // Show/hide rows based on search value
+            if (
+                username.includes(searchValue) ||
+                firstname.includes(searchValue) ||
+                lastname.includes(searchValue) ||
+                gender.includes(searchValue) ||
+                email.includes(searchValue)
+            ) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+</script>
+</html>

@@ -1,3 +1,5 @@
+from django.shortcuts import render
+from userprofile.models import CustomerUser
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView 
 from django.views import generic
@@ -54,8 +56,9 @@ def checkout_view(request):
     context = {'user_checkouts': unique_checkouts}
     return render(request, 'dashboard/admin/checkout_data.html', context)
 
-
-
+def display_customer_users(request):
+    customer_users = CustomerUser.objects.all()
+    return render(request, 'dashboard/admin/useraccount.html', {'customer_users': customer_users})
 
 
 @login_required
@@ -101,10 +104,6 @@ def dashboard(request):
 
 
 
-
-
-
-
 def edit_product(request, product_id):
     product = get_object_or_404(AddProduct, id=product_id)
 
@@ -118,60 +117,102 @@ def edit_product(request, product_id):
         # Save the updated product to the database
         product.save()
 
+        # Get the size IDs from the POST data
+        size_ids = request.POST.getlist('size_id')
+
+        for size_id in size_ids:
+            try:
+                # Get the corresponding ProductSize instance
+                product_size = ProductSize.objects.get(id=size_id)
+
+                # Retrieve the new price value for the current size from the POST data
+                new_price = request.POST.get(f'price_{size_id}')  # Assuming the input field names are 'price_[size_id]'
+
+                # Update the product size price
+                product_size.price = new_price
+
+                # Save the updated product size to the database
+                product_size.save()
+
+            except ProductSize.DoesNotExist:
+                messages.error(request, f"Product size with ID {size_id} not found.")
+
         # Add a success message
         messages.success(request, 'Changes saved successfully.')
 
         # Redirect to the product list page or another appropriate page
-        return redirect('dashboard:dashboard') 
+        return redirect('dashboard:dashboard')
 
-    # Retrieve all possible category choices from your model
-    all_categories = [choice[1] for choice in AddProduct.category.field.choices]
+    # Retrieve all possible category choices from the AddProduct model
+    all_categories = [choice[1] for choice in AddProduct._meta.get_field('category').choices]
 
-    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'all_categories': all_categories})
+    # Retrieve all possible size choices from the Size model
+    all_sizes = Size.SIZE_CHOICES
+
+    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'all_categories': all_categories, 'all_sizes': all_sizes})
 
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  # Disable CSRF protection for this view
 def delete_product(request, product_id):
-    # Get the product object based on the product_id
-    product = get_object_or_404(AddProduct, pk=product_id)
+    if request.method == 'POST':  # Change the request method to POST
+        # Get the product object based on the product_id
+        product = get_object_or_404(AddProduct, pk=product_id)
 
-    # Perform the product deletion
-    try:
-        product.delete()
-        return JsonResponse({'message': 'Product deleted successfully'})
-    except Exception as e:
-        return JsonResponse({'error': f'Error deleting product: {str(e)}'})
+        # Perform the product deletion
+        try:
+            product.delete()
+            return JsonResponse({'message': 'Product deleted successfully'})
+        except Exception as e:
+            return JsonResponse({'error': f'Error deleting product: {str(e)}'})
+
+    # Return an error response for non-POST requests
+    return JsonResponse({'error': 'Invalid request method'})
 
 def add_new_product_view(request):
-    sizes = Size.objects.all()  # Retrieve all size choices from the database
-    # Retrieve category choices from the model
-    category_choices = [(choice, choice) for choice, _ in AddProduct._meta.get_field('category').choices]
+    product = get_object_or_404(AddProduct, id=product_id)
 
     if request.method == 'POST':
-        product_name = request.POST.get('product_name')
-        category = request.POST.get('category')
+        # Retrieve the new category value from the POST data
+        new_category = request.POST.get('category')
 
-        # Create a new product using the data
-        new_product = AddProduct(product_name=product_name, category=category)
-        new_product.save()
+        # Update the product's category
+        product.category = new_category
 
-        # Handle multiple sizes, prices, and images
-        for size in sizes:
-            size_id = request.POST.get(f'size_{size.id}')
-            price = request.POST.get(f'price_{size.id}')
-            image = request.FILES.get(f'image_{size.id}')
+        # Save the updated product to the database
+        product.save()
 
-            if size_id and price:
-                # Retrieve the Size instance based on the size_id
-                size_instance = Size.objects.get(id=size_id)
+        # Get the size IDs from the POST data
+        size_id_list = request.POST.getlist('size_id')
 
-                # Create the ProductSize instance with the Size instance
-                product_size = ProductSize(product=new_product, size=size_instance, price=price, images=image)
+        for size_id in size_id_list:
+            try:
+                # Get the corresponding ProductSize instance
+                product_size = ProductSize.objects.get(id=size_id)
+
+                # Retrieve the new price value for the current size from the POST data
+                new_price = request.POST.get(f'price_{size_id}')
+
+                # Update the product size price
+                product_size.price = new_price
+
+                # Save the updated product size to the database
                 product_size.save()
 
-        return redirect('dashboard:dashboard')  # Redirect to the dashboard home page
+            except ProductSize.DoesNotExist:
+                messages.error(request, f"Product size with ID {size_id} not found.")
 
-    context = {'sizes': sizes, 'category_choices': category_choices}
-    return render(request, 'dashboard/admin/addproduct.html', context)
+        # Add a success message
+        messages.success(request, 'Changes saved successfully.')
+
+        # Redirect to the product list page or another appropriate page
+        return redirect('dashboard:dashboard')
+
+    # Retrieve all possible category choices from the AddProduct model
+    all_categories = [choice[1] for choice in AddProduct._meta.get_field('category').choices]
+
+    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'all_categories': all_categories})
 
 def order_detail_view(request):
     # Retrieve the order details and create a Paginator instance
