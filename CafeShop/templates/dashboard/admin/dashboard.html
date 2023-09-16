@@ -16,10 +16,12 @@
         --first-color: #fffdd0;
         --second-color: #a0522d;
     }
-    body{
+
+    body {
         font-family: var(--primary-font);
         background-color: rgba(245, 242, 242, 0.863);
     }
+
     a.go-back-btn {
         margin: 10vh 0 0 2vh;
         font-family: var(--primary-font);
@@ -48,8 +50,9 @@
         color: white;
         transition: 0.5s ease;
     }
+
     .navbar-light .navbar-nav .active>.nav-link:hover {
-        color:black;
+        color: black;
         background-color: transparent;
     }
 
@@ -136,35 +139,42 @@
         border: none;
         margin-bottom: 2vh;
     }
-    a.btn-add-new:hover{
+
+    a.btn-add-new:hover {
         background-color: rgb(64, 146, 64);
 
     }
-    nav.sidebar{
+
+    nav.sidebar {
         border: 2px solid var(--second-color);
         border-radius: 15px;
         height: 330px;
     }
-    a.aside-link{
+
+    a.aside-link {
         text-align: center;
-        color:var(--second-color);
+        color: var(--second-color);
         font-size: 20px;
         padding: 5px;
-        margin:10px 0;
+        margin: 10px 0;
         border-radius: 5px;
         transition: 0.5s ease-in;
     }
-    a.aside-link:hover{
+
+    a.aside-link:hover {
         background-color: var(--second-color);
-        color:white;
+        color: white;
     }
-    tr{
+
+    tr {
         border: 2px solid black;
     }
-    thead tr{
+
+    thead tr {
         font-size: 20px;
-        color:red;
+        color: red;
     }
+
     .pagination {
         margin-top: 3vh;
         border: 1px solid brown;
@@ -179,27 +189,28 @@
         border-radius: 5px;
         transition: 0.2s ease-in-out;
     }
-    a.pag-link{
+
+    a.pag-link {
         font-family: var(--primary-font);
         font-size: 20px;
         text-decoration: none;
-        color:black;
+        color: black;
     }
-    a.pag-link:hover{
+
+    a.pag-link:hover {
         background-color: var(--second-color);
         text-decoration: underline;
-        color:white;
+        color: white;
 
     }
-    span.current-page{
+
+    span.current-page {
         font-family: var(--secondary-font);
         margin: 10px;
         font-size: 20px;
         font-weight: bold;
-        color:var(--second-color);
+        color: var(--second-color);
     }
-
-
 </style>
 
 <body>
@@ -237,9 +248,8 @@
                 <div class="position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active aside-link" href="{% url 'dashboard:add-new-product' %}">
-                                Add Product
-                            </a>
+                            <a class="nav-link active aside-link" href="{% url 'dashboard:add-new-product' %}">Add
+                                Product</a>
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link aside-link" href="{% url  'dashboard:order_detail' %}">
@@ -251,10 +261,10 @@
                                 Checkout
                             </a>
                         </li>
-                        
+
                         <li class="nav-item aside-link">
                             <a class="nav-link aside-link" href="{% url 'dashboard:user-account'%}">
-                                User Account 
+                                User Account
                             </a>
                         </li>
                     </ul>
@@ -299,207 +309,195 @@
                             </select>
                         </div>
                     </div>
-                    
+
 
 
                     <div class="table-responsive">
                         <table class="table table-bordered custom-table" id="product-table">
                             <h2>All Products</h2>
-                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add new product</a>
-                            <thead>
-                                <tr>
-                                    <th>Drinks Name</th>
-                                    <th>Category</th>
-                                    <th>Size</th>
-                                    <th>Price</th>
-                                    <th>Image</th>
-                                    <th>Action</th> <!-- New "Action" column -->
-                                </tr>
-                            </thead>
-                            <!DOCTYPE html>
-                            <html>
-                            
-                            <head>
-                                <!-- Add Bootstrap CSS -->
-                                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-                            </head>
-                            
-                            <body>
-                                <div class="container">
-                                    <div class="row">
-                                        <main class="col-md-12">
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Product Name</th>
-                                                            <th>Category</th>
-                                                            <th>Size</th>
-                                                            <th>Price</th>
-                                                            <th>Image</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="product-table">
-                                                        {% for product in products %}
-                                                        {% for size in product.sizes.all %}
-                                                        <tr data-name="{{ product.product_name }}">
-                                                            {% if forloop.first %}
-                                                            <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
-                                                            <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
+                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add
+                                new product</a>
+
+                            <div class="container">
+                                <div class="row">
+                                    <main class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product Name</th>
+                                                        <th>Category</th>
+                                                        <th>Size</th>
+                                                        <th>Price</th>
+                                                        <th>Image</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="product-table">
+                                                    {% for product in products %}
+                                                    {% for size in product.sizes.all %}
+                                                    <tr data-name="{{ product.product_name }}">
+                                                        {% if forloop.first %}
+                                                        <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
+                                                        <td rowspan="{{ product.sizes.count }}">{{ product.category }}
+                                                        </td>
+                                                        {% endif %}
+                                                        <td>{{ size.size.get_size_display }}</td>
+                                                        <td>${{ size.price }}</td>
+                                                        {% if forloop.first %}
+                                                        <td rowspan="{{ product.sizes.count }}"
+                                                            style="text-align: center;">
+                                                            {% if size.images %}
+                                                            <img src="{{ size.images.url }}"
+                                                                alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
+                                                                style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
                                                             {% endif %}
-                                                            <td>{{ size.size.get_size_display }}</td>
-                                                            <td>${{ size.price }}</td>
-                                                            {% if forloop.first %}
-                                                            <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                                                {% if size.images %}
-                                                                <img src="{{ size.images.url }}"
-                                                                    alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
-                                                                    style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
-                                                                {% endif %}
-                                                            </td>
-                                                            <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                                                <!-- Edit button -->
-                                                                <div>
-                                                                    <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
-                                                                        class="btn btn-primary btn-sm btn-edit">Edit</a>
-                                                                </div>
-                                                                <!-- Delete button with confirmation -->
-                                                                <div>
-                                                                    <button class="btn btn-danger btn-sm btn-delete"
-                                                                        data-product-id="{{ product.id }}">Delete</button>
-                                                                </div>
-                                                            </td>
-                                                            {% endif %}
-                                                        </tr>
-                                                        {% endfor %}
-                                                        {% empty %}
-                                                        <tr>
-                                                            <td colspan="6">No products available.</td>
-                                                        </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                            
-                                            <!-- Pagination -->
-                                            <div class="pagination justify-content-center">
-                                                <span class="step-links">
-                                                    {% if products.has_previous %}
-                                                    <a href="?page=1" class="pag-link">&laquo; first page</a>
-                                                    <a href="?page={{ products.previous_page_number }}"
-                                                        class="pag-link">previous page</a>
-                                                    {% endif %}
-                            
-                                                    <span class="current-page">Page {{ products.number }}</span>
-                            
-                                                    {% if products.has_next %}
-                                                    <a href="?page={{ products.next_page_number }}" class="pag-link">next</a>
-                                                    <a href="?page={{ products.paginator.num_pages }}"
-                                                        class="pag-link">last &raquo;</a>
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                        </main>
-                                    </div>
+                                                        </td>
+                                                        <td rowspan="{{ product.sizes.count }}"
+                                                            style="text-align: center;">
+                                                            <!-- Edit button -->
+                                                            <div>
+                                                                <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
+                                                                    class="btn btn-primary btn-sm btn-edit">Edit</a>
+                                                            </div>
+                                                            <!-- Delete button with confirmation -->
+                                                            <div>
+                                                                <button class="btn btn-danger btn-sm btn-delete"
+                                                                    data-product-id="{{ product.id }}">Delete</button>
+                                                            </div>
+                                                        </td>
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% endfor %}
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="6">No products available.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- Pagination -->
+                                        <div class="pagination justify-content-center">
+                                            <span class="step-links">
+                                                {% if products.has_previous %}
+                                                <a href="?page=1" class="pag-link">&laquo; first page</a>
+                                                <a href="?page={{ products.previous_page_number }}"
+                                                    class="pag-link">previous page</a>
+                                                {% endif %}
+
+                                                <span class="current-page">Page {{ products.number }}</span>
+
+                                                {% if products.has_next %}
+                                                <a href="?page={{ products.next_page_number }}"
+                                                    class="pag-link">next</a>
+                                                <a href="?page={{ products.paginator.num_pages }}" class="pag-link">last
+                                                    &raquo;</a>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </main>
                                 </div>
-                            
-                                <!-- Add Bootstrap JS and jQuery -->
-                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-                                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                <script>
-                                    $(document).ready(function() {
-                                        // Get all delete buttons
-                                        const deleteButtons = document.querySelectorAll('.btn-delete');
-                                      
-                                        // Add click event listener to each delete button
-                                        deleteButtons.forEach((button) => {
-                                            button.addEventListener('click', (event) => {
-                                                const productId = event.target.dataset.productId;
-                                                const productName = event.target.closest('tr').dataset.name;
-                                      
-                                                // Show confirmation dialog
-                                                const confirmDelete = confirm(`Are you sure you want to delete the product '${productName}'?`);
-                                                if (confirmDelete) {
-                                                    // Send AJAX request to delete the product
-                                                    $.ajax({
-                                                        url: `/dashboard/delete_product/${productId}/`,
-                                                        type: 'POST',  // Use POST method instead of DELETE
-                                                        data: {
-                                                            csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token
-                                                        },
-                                                        success: function(data) {
-                                                            // Process the response
-                                                            if (data.error) {
-                                                                console.error(data.error);
-                                                            } else {
-                                                                // Remove the deleted product row from the table
-                                                                event.target.closest('tr').remove();
-                                                                console.log(data.message);
-                                                            }
-                                                        },
-                                                        error: function(error) {
-                                                            console.error('Error deleting product:', error);
+                            </div>
+
+                            <!-- Add Bootstrap JS and jQuery -->
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script
+                                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script>
+                                $(document).ready(function () {
+                                    // Get all delete buttons
+                                    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+                                    // Add click event listener to each delete button
+                                    deleteButtons.forEach((button) => {
+                                        button.addEventListener('click', (event) => {
+                                            const productId = event.target.dataset.productId;
+                                            const productName = event.target.closest('tr').dataset.name;
+
+                                            // Show confirmation dialog
+                                            const confirmDelete = confirm(`Are you sure you want to delete the product '${productName}'?`);
+                                            if (confirmDelete) {
+                                                // Send AJAX request to delete the product
+                                                $.ajax({
+                                                    url: `/dashboard/delete_product/${productId}/`,
+                                                    type: 'POST',  // Use POST method instead of DELETE
+                                                    data: {
+                                                        csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token
+                                                    },
+                                                    success: function (data) {
+                                                        // Process the response
+                                                        if (data.error) {
+                                                            console.error(data.error);
+                                                        } else {
+                                                            // Remove the deleted product row from the table
+                                                            event.target.closest('tr').remove();
+                                                            console.log(data.message);
                                                         }
-                                                    });
-                                                }
-                                            });
+                                                    },
+                                                    error: function (error) {
+                                                        console.error('Error deleting product:', error);
+                                                    }
+                                                });
+                                            }
                                         });
                                     });
-                                </script>
-                                <script>
-                                    $(document).ready(function () {
-                                        $("#drinkSearch").on("keyup", function () {
-                                            var searchText = $(this).val().toLowerCase();
-                                            $("#product-table tbody tr").each(function () {
-                                                var productName = $(this).data("name").toLowerCase();
-                                                if (productName.indexOf(searchText) === -1) {
-                                                    $(this).hide();
-                                                } else {
-                                                    $(this).show();
-                                                }
-                                            });
-                                        });
-                            
-                                        $("#categorySelect").on("change", function () {
-                                            var selectedCategory = $(this).val().toLowerCase();
-                                            var searchText = $("#drinkSearch").val().toLowerCase();
-                                            $("#product-table tbody tr").each(function () {
-                                                var category = $(this).find("td:eq(1)").text().toLowerCase();
-                                                var productName = $(this).data("name").toLowerCase();
-                                                if (
-                                                    (selectedCategory === "all" || category === selectedCategory) &&
-                                                    productName.includes(searchText)
-                                                ) {
-                                                    $(this).show();
-                                                } else {
-                                                    $(this).hide();
-                                                }
-                                            });
-                                        });
-                            
-                                        $(".btn-delete").click(function () {
-                                            var productId = $(this).data("product-id");
-                                            $.ajax({
-                                                url: "/delete_product/" + productId + "/",
-                                                type: "POST",
-                                                dataType: "json",
-                                                success: function (response) {
-                                                    // Handle success response
-                                                    console.log("Product deleted successfully");
-                                                    // Remove the deleted row from the table
-                                                    $(this).closest("tr").remove();
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    // Handle error response
-                                                    console.log("Error deleting product:", error);
-                                                }
-                                            });
+                                });
+                            </script>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#drinkSearch").on("keyup", function () {
+                                        var searchText = $(this).val().toLowerCase();
+                                        $("#product-table tbody tr").each(function () {
+                                            var productName = $(this).data("name").toLowerCase();
+                                            if (productName.indexOf(searchText) === -1) {
+                                                $(this).hide();
+                                            } else {
+                                                $(this).show();
+                                            }
                                         });
                                     });
-                                </script>
-                            </body>
-                            
-                            </html>
+
+                                    $("#categorySelect").on("change", function () {
+                                        var selectedCategory = $(this).val().toLowerCase();
+                                        var searchText = $("#drinkSearch").val().toLowerCase();
+                                        $("#product-table tbody tr").each(function () {
+                                            var category = $(this).find("td:eq(1)").text().toLowerCase();
+                                            var productName = $(this).data("name").toLowerCase();
+                                            if (
+                                                (selectedCategory === "all" || category === selectedCategory) &&
+                                                productName.includes(searchText)
+                                            ) {
+                                                $(this).show();
+                                            } else {
+                                                $(this).hide();
+                                            }
+                                        });
+                                    });
+
+                                    $(".btn-delete").click(function () {
+                                        var productId = $(this).data("product-id");
+                                        $.ajax({
+                                            url: "/delete_product/" + productId + "/",
+                                            type: "POST",
+                                            dataType: "json",
+                                            success: function (response) {
+                                                // Handle success response
+                                                console.log("Product deleted successfully");
+                                                // Remove the deleted row from the table
+                                                $(this).closest("tr").remove();
+                                            },
+                                            error: function (xhr, status, error) {
+                                                // Handle error response
+                                                console.log("Error deleting product:", error);
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
+</body>
+
+</html>
