@@ -170,19 +170,10 @@ def delete_product(request, product_id):
     # Return an error response for non-POST requests
     return JsonResponse({'error': 'Invalid request method'})
 
-<<<<<<< HEAD
-from django.shortcuts import get_object_or_404
-from django.http import HttpRequest, HttpResponse
-
-def add_new_product_view(request, product_id):
-    # Retrieve the product using the product_id, or return a 404 if it doesn't exist
-    product = get_object_or_404(AddProduct, id=product_id)
-=======
 def add_new_product_view(request):
     sizes = Size.objects.all()  # Retrieve all size choices from the database
     # Retrieve category choices from the model
     category_choices = [(choice, choice) for choice, _ in AddProduct._meta.get_field('category').choices]
->>>>>>> mony
 
     if request.method == 'POST':
         product_name = request.POST.get('product_name')
@@ -211,17 +202,6 @@ def add_new_product_view(request):
     context = {'sizes': sizes, 'category_choices': category_choices}
     return render(request, 'dashboard/admin/addproduct.html', context)
 
-<<<<<<< HEAD
-        # Redirect to the product list page or another appropriate page
-        return redirect('dashboard:dashboard')
-
-    # Retrieve all possible category choices from the AddProduct model
-    all_categories = [choice[1] for choice in AddProduct._meta.get_field('category').choices]
-
-    return render(request, 'dashboard/admin/addproduct.html', {'product': product, 'all_categories': all_categories})
-
-=======
->>>>>>> mony
 
 def order_detail_view(request):
     # Retrieve the order details and create a Paginator instance

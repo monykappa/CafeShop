@@ -261,15 +261,12 @@
                                 Checkout
                             </a>
                         </li>
-<<<<<<< HEAD
-=======
 
                         <li class="nav-item aside-link">
                             <a class="nav-link aside-link" href="{% url 'dashboard:user-account'%}">
                                 User Account
                             </a>
                         </li>
->>>>>>> mony
                     </ul>
                 </div>
             </nav>
@@ -318,196 +315,6 @@
                     <div class="table-responsive">
                         <table class="table table-bordered custom-table" id="product-table">
                             <h2>All Products</h2>
-<<<<<<< HEAD
-                            <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add new product</a>
-                            <thead>
-                                <tr>
-                                    <th>Drinks Name</th>
-                                    <th>Category</th>
-                                    <th>Size</th>
-                                    <th>Price</th>
-                                    <th>Image</th>
-                                    <th>Action</th> <!-- New "Action" column -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in products %}
-                                {% for size in product.sizes.all %}
-                                <tr data-name="{{ product.product_name }}">
-                                    {% if forloop.first %}
-                                    <td rowspan="{{ product.sizes.count }}" class="product-name">{{ product.product_name }}</td>
-                                    <td rowspan="{{ product.sizes.count }}">{{ product.category }}</td>
-                                    <td>{{ size.size.get_size_display }}</td>
-                                    <td>${{ size.price }}</td>
-                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                        {% if size.images %}
-                                        <img src="{{ size.images.url }}"
-                                            alt="{{ product.product_name }} - {{ size.size.get_size_display }}"
-                                            style="max-width: 150px; max-height: 150px; border-radius: 5px; display: block; margin: 0 auto;">
-                                        {% endif %}
-                                    </td>
-                                    <td rowspan="{{ product.sizes.count }}" style="text-align: center;">
-                                        <!-- Edit button -->
-                                        <div>
-                                            <a href="{% url 'dashboard:edit_product' product.id %}?page={{ products.number }}"
-                                                class="btn btn-primary btn-sm btn-edit">Edit</a>
-                                        </div>
-                                        <!-- Delete button with confirmation -->
-                                        <div>
-                                            <button class="btn btn-danger btn-sm btn-delete">Delete</button>
-                                        </div>
-                                    </td>
-                                    {% else %}
-                                    <td>{{ size.size.get_size_display }}</td>
-                                    <td>${{ size.price }}</td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6">No products available.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-
-
-
-                    <!-- Pagination -->
-                    <div class="pagination justify-content-center">
-                        <span class="step-links">
-                            {% if products.has_previous %}
-                            <a href="?page=1" class="pag-link" >&laquo; first page</a>
-                            <a href="?page={{ products.previous_page_number }}" class="pag-link">previous page</a>
-                            {% endif %}
-
-                            <span class="current-page">Page {{ products.number }}</span>
-
-                            {% if products.has_next %}
-                            <a href="?page={{ products.next_page_number }}" class="pag-link">next</a>
-                            <a href="?page={{ products.paginator.num_pages }}" class="pag-link">last &raquo;</a>
-                            {% endif %}
-                        </span>
-                    </div>
-            </main>
-
-        </div>
-    </div>
-
-    <!-- Add Bootstrap JS and Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-
-    <script>
-        $(document).ready(function() {
-    $("#drinkSearch").on("keyup", function() {
-        performSearch();
-    });
-
-    $("#categorySelect").on("change", function() {
-        performCategoryFilter();
-    });
-
-    function performCategoryFilter() {
-        var selectedCategory = $("#categorySelect").val();
-        var searchText = $("#drinkSearch").val().toLowerCase();
-
-        // Loop through all products in the table
-        $("tbody tr").each(function() {
-            var category = $(this).find("td:eq(1)").text();
-            var productName = $(this).find("td:eq(0)").text().toLowerCase();
-
-            if ((selectedCategory === "All" || category === selectedCategory) &&
-                productName.includes(searchText)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    }
-
-    function performSearch() {
-        var selectedCategory = $("#categorySelect").val();
-        var searchText = $("#drinkSearch").val().toLowerCase();
-
-        // Loop through all products in the table
-        $("tbody tr").each(function() {
-            var category = $(this).find("td:eq(1)").text();
-            var productName = $(this).find("td:eq(0)").text().toLowerCase();
-
-            if ((selectedCategory === "All" || category === selectedCategory) &&
-                productName.includes(searchText)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    }
-});
-
-    </script>    
-    <script>
-        function confirmDelete(productName, productId) {
-            var csrfToken = "{{ csrf_token }}"; // Get the CSRF token value from the template
-            if (confirm(`Are you sure you want to delete ${productName}?`)) {
-                $.ajax({
-                    url: `/menu/delete_product/${productId}/`,
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: csrfToken,
-                    },
-                    success: function (data) {
-                        if (data.message) {
-                            alert(data.message);
-                            location.reload(); // Reload the page to reflect the changes
-                        } else if (data.error) {
-                            alert(data.error);
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred while deleting the product.');
-                    }
-                });
-            }
-        }
-    </script>
-    <script>
-        $(document).ready(function () {
-            $("#drinkSearch").on("keyup", function () {
-                var searchText = $(this).val().toLowerCase();
-                $("#product-table tbody tr").each(function () {
-                    var productName = $(this).data("name").toLowerCase();
-                    if (productName.indexOf(searchText) === -1) {
-                        $(this).hide();
-                    } else {
-                        $(this).show();
-                    }
-                });
-            });
-        });
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
                             <a href="{% url 'dashboard:add-new-product' %}" class="btn btn-primary btn-add-new">+ Add
                                 new product</a>
 
@@ -691,7 +498,6 @@
                                     });
                                 });
                             </script>
->>>>>>> mony
 </body>
 
 </html>
