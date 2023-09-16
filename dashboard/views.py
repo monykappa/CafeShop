@@ -17,7 +17,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q 
 from django import forms
-from menu.models import Checkout, OrderDetail, OrderItem, ProductSize, AddProduct, CartItem
+from menu.models import Checkout, OrderDetail, OrderItem, ProductSize, AddProduct, CartItem, ProductSize
 from datetime import datetime 
 
 
@@ -170,7 +170,11 @@ def delete_product(request, product_id):
     # Return an error response for non-POST requests
     return JsonResponse({'error': 'Invalid request method'})
 
-def add_new_product_view(request):
+from django.shortcuts import get_object_or_404
+from django.http import HttpRequest, HttpResponse
+
+def add_new_product_view(request, product_id):
+    # Retrieve the product using the product_id, or return a 404 if it doesn't exist
     product = get_object_or_404(AddProduct, id=product_id)
 
     if request.method == 'POST':
@@ -212,7 +216,8 @@ def add_new_product_view(request):
     # Retrieve all possible category choices from the AddProduct model
     all_categories = [choice[1] for choice in AddProduct._meta.get_field('category').choices]
 
-    return render(request, 'dashboard/admin/edit_product.html', {'product': product, 'all_categories': all_categories})
+    return render(request, 'dashboard/admin/addproduct.html', {'product': product, 'all_categories': all_categories})
+
 
 def order_detail_view(request):
     # Retrieve the order details and create a Paginator instance
