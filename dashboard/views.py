@@ -170,46 +170,48 @@ def delete_product(request, product_id):
     # Return an error response for non-POST requests
     return JsonResponse({'error': 'Invalid request method'})
 
+<<<<<<< HEAD
 from django.shortcuts import get_object_or_404
 from django.http import HttpRequest, HttpResponse
 
 def add_new_product_view(request, product_id):
     # Retrieve the product using the product_id, or return a 404 if it doesn't exist
     product = get_object_or_404(AddProduct, id=product_id)
+=======
+def add_new_product_view(request):
+    sizes = Size.objects.all()  # Retrieve all size choices from the database
+    # Retrieve category choices from the model
+    category_choices = [(choice, choice) for choice, _ in AddProduct._meta.get_field('category').choices]
+>>>>>>> mony
 
     if request.method == 'POST':
-        # Retrieve the new category value from the POST data
-        new_category = request.POST.get('category')
+        product_name = request.POST.get('product_name')
+        category = request.POST.get('category')
 
-        # Update the product's category
-        product.category = new_category
+        # Create a new product using the data
+        new_product = AddProduct(product_name=product_name, category=category)
+        new_product.save()
 
-        # Save the updated product to the database
-        product.save()
+        # Handle multiple sizes, prices, and images
+        for size in sizes:
+            size_id = request.POST.get(f'size_{size.id}')
+            price = request.POST.get(f'price_{size.id}')
+            image = request.FILES.get(f'image_{size.id}')
 
-        # Get the size IDs from the POST data
-        size_id_list = request.POST.getlist('size_id')
+            if size_id and price:
+                # Retrieve the Size instance based on the size_id
+                size_instance = Size.objects.get(id=size_id)
 
-        for size_id in size_id_list:
-            try:
-                # Get the corresponding ProductSize instance
-                product_size = ProductSize.objects.get(id=size_id)
-
-                # Retrieve the new price value for the current size from the POST data
-                new_price = request.POST.get(f'price_{size_id}')
-
-                # Update the product size price
-                product_size.price = new_price
-
-                # Save the updated product size to the database
+                # Create the ProductSize instance with the Size instance
+                product_size = ProductSize(product=new_product, size=size_instance, price=price, images=image)
                 product_size.save()
 
-            except ProductSize.DoesNotExist:
-                messages.error(request, f"Product size with ID {size_id} not found.")
+        return redirect('dashboard:dashboard')  # Redirect to the dashboard home page
 
-        # Add a success message
-        messages.success(request, 'Changes saved successfully.')
+    context = {'sizes': sizes, 'category_choices': category_choices}
+    return render(request, 'dashboard/admin/addproduct.html', context)
 
+<<<<<<< HEAD
         # Redirect to the product list page or another appropriate page
         return redirect('dashboard:dashboard')
 
@@ -218,6 +220,8 @@ def add_new_product_view(request, product_id):
 
     return render(request, 'dashboard/admin/addproduct.html', {'product': product, 'all_categories': all_categories})
 
+=======
+>>>>>>> mony
 
 def order_detail_view(request):
     # Retrieve the order details and create a Paginator instance
