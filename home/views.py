@@ -215,11 +215,17 @@ def profile(request):
             grouped_checkouts[key] = {'order_date': checkout.order_date, 'order_items': list(checkout.order_items.all())}
 
     # Calculate the total price for each checkout group
+    # Calculate the total price for each checkout group
+    # Calculate the total price for each checkout group
+    # Calculate the total price for each checkout group
     for group in grouped_checkouts.values():
         total_price = 0
-        for order_item in group['order_items']:
-            total_price += order_item.product_size.price
-        group['total_price'] = total_price
+    for order_item in group['order_items']:
+        total_price += order_item.product_size.price * order_item.quantity  # Calculate total price per product
+    group['total_price'] = total_price  # Set the total price for the current checkout group
+
+
+
 
     context = {
         'user': user,

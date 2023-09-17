@@ -176,6 +176,7 @@
                                     <tr>
                                         <th class="row-table">Date</th>
                                         <th class="row-table">Product Name</th>
+                                        <th>Quantity</th>
                                         <th class="row-table">Price</th>
                                     </tr>
                                 </thead>
@@ -184,24 +185,27 @@
                                     <tr>
                                         <td rowspan="{{ checkout_group.order_items|length }}">{{ checkout_group.order_date }}</td>
                                         <td>{{ checkout_group.order_items.0.product_size.product.product_name }}</td>
-                                        <td>${{ checkout_group.order_items.0.product_size.price }}</td>
+                                        <td>{{ checkout_group.order_items.0.quantity }}</td> 
+                                        <td>${{ checkout_group.order_items.0.product_size.price }}</td> 
                                     </tr>
                                     {% for order_item in checkout_group.order_items|slice:"1:" %}
                                     <tr>
                                         <td>{{ order_item.product_size.product.product_name }}</td>
-                                        <td>${{ order_item.product_size.price }}</td>
+                                        <td>{{ order_item.quantity }}</td> 
+                                        <td>${{ order_item.product_size.price }}</td> 
+                                        <td>${{ order_item.total_price }}</td> 
                                     </tr>
                                     {% endfor %}
                                     <tr>
                                         <td></td> <!-- Empty cell for spacing -->
-                                        <td style="color: red; background-color: rgb(245, 236, 116); font-size: 20px;">
-                                            Total Price</td>
+                                        <td style="color: red; background-color: rgb(245, 236, 116); font-size: 20px;">Total Price</td>
+                                        <td style="color:red; background-color: rgb(245, 236, 116); font-size: 20px;"></td> <!-- Empty cell -->
                                         <td style="color:red; background-color: rgb(245, 236, 116); font-size: 20px;">${{ checkout_group.total_price }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-
+                            
                         </div>
                     </div>
                 </div>
